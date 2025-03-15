@@ -11,7 +11,6 @@ function Navbar() {
               The Celtic Chariot
           </div>
      <div className="nav-links">
-        <a href="/">Account</a>
         <a href="/">Sign in</a>
         <a className="cart" href="/">Cart</a>
       </div>

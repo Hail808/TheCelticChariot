@@ -33,7 +33,7 @@
 .logo{
   display: flex;
   align-items: center;
-  font-size: 50px;
+  font-size: 70px;
   color: white;
 }
 .logo img {
@@ -44,6 +44,7 @@
 }
 
 .nav-links{
+  font-size: 20px;
   display: flex;
   margin-left: auto;
   align-items: flex-end;
