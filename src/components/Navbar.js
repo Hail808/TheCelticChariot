@@ -12,7 +12,7 @@ function navbar() {
           </div>
      <div className="nav-links">
         <a href="/">Sign in</a>
-        <a className="cart" href="/">Cart</a>
+        <a className="cart" href="/"><img src="cart.png" width={30} height={30}/>Cart</a>
       </div>
       </nav>
     </html>

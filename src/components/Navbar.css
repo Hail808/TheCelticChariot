@@ -60,6 +60,16 @@
   background-color: #1f380f;
   padding: 14px 16px;
   border-radius: 15px;
+  display: flex;
+  align-items:center;
+  gap: 5px;
+}
+
+
+.nav-links .cart img {
+  border: #000000;
+  position: relative;
+  top: -3px; /* Adjust this value to move the image up */
 }
 
 .navbar a:hover {
