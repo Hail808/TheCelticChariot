@@ -1,0 +1,49 @@
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/styles/forgot_password.css ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+@font-face {
+    font-family: 'Lalezar';
+    src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
+         
+         
+    font-weight: normal;
+    font-style: normal;
+}
+
+.forgot-password-container {
+    font-family: 'Lalezar', Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 35px;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.forgot-password-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.forgot-password-container form div {
+    margin-bottom: 1rem;
+}
+
+.forgot-password-container button {
+    padding: 10px;
+    background: #1f380f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.forgot-password-container button:hover {
+    padding: 0.5rem 1rem;
+    background: #1f380f;
+}
