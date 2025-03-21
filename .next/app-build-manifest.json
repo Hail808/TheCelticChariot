@@ -23,12 +23,6 @@
       "static/chunks/main-app.js",
       "static/css/app/about_me/page.css",
       "static/chunks/app/about_me/page.js"
-    ],
-    "/forgot_password/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/forgot_password/page.css",
-      "static/chunks/app/forgot_password/page.js"
     ]
   }
 }
