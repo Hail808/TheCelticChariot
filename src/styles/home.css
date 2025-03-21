@@ -1,0 +1,45 @@
+/* Makes sure entire page takes up the full viewport height for formatting */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #e7e7dd; /* Set the background color for the entire page */
+}
+
+/* App container should be a flexbox to structure layout */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the app takes full height */
+  background: #e7e7dd; /* Set the background color for the App container */
+}
+
+/* push footer down so its not in the middle of screen */
+.content {
+  flex: 1;
+  padding-top: 150px; /* Maintain your existing spacing */
+}
+
+/* Center content on the homepage */
+.home-container {
+  display: flex;
+  justify-content: center;  /* Center horizontally */
+  align-items: center;  /* Center vertically */
+  text-align: center;  /* Center text */
+}
+
+.home-container h1 {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 3rem;
+  color: #ffffff;
+  text-shadow: 
+  -1px -1px 0 black,  
+  1px -1px 0 black,
+  -1px 1px 0 black,
+  1px 1px 0 black;
+}
+
+/* Makes sure Footer stays at the bottom */
+.footer-container {
+  width: 100%;
+}
