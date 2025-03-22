@@ -52,3 +52,30 @@
 .login-container button:hover {
     background: #1f380f;
 }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+.forgot-password-button{
+    padding: 10px;
+    background: #1f380f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: right;
+    position: absolute;
+    right: -41px;
+
+}
+
+.password-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }

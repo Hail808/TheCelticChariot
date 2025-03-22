@@ -35,7 +35,7 @@ const Login = () => {
             required
           />
         </div>
-        <div>
+        <div  className="password-container">
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -45,10 +45,13 @@ const Login = () => {
             onChange={handleChange}
             required
           />
+          <div className="button-container">
+          <button type="submit">Login</button>
+          <button type="button" onClick={handleForgotPassword} className="forgot-password-button"> Forgot Password</button>
         </div>
-        <button type="submit">Login</button>
+      </div>
       </form>
-      <button onClick={handleForgotPassword} className="forgot-password-button">Forgot Password?</button>
+      
     </div>
   );
 };
