@@ -26,6 +26,9 @@ html, body {
   justify-content: center;  /* Center horizontally */
   align-items: center;  /* Center vertically */
   text-align: center;  /* Center text */
+
+  flex-direction: column;
+  padding: 40px;
 }
 
 .home-container h1 {
@@ -42,4 +45,91 @@ html, body {
 /* Makes sure Footer stays at the bottom */
 .footer-container {
   width: 100%;
+}
+
+/* Featured Item Label*/
+.label-featured-items {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 40px;
+  max-width: 800px;
+  text-align: center;
+  margin: 10px auto;
+  line-height: 0.5;
+}
+
+/*Featured Card Formatting*/
+.featured-cards {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin: 30px 0;
+}
+
+/* Featured Item Boxes*/
+.featured-item-box {
+  width: 400px;
+  height: 300px;
+  background-color: gray;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 10px;
+
+  gap: 60px;
+  margin: 10px 0;
+}
+
+/*Categories Label Itself*/
+.label-categories {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 36px;
+  max-width: 800px;
+  text-align: center;
+  margin: 10px auto;
+  line-height: 1.5;
+}
+
+/*Category Group Structure*/
+.categories-grouping {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  height: 100%; 
+}
+
+/*Category Group Labels*/
+.categories-group-label {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 22px;
+  max-width: 800px;
+  text-align: center;
+  margin: 5px auto;
+  line-height: 0.5;
+}
+
+/*Category Photos Formatting */
+.categories-card {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin: 10px 0;
+}
+
+/*Category Photos*/
+.category-photo {
+  width: 250px;
+  height: 200px;
+  background-color: gray;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 10px;
+
+  gap: 30px;
+  margin: 10px 0;
 }
