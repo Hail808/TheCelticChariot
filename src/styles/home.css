@@ -1,34 +1,36 @@
-/* Makes sure entire page takes up the full viewport height for formatting */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #e7e7dd; /* Set the background color for the entire page */
+/* Makes sure Footer stays at the bottom */
+.footer-container {
+  width: 100%;
 }
 
-/* App container should be a flexbox to structure layout */
-.App {
+/* Featured Item Boxes */
+.featured-item-box {
+  padding: 20px 40px;
+  font-size: 18px;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 400px;
+  height: 300px;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures the app takes full height */
-  background: #e7e7dd; /* Set the background color for the App container */
-}
-
-/* push footer down so its not in the middle of screen */
-.content {
-  flex: 1;
-  padding-top: 150px; /* Maintain your existing spacing */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 60px;
+  margin: 10px 0;
 }
 
 /* Center content on the homepage */
 .home-container {
-  display: flex;
+  display: flex; /* Displays accomodate multiple item */
+  flex-direction: column; /* how items are added into flex container */
   justify-content: center;  /* Center horizontally */
   align-items: center;  /* Center vertically */
   text-align: center;  /* Center text */
-
-  flex-direction: column;
-  padding: 40px;
+  padding: 40px; /* how much space between items */
 }
 
 .home-container h1 {
@@ -42,12 +44,7 @@ html, body {
   1px 1px 0 black;
 }
 
-/* Makes sure Footer stays at the bottom */
-.footer-container {
-  width: 100%;
-}
-
-/* Featured Item Label*/
+/* Featured Item Label */
 .label-featured-items {
   font-family: 'Lalezar', sans-serif;
   font-size: 40px;
@@ -57,31 +54,22 @@ html, body {
   line-height: 0.5;
 }
 
-/*Featured Card Formatting*/
+.featured-item-box:hover {
+  background-color: rgb(194, 194, 194); /* Darker shade on hover */
+}
+
+/* Featured Card Formatting */
 .featured-cards {
   display: flex;
-  justify-content: center;
   gap: 60px;
   margin: 30px 0;
 }
 
-/* Featured Item Boxes*/
-.featured-item-box {
-  width: 400px;
-  height: 300px;
-  background-color: gray;
-  color: white;
-  display: flex;
+.featured-cards-2 {
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  border-radius: 10px;
-
-  gap: 60px;
-  margin: 10px 0;
 }
 
-/*Categories Label Itself*/
+/* Categories Label Itself */
 .label-categories {
   font-family: 'Lalezar', sans-serif;
   font-size: 36px;
@@ -91,7 +79,15 @@ html, body {
   line-height: 1.5;
 }
 
-/*Category Group Structure*/
+/* Category Photos Formatting */
+.categories-card {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin: 10px 0;
+}
+
+/* Category Group Structure */
 .categories-grouping {
   text-align: center;
   display: flex;
@@ -100,7 +96,7 @@ html, body {
   height: 100%; 
 }
 
-/*Category Group Labels*/
+/* Category Group Labels */
 .categories-group-label {
   font-family: 'Lalezar', sans-serif;
   font-size: 22px;
@@ -110,26 +106,48 @@ html, body {
   line-height: 0.5;
 }
 
-/*Category Photos Formatting */
-.categories-card {
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  margin: 10px 0;
-}
-
-/*Category Photos*/
-.category-photo {
+/* Category Boxes */
+.category-box {
   width: 250px;
   height: 200px;
-  background-color: gray;
-  color: white;
+  font-size: 18px;
+
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-radius: 10px;
-
-  gap: 30px;
+  padding: 20px 40px;
+  gap: 60px;
   margin: 10px 0;
+
+  background-color: gray;
+  color: white;
+  transition: background-color 0.3s ease;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.category-box:hover {
+  background-color: rgb(194, 194, 194); /* Darker shade on hover */
+}
+
+.default-button {
+  padding: 20px 40px;
+  font-size: 18px;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  /* width: 400px;
+  height: 300px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* gap: 60px;
+  margin: 10px 0; */
 }
