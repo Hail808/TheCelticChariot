@@ -60,7 +60,7 @@ const Catalogue: React.FC = () => {
         </div>
 
         {/* Categories + Catalogue Array Container */}
-        <div className="sorting-and-categories-container"> 
+        <div className="sorting-and-categories-container">
             
             {/* Categories Section */}
             <div className="categories-container">
