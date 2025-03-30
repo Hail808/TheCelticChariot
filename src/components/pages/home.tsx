@@ -34,7 +34,7 @@ const Home: React.FC = () => {
       {/*Featured Item Boxes*/}
       <div className="featured-cards">
         <div className="featured-cards-2">
-          <NavigationButton label="Featured Item 1" onClick={navigateToCatalogue}/>
+        <NavigationButton label="Featured Item 1" onClick={navigateToCatalogue}/>
         </div>
         <div className="featured-cards-2">
           <NavigationButton label="Featured Item 2" onClick={navigateToCatalogue}/>
