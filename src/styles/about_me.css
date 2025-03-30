@@ -16,7 +16,6 @@
     align-items: center;
     text-align: center;
     padding: 40px;
-
 }
 
 /* Title & Line */
@@ -63,8 +62,6 @@
     border-radius: 8px;
 }
 
-
-
 /* Profile text */
 .profile-text {
     text-align: center;
@@ -73,8 +70,6 @@
     justify-content: center; 
     height: 100%; 
 }
-
-
 
 .role {
     

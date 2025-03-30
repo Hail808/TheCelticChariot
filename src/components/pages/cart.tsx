@@ -18,16 +18,6 @@ const Cart = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#6b7855" }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            The Celtic Chariot
-          </Typography>
-          <Button color="inherit" onClick={() => router.push("/")}>Account</Button>
-          <Button color="inherit">Sign In</Button>
-          <Button color="inherit" onClick={() => router.push("/cart")}>Cart</Button>
-        </Toolbar>
-      </AppBar>
       <Container sx={{ backgroundColor: "#f8f5e4", padding: "20px" }}>
         <Typography variant="h4" gutterBottom>
           Cart
