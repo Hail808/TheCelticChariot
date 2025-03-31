@@ -2,21 +2,56 @@ import '../../styles/user_dashboard.css';
 const UserDashboard = () => {
     //Temp Data, will get from database  
 
-    //format : Order Number, Date, Paid/Unpaid, Shipped/Packaging, Cost
     //May want to get rid of paid status, seems redundant?
-    const orders = [
-        ["1234", "1/2/24", "Paid", "Shipped", "$20"],
-        ["3456", "1/3/24", "Paid", "Packaging", "$30"],
-        ["7890", "5/3/24", "Unpaid", "Packaging", "$150"],
-    ];
+    const orders = 
+     [
+        {
+            id: 1234,
+            date: "1/2/1234",
+            paymentStatus: "Paid",
+            shipmentStatus: "Shipped",
+            total :"$30"
+        },
+        {
+            id: 4567,
+            date: "1/2/1234",
+            paymentStatus: "Paid",
+            shipmentStatus: "Shipped",
+            total :"$30"
+        },
+        {
+            id: 1230,
+            date: "1/2/1234",
+            paymentStatus: "Paid",
+            shipmentStatus: "Shipped",
+            total :"$30"
+        },
+        {
+            id: 4543,
+            date: "1/2/1234",
+            paymentStatus: "Paid",
+            shipmentStatus: "Shipped",
+            total :"$20"
+        }
+      ];
 
     //format: Name, Address, "City, State Zip", Country
-    const accInfo = ["JDoe", "John Doe", "1234 Ex St", "Sacramento, CA 95857", "United States" ]
+    const accInfo = 
+
+       {
+           userName: "JDOE",
+           name: "John Doe",
+           adress: "1234 EX st",
+           city: "Sacramento, CA, 95758",
+           country: "United States"
+
+       }
+
     return (
         <div className="user-dashboard-container">
 
 
-            <h1>Hello, {accInfo[0]}</h1>
+            <h1>Hello, {accInfo.userName}</h1>
             <div className="order-section">
                 <h1 className='order-header'>Orders</h1>
                 <table className="order-table">
@@ -31,11 +66,13 @@ const UserDashboard = () => {
                     </thead>
                     <tbody>
                         {/* May need to change the keys later on, for now I just have them as their value */}
-                        {orders.map((order, orderIndex) => (
-                            <tr key={orderIndex}>
-                                {order.map((entry) => (
-                                    <td key={entry}>{entry}</td>
-                                ))}
+                        {orders.map((order) => (
+                            <tr key={order.id}>
+                                <td>{order.id}</td>
+                                <td>{order.date}</td>
+                                <td>{order.paymentStatus}</td>
+                                <td>{order.shipmentStatus}</td>
+                                <td>{order.total}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -44,13 +81,13 @@ const UserDashboard = () => {
                     <h1>Account Details</h1>
                     <dl className="list-info">
                         <dt>Username</dt>
-                        <dd>{accInfo[0]}</dd>
+                        <dd>{accInfo.userName}</dd>
                         <dt>Name</dt>
-                        <dd>{accInfo[1]}</dd>
+                        <dd>{accInfo.name}</dd>
                         <dt>Address</dt>
-                        <dd>{accInfo[2]}</dd>
-                        <dd>{accInfo[3]}</dd>
-                        <dd>{accInfo[4]}</dd>
+                        <dd>{accInfo.adress}</dd>
+                        <dd>{accInfo.city}</dd>
+                        <dd>{accInfo.country}</dd>
                     </dl>
                 </div>
             </div>
