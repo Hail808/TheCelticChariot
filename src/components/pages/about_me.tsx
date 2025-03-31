@@ -1,7 +1,7 @@
 "use client";  // Mark as client component
 
 import React from "react";
-import { FaInstagram, FaTiktok } from "react-icons/fa"; // Import icons
+import { FaInstagram, FaTiktok } from "react-icons/fa";
 import '../../styles/about_me.css';
 
 const About: React.FC = () => {

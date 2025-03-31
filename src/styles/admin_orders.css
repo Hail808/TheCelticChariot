@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+@font-face {
+    font-family: 'Lalezar';
+    src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
+         
+         
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* table styling */
+.content-table {
+    border-collapse: collapse;
+    margin: 50px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Add a border to the table */
+.content-table thead tr {
+    background-color: #5B6D50;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* table formatting */
+.content-table th,
+.content-table td {
+    text-align: center;
+    padding: 30px 100px;
+}
+
+/* border and table cells color */
+.content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+.content-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+.content-table tbody tr:last-of-type {
+    border-bottom: 2px solid #5B6D50;
+}

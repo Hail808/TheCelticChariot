@@ -1,31 +1,36 @@
-/* Makes sure entire page takes up the full viewport height for formatting */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #e7e7dd; /* Set the background color for the entire page */
+/* Makes sure Footer stays at the bottom */
+.footer-container {
+  width: 100%;
 }
 
-/* App container should be a flexbox to structure layout */
-.App {
+/* Featured Item Boxes */
+.featured-item-box {
+  padding: 20px 40px;
+  font-size: 18px;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 400px;
+  height: 300px;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures the app takes full height */
-  background: #e7e7dd; /* Set the background color for the App container */
-}
-
-/* push footer down so its not in the middle of screen */
-.content {
-  flex: 1;
-  padding-top: 150px; /* Maintain your existing spacing */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 60px;
+  margin: 10px 0;
 }
 
 /* Center content on the homepage */
 .home-container {
-  display: flex;
+  display: flex; /* Displays accomodate multiple item */
+  flex-direction: column; /* how items are added into flex container */
   justify-content: center;  /* Center horizontally */
   align-items: center;  /* Center vertically */
   text-align: center;  /* Center text */
+  padding: 40px; /* how much space between items */
 }
 
 .home-container h1 {
@@ -39,7 +44,219 @@ html, body {
   1px 1px 0 black;
 }
 
-/* Makes sure Footer stays at the bottom */
-.footer-container {
-  width: 100%;
+/* Featured Item Label */
+.label-featured-items {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 40px;
+  max-width: 800px;
+  text-align: center;
+  margin: 10px auto;
+  line-height: 0.5;
 }
+
+.featured-item-box:hover {
+  background-color: rgb(194, 194, 194); /* Darker shade on hover */
+}
+
+/* Featured Card Formatting */
+.featured-cards {
+  display: flex;
+  gap: 60px;
+  margin: 30px 0;
+}
+
+.featured-cards-2 {
+  justify-content: center;
+}
+
+/* Categories Label Itself */
+.label-categories {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 36px;
+  max-width: 800px;
+  text-align: center;
+  margin: 10px auto;
+  line-height: 1.5;
+}
+
+/* Category Photos Formatting */
+.categories-card {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin: 10px 0;
+}
+
+/* Category Group Structure */
+.categories-grouping {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  height: 100%; 
+}
+
+/* Category Group Labels */
+.categories-group-label {
+  font-family: 'Lalezar', sans-serif;
+  font-size: 22px;
+  max-width: 800px;
+  text-align: center;
+  margin: 5px auto;
+  line-height: 0.5;
+}
+
+/* Category Boxes */
+.category-box {
+  width: 250px;
+  height: 200px;
+  font-size: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px 40px;
+  gap: 60px;
+  margin: 10px 0;
+
+  background-color: gray;
+  color: white;
+  transition: background-color 0.3s ease;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.category-box:hover {
+  background-color: rgb(194, 194, 194); /* Darker shade on hover */
+}
+
+.default-button {
+  padding: 20px 40px;
+  font-size: 18px;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  /* width: 400px;
+  height: 300px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* gap: 60px;
+  margin: 10px 0; */
+}
+
+.label-reviews{
+  font-family: 'Lalezar', sans-serif;
+  font-size: 40px;
+  max-width: 800px;
+  text-align: center;
+  margin: 10px auto;
+  line-height: 0.5;
+
+}
+
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1000px;
+  gap: 20px;
+}
+
+.review-card {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  width: 300px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.review-card.center {
+  opacity: 1;
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.review-card.adjacent {
+  opacity: 1;
+  transform: scale(0.9);
+  z-index: 1;
+}
+
+.review-card.hidden {
+  display: none;
+}
+
+.carousel-arrow {
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-arrow:hover {
+  background-color: darkgray;
+}
+
+.review-product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.review-details {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.review-profile-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.review-text {
+  text-align: left;
+}
+
+.review-text p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.review-stars {
+  font-size: 18px;
+  color: gold;
+  margin-top: 5px;
+}
+
