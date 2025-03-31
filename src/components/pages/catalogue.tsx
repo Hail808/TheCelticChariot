@@ -1,10 +1,12 @@
 "use client";  // Mark as client component
 
+import {useRouter} from 'next/navigation';
 import { useState } from 'react';
 import React from "react";
 import '../../styles/catalogue.css';
 
 const Catalogue: React.FC = () => {
+    const router = useRouter(); 
 
     //List of every item in the catalogue
     //Similar items can be given similar ids 
@@ -15,6 +17,10 @@ const Catalogue: React.FC = () => {
         {id: 13, name: "Item 13"}, {id: 14, name: "Item 14"}, {id: 15, name: "Item 15"}, {id: 16, name: "Item 16"}
     ];
 
+    const handleProduct = () => {
+        router.push('/product_page')
+    }
+    
     //Searchbar Query and Filtered Items Functions
     const [query, setQuery] = useState("");
     const [filteredItems, setFilteredItems] = useState(items);
@@ -75,7 +81,7 @@ const Catalogue: React.FC = () => {
                 {filteredItems.length > 0 ? (
                     filteredItems.map((item) => (
                         <div className="catalogue-text-formatting" key={item.id}>
-                            <button className="catalogue-box">
+                            <button onClick={handleProduct} className="catalogue-box">
                                 {item.name}
                             </button>
                             {item.name}
