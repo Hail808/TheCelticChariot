@@ -8,6 +8,7 @@ import Footer from './components/footer.tsx';
 import About from './components/pages/about_me.tsx';
 import Cart from './components/pages/cart.tsx'; 
 import Review from './components/pages/reviews.tsx';
+import ProductPage from './components/pages/product_page.tsx';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/forgot_password" element={<ForgotPassword />} />
             <Route path="/reviews" element={<Review />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/product_page" element={<ProductPage />} />
           </Routes>
         </main>
         <Footer />
