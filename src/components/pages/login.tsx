@@ -17,6 +17,10 @@ const Login = () => {
     console.log("User submitted with name " + formData.username + " and password " + formData.password);
   };
 
+  const handleLogin = () => {
+    router.push('/admin_home');
+  }
+
   const handleForgotPassword = () => {
     router.push('/forgot_password');
   };
@@ -46,9 +50,11 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <div className="button-format">
+          <button onClick={handleLogin} className="login-button">Login</button>
+          <button onClick={handleForgotPassword} className="forgot-password-button">Forgot Password?</button>
+        </div>
       </form>
-      <button onClick={handleForgotPassword} className="forgot-password-button">Forgot Password?</button>
     </div>
   );
 };

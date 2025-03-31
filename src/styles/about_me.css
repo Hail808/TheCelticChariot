@@ -16,7 +16,6 @@
     align-items: center;
     text-align: center;
     padding: 40px;
-
 }
 
 /* Title & Line */
@@ -63,8 +62,6 @@
     border-radius: 8px;
 }
 
-
-
 /* Profile text */
 .profile-text {
     text-align: center;
@@ -73,8 +70,6 @@
     justify-content: center; 
     height: 100%; 
 }
-
-
 
 .role {
     
@@ -92,16 +87,18 @@
 .contact-section {
     font-family: 'Lalezar', sans-serif;
     display: flex;
-    justify-content: space-between;
-    width: 80%;
+    flex-direction: column; 
+    align-items: center;    
+    width: 100%;
     margin-top: 40px;
+    gap: 30px;             
 }
 
 /* Contact Form */
 .contact-form {
     padding: 20px;
     border-radius: 8px;
-    width: 50%;
+    width: 60%;
     text-align: left;
 }
 
@@ -154,8 +151,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 30%;
-    padding: 20px;
+    width: auto;
+    padding: 0;
 }
 
 .social-icons {
