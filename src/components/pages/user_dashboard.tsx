@@ -52,6 +52,7 @@ const UserDashboard = () => {
 
 
             <h1>Hello, {accInfo.userName}</h1>
+            <hr className="title-line" />
             <div className="order-section">
                 <h1 className='order-header'>Orders</h1>
                 <table className="order-table">
@@ -68,7 +69,7 @@ const UserDashboard = () => {
                         {/* May need to change the keys later on, for now I just have them as their value */}
                         {orders.map((order) => (
                             <tr key={order.id}>
-                                <td>{order.id}</td>
+                                <td><a href={`/user_dashboard/order/${order.id}`}>#{order.id}</a></td>
                                 <td>{order.date}</td>
                                 <td>{order.paymentStatus}</td>
                                 <td>{order.shipmentStatus}</td>

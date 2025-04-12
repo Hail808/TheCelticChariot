@@ -27,8 +27,15 @@
     
 
 }
+.title-line {
+    width: 80%;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
 
 .order-table{
+    
     width: 75%;
     border-collapse: collapse;
     font-size: 16px;
@@ -43,12 +50,17 @@
 }
 
 .order-table thead {
+    
     background-color: #98A78F;
     font-weight: bold;
   }
   
 .order-table tr:nth-child(even) {
     background-color: #DFD8BF;
+  }
+
+  .order-table a {
+    color: #596950;
   }
 
 

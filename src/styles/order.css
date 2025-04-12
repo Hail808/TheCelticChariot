@@ -1,0 +1,193 @@
+
+
+.header {
+    padding-top: 100px;
+    font-family: 'Lalezar', sans-serif;
+    text-align: left;
+    line-height: 0.5;
+}
+
+.header-line {
+    width: 80%;
+    border: 1px solid black;
+    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.header h1
+{
+   padding-left: 10%;
+}
+
+.header a {
+    padding-left: 10%;
+    color: black;
+}
+
+.orderNumber h1 {
+    font-family: 'Lalezar', sans-serif;
+    font-size: 3rem;
+    max-width: 800px;
+    text-align: center;
+    margin: 10px auto;
+    line-height: 0.5;
+    padding-top: 50px;
+    padding-bottom: 2%;
+    
+}
+
+
+
+.orderInfo{
+    font-family: 'Lalezar', sans-serif;
+    max-width: 60%;
+    margin: 0 auto;
+    display: block;
+    justify-content: center;
+    padding-top: 20px;
+    border: solid;
+    border-color: black;
+    border-radius: 10px;
+    border-width: 5px;
+    
+}
+
+.orderInfo .order-table{
+   
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    align-items: center;
+    margin-top: -20px; 
+    
+    
+}
+
+.table-divider {
+    margin-top: 20px;
+    border: none;
+    border-top: 2px solid black;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    
+  }
+  
+
+.orderInfo .order-table th{
+    padding: 12px;
+    text-align: left;
+}
+
+.orderInfo .order-table td
+{
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
+
+.orderInfo .order-table thead {
+    background-color: #98A78F;
+    font-weight: bold;
+  }
+
+ .productCell {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.productName {
+  flex: 1;          
+}
+
+.order-table img {     
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 8px;   
+}
+.orderInfo .order-table a {
+    color: #596950;
+  }
+
+.total-section{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    padding: 10px;
+    font-size: 25px;
+    text-align: right;
+}
+
+.total-section p,
+.total-section h1 {
+  line-height: 1.2; 
+  margin: 0; 
+}
+
+
+.total-wrapper {
+    display: inline-block;
+    text-align: right;
+    margin-top: 10px;
+  }
+  
+  .total-line {
+    border: 2px solid black;
+    width: 100%;
+    margin: 8px 0;
+  }
+  
+  .total {
+    font-size: 35px;
+    margin: 0;
+  }
+
+  .payment-section{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 250px;
+    
+    
+  }
+
+  .payment-section .billing-section {
+    font-family: 'Lalezar', sans-serif;
+    display: block;
+    justify-content: center;
+    padding: 20px;
+    border: solid;
+    border-color: black;
+    border-radius: 10px;
+    border-width: 5px;
+    border: 2px solid black;
+  }
+
+  .payment-section .shipping-section{
+    font-family: 'Lalezar', sans-serif;
+    display: block;
+    text-align: left;
+    justify-content: center;
+    padding: 20px;
+    border: solid;
+    border-color: black;
+    border-radius: 10px;
+    border-width: 5px;
+    border: 2px solid black;
+  }
+
+  .payment-section h1 {
+    border-bottom:2px solid black;
+  }
+
+  .adress {
+    line-height: .1; 
+    margin: 0; 
+  }
+
+  .payment-section .shipping-section a {
+    color: black;
+}
