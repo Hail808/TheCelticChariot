@@ -1,4 +1,5 @@
 import OrderPage from '../../../../components/pages/order';
+import React from "react";
 
 interface OrderProps {
     params: {
@@ -6,8 +7,9 @@ interface OrderProps {
     }
   };
 
-function Order({ params }: OrderProps){
-    return <OrderPage id={params.id}/>
+ async function Order({ params }: OrderProps){
+  const { id } = await params
+  return <OrderPage id={id}/>
 };
 
 export default Order;
