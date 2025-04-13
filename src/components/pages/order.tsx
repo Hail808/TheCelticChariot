@@ -11,20 +11,27 @@ interface Props {
         id: 1233,
         name: "Whimsigoth Sun Auburn Beaded Necklace in Bronze",
         image: "product.jpg",
-        price: "$17.00",
+        price: 17.00,
         quantity: 1,
-        total: 17.30,
         img : '/productimages/necklace2.png'
     },
     {
         id: 123,
         name: "Whimsigoth Sun Auburn Beaded Necklace in Bronze",
         image: "product.jpg",
-        price: "$17.00",
-        quantity: 1,
-        total: 17.30,
+        price: 17.00,
+        quantity: 3,
         img : '/productimages/necklace2.png'
     },
+    {
+        id: 1234,
+        name: "Whimsigoth Sun Auburn Beaded Necklace in Bronze",
+        image: "product.jpg",
+        price: 117.00,
+        quantity: 1,
+        img : '/productimages/necklace2.png'
+    },
+    
   ]
 
   const shipping = {
@@ -62,7 +69,7 @@ const OrderPage: React.FC<Props> = ({ id }) => {
     let subtotal = 0.0
 
     productInfo.map((product) => (
-        subtotal += product.total
+        subtotal += (product.price * product.quantity)
     ));
     let total  = subtotal
     total += shipping.cost;
@@ -98,9 +105,9 @@ const OrderPage: React.FC<Props> = ({ id }) => {
                 <a href='/product_page' className='productName'>{product.name}</a>
                     </div>
                 </td>
-                <td>{product.price}</td>
+                <td>${product.price.toFixed(2)}</td>
                 <td>{product.quantity}</td>
-                <td>${product.total.toFixed(2)} USD</td>
+                <td>${(product.price*product.quantity).toFixed(2)} USD</td>
             </tr>
         ))}
         </tbody>
