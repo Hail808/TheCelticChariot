@@ -100,7 +100,7 @@ const OrderPage: React.FC<Props> = ({ id }) => {
                 </td>
                 <td>{product.price}</td>
                 <td>{product.quantity}</td>
-                <td>${product.total} USD</td>
+                <td>${product.total.toFixed(2)} USD</td>
             </tr>
         ))}
         </tbody>
