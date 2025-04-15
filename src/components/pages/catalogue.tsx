@@ -1,9 +1,11 @@
 "use client";  // Mark as client component
 
 import {useRouter} from 'next/navigation';
-import { useState } from 'react';
-import React from "react";
+//import { useState } from 'react';
+//import React from "react";
 import '../../styles/catalogue.css';
+import Image from 'next/image';
+import React, { useState, useEffect } from "react";
 
 const Catalogue: React.FC = () => {
     const router = useRouter(); 
@@ -11,21 +13,34 @@ const Catalogue: React.FC = () => {
     //List of every item in the catalogue
     //Similar items can be given similar ids 
     const items = [
-        {id: 1, name: "Item 1"}, {id: 2, name: "Item 2"}, {id: 3, name: "Item 3"}, {id: 4, name: "Item 4"}, 
-        {id: 5, name: "Item 5"}, {id: 6, name: "Item 6"}, {id: 7, name: "Item 7"}, {id: 8, name: "Item 8"}, 
-        {id: 9, name: "Item 9"}, {id: 10, name: "Item 10"}, {id: 11, name: "Item 11"}, {id: 12, name: "Item 12"},
-        {id: 13, name: "Item 13"}, {id: 14, name: "Item 14"}, {id: 15, name: "Item 15"}, {id: 16, name: "Item 16"}
-    ];
+        {id: 1, name: "Whimsigoth Sun Auburn Bearded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whisigoth-Sun-Auburn-Beaded-Necklace-in-Bronze.png"}, 
+        {id: 2, name: "Whimsigoth Dragonfly Auburn Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-Beaded-Necklace-in-Bronze.png"},
+        {id: 3, name: "Whimsigoth Dragonfly Auburn & Deep Green Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.55, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-&-Deep-Green-Beaded-Necklace-in-Bronze.png"}, 
+        {id: 4, name: "Whimsigoth Moon Burgundy Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Moon-Burgundy-Beaded-Necklace-in-Bronze.png"}, 
+        
+        {id: 5, name: "Whimsigoth Bohemian Flower Fall Earring in Bronze", tags: "Fairycore | Whimsicle", category: "Earrings", price: 8.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Bohemian-Flower-Fall-Earrings-in-Bronze.png"},
+        {id: 6, name: "Whimaitee Bronze Auburn Flower Cord Necklace", tags: "Cottagecore | Whimsigoth | Bohemian", category: "Necklace", price: 10.50, image: "/cataloguethumbnails/Necklace-Images/Whimistwee-Bronze-Auburn-Flower-Cord-Necklace.png"}, 
+        {id: 7, name: "Bronze Heart Pendant Necklace in Burgundy", tags: "Gothic | Whimsigoth | Artsy | Alternative", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Bronze-Heart-Pendant-Beaded-Necklace-in-Burgundy.png"}, 
+        {id: 8, name: "Gothic Floral Trumpet Flower Dangling Earrings in Bronze", tags: "Grunge | Whimsigoth", category: "Earrings", price: 12.50, image: "/cataloguethumbnails/Earrings-Images/Gothic-Floral-Trumpet-Flower-Dangling-Earrings-in-Bronze.png"}, 
+        
+        {id: 9, name: "Fairy Bronze Mushroom Earrings", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Fairy-Bronze-Mushroom-Earrings.png"}, 
+        {id: 10, name: "Fairy Iridescent Aura Beaded Earrings with Star Charms", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 8.50, image: "/cataloguethumbnails/Earrings-Images/Fairy-Iridescent-Aura-Beading-with-Star-Charms.png"}, 
+        {id: 11, name: "Whimsitwee Red Floral Tulip Earrings in Bronze/Silver/Gold", tags: "Fairycore | Whimsigoth", category: "Earrings", price: 9.50, image: "/cataloguethumbnails/Earrings-Images/Whimsitwee-Red-Floral-Tulip-Earrings-in-Bronze-Gold-Silver.png"}, 
+        {id: 12, name: "Bronze Goddess Moon Trinity Pendant Dangling Earrings", tags: "", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Bronze-Goddess-Moon-Trinity-Pentacle-Dangling-Earrings.png"},
 
-    const handleProduct = () => {
-        router.push('/product_page')
-    }
+        {id: 13, name: "Whimsigoth Black Trumpet Flower Chandelier", tags: "Goth | Whimsical | Fairycore | Grunge", category: "Earrings", price: 14.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Black-Trumpet-Flower-Chandlier-Earrings.png"}, 
+        {id: 14, name: "Bohemian Beads, 50 Piece Set, Daisy Design Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Bohemian-Daisy-Design-Beads-50-Pieces-Set.png"}, 
+        {id: 15, name: "Celestial Star Rounds Beads, 50 Piece Set, Star Design in Neutral Tones, Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Celestial-Star-Design-Round-Beads-in-Neutral-Tones-50-Pieces-Set.png"}, 
+        {id: 16, name: "Boho Mixed Beads, 50 Piece Set, 3 Styles of Beads in Neutral Tones for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Boho-Mixed-Beads-3-Styles-of-Beads-in-Neutral-Tones-50-Piece-Set.png"}
+    ];
     
     //Searchbar Query and Filtered Items Functions
     const [query, setQuery] = useState("");
     const [filteredItems, setFilteredItems] = useState(items);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-    //Searchbar Filter Function
+
+    //Searchbar Filter
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         const filteredResults = items.filter(item =>
@@ -34,21 +49,68 @@ const Catalogue: React.FC = () => {
         setFilteredItems(filteredResults);
     };
 
+    //Sort Filter by Price
+    const handleSort = (order: "asc" | "desc", data = filteredItems) => {
+        setSortOrder(order); // update state
+        const sorted = [...data].sort((a, b) => {
+          if (a.price === b.price) {
+            return a.name.localeCompare(b.name);
+          }
+          return order === "asc" ? a.price - b.price : b.price - a.price;
+        });
+        setFilteredItems(sorted);
+    };
+      
+
+    //Format Price Function
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(price);
+    };
+
+    //Category Function
+    const handleCategoryFilter = (category: string) => {
+        let filtered;
+        if (category === "All Products") {
+          filtered = items;
+        } else {
+          filtered = items.filter(item =>
+            item.category.toLowerCase() === category.toLowerCase()
+          );
+        }
+        handleSort(sortOrder, filtered);
+      };
+      
+
+    //Link to Product Page
+    const handleProduct = () => {
+        router.push('/product_page')
+    }
+
+    //Default Sort Order
+    useEffect(() => {
+        handleSort("desc");
+    }, []);
+
     return (
     //Catalogue Container
     <div className = "catalogue-container">
 
         {/* Catalogue Page Label */}
-        <h1>Catalogue Page</h1>
-
+        <div className = "move-left">
+            <h1>Catalogue Page</h1>
+        </div>
 
         {/* Search Container Area */}
-        <div className = "search-container">
+        <div className = "search-and-sort-container">
 
-            {/* Moves Search Left */}
-            <div className="search-location-left">
+            <div className = "search-bar-container">
                 {/* Search Label */}
-                Searching for:
+                <p className="default-text">Searching for:</p>
 
                 {/* Search Bar and Button*/}
                 <form onSubmit={handleSearch} className="search-bar">
@@ -63,17 +125,27 @@ const Catalogue: React.FC = () => {
                 </form>
             </div>
 
+            <div className = "sort-dropdown-container">
+                {/* <label htmlFor="sort">Sort by Price: </label> */}
+                <p className="default-text">Sort By:</p>
+                <select id="sort" onChange={(e) => handleSort(e.target.value as "asc" | "desc")}>
+                    <option value="desc">Price: High to Low</option>
+                    <option value="asc">Price: Low to High</option>
+                </select>
+            </div> 
+
         </div>
+
 
         {/* Categories + Catalogue Array Container */}
         <div className="sorting-and-categories-container">
             
             {/* Categories Section */}
             <div className="categories-container">
-                <p className="hover-text">All Products</p>
-                <p className="hover-text">Necklaces</p>
-                <p className="hover-text">Earrings</p>
-                <p className="hover-text">DIY Beads</p>
+                <p className="hover-text" onClick={() => handleCategoryFilter("All Products")}>All Products</p>
+                <p className="hover-text" onClick={() => handleCategoryFilter("Necklace")}>Necklaces</p>
+                <p className="hover-text" onClick={() => handleCategoryFilter("Earrings")}>Earrings</p>
+                <p className="hover-text" onClick={() => handleCategoryFilter("DIY Bead Sets")}>DIY Beads</p>
             </div>
 
             {/* Catalogue Array Section */}
@@ -82,9 +154,17 @@ const Catalogue: React.FC = () => {
                     filteredItems.map((item) => (
                         <div className="catalogue-text-formatting" key={item.id}>
                             <button onClick={handleProduct} className="catalogue-box">
-                                {item.name}
+                               
+                                <Image
+                                    src={item.image}
+                                    alt={item.name}
+                                    width={200}
+                                    height={200}
+                                />
+
                             </button>
-                            {item.name}
+                            <p className="catalogue-label">{item.name}</p>
+                            <p>{formatPrice(item.price)}</p>
                         </div> 
                     ))) 
                     : ( <p className="no-results">No results found</p> )
@@ -92,6 +172,7 @@ const Catalogue: React.FC = () => {
             </div>
 
         </div>
+
 
     </div>
 
