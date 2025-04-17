@@ -44,10 +44,33 @@ const data = [
   ];
 
 const AdminOrders: React.FC = () => {
+    const router = useRouter();
+    
+        const handleHome = () => {
+            router.push('/admin_home');
+        }
+        const handleEngagement = () => {
+            router.push('/admin_engagement');
+        }
+        const handleSales = () => {
+            router.push('/admin_sales');
+        }
+        const handleCatalogue = () => {
+            router.push('/admin_catalogue');
+        }
+    
+
     return (
         <div className="container">
             <h1 className="title">Admin Orders</h1>
             <hr className="title-line" />
+
+            <div className="button-format">
+                <button onClick={handleHome} className="home-button">Home</button>
+                <button onClick={handleEngagement} className="engagement-button">Engagement</button>
+                <button onClick={handleSales} className="sales-button">Sales</button>
+                <button onClick={handleCatalogue} className="catalogue-button">Catalogue</button>
+            </div>
 
             <table className="content-table"> 
                 <thead>

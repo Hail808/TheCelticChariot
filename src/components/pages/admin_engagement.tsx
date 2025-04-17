@@ -2,8 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 import '../../styles/admin_engagement.css';
-import '../../styles/admin_home.css';
-import Cart from './cart';
+
+
 
 /* test table data*/
 const data = [
@@ -38,10 +38,32 @@ const data = [
   ];
 
 const AdminEngagement: React.FC = () => {
+    const router = useRouter();
+    
+        const handleHome = () => {
+            router.push('/admin_home');
+        }
+        const handleSales = () => {
+            router.push('/admin_sales');
+        }
+        const handleCatalogue = () => {
+            router.push('/admin_catalogue');
+        }
+        const handleOrders = () => {
+            router.push('/admin_orders');
+        }
+
     return (
         <div className="container">
             <h1 className="title">Admin Engagement</h1>
             <hr className="title-line" />
+
+            <div className="button-format">
+                <button onClick={handleHome} className="home-button">Home</button>
+                <button onClick={handleSales} className="sales-button">Sales</button>
+                <button onClick={handleCatalogue} className="catalogue-button">Catalogue</button>
+                <button onClick={handleOrders} className="orders-button">Orders</button>
+            </div>
 
             <table className="content-table"> 
                 <thead>
