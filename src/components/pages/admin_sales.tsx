@@ -32,10 +32,35 @@ const data = [
   ];
 
 const AdminSales: React.FC = () => {
+    const viewsToday = 20; // Placeholder for views today, replace with actual data
+    const salesToday = 5; // Placeholder for sales today, replace with actual data
+    const unfulfilledOrders = 2; // Placeholder for unfulfilled orders, replace with actual data
+
     return (
         <div className="container">
             <h1 className="title">Admin Sales</h1>
             <hr className="title-line" />
+
+            {/* Tracked Elements */}
+            <div className="card-formatting">
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Views Today: {viewsToday}</h2>
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Sales Today: {salesToday}</h2> 
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Unfulfilled Orders: {unfulfilledOrders}</h2> 
+                    </div>
+                </div>
+            </div>
 
             <table className="content-table"> 
                 <thead>
