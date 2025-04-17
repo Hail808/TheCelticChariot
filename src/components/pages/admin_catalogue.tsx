@@ -1,9 +1,25 @@
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import React from "react";
 
 import '../../styles/admin_catalogue.css';
 
 const AdminCatalogue: React.FC = () => {
+    const router = useRouter();
+    
+        const handleHome = () => {
+            router.push('/admin_home');
+        }
+        const handleEngagement = () => {
+            router.push('/admin_engagement');
+        }
+        const handleSales = () => {
+            router.push('/admin_sales');
+        }
+        const handleOrders = () => {
+            router.push('/admin_orders');
+        }
+        
 
     //List of every item in the catalogue
     //Similar items can be given similar ids 
@@ -33,6 +49,13 @@ const AdminCatalogue: React.FC = () => {
     
             {/* Catalogue Page Label */}
             <h1>Admin Catalogue</h1>
+
+            <div className="button-format">
+                <button onClick={handleHome} className="home-button">Home</button>
+                <button onClick={handleEngagement} className="engagement-button">Engagement</button>
+                <button onClick={handleSales} className="sales-button">Sales</button>
+                <button onClick={handleOrders} className="orders-button">Orders</button>
+            </div>
     
     
             {/* Search Container Area */}
