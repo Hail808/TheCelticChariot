@@ -1,0 +1,110 @@
+.header {
+    padding-top: 100px;
+    font-family: 'Lalezar', sans-serif;
+    text-align: left;
+    line-height: 0.5;
+}
+
+.header-line {
+    width: 80%;
+    border: 1px solid black;
+    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.header h1
+{
+   padding-left: 10%;
+}
+
+.header a {
+    padding-left: 10%;
+    font-size: 25px;
+    color: black;
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+}
+.change-login-info div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    
+}
+
+.change-login-info form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.change-login-info {
+    font-family: 'Lalezar', Arial, Helvetica, sans-serif;
+    display: flex;
+    padding-left: 10%;
+    font-size: 35px;
+    gap: 15px;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.change-login-info label {
+    width: 300px; 
+    white-space: nowrap;
+}
+.change-login-info h1 {
+    font-size: 35px;
+}
+
+.change-login-info input {
+ padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #1f380f; 
+    border-radius: 10px;
+    color: #1f380f;
+}
+
+.change-login-info button {
+    padding: 10px;
+    background: #1f380f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 10%;
+    cursor: pointer;
+}
+
+.button-section {
+    font-family: 'Lalezar', Arial, Helvetica, sans-serif;
+    display: flex;
+    padding-left: 10%;
+    height: 100vh; 
+    font-size: 35px;
+    gap: 15px;
+    flex-direction: column;
+    padding-top: 50px;
+}
+.button-section button {
+    padding: 10px;
+    background: #1f380f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 15%;
+    cursor: pointer;
+    
+}
+
+.button-section button.delete{
+    margin-top: 45px;
+    background-color: #953a3a;
+}
+
+.error-input {
+    background-color: #ffdddd;
+    border: 2px solid red;
+  }
