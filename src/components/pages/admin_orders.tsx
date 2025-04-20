@@ -46,6 +46,10 @@ const data = [
 const AdminOrders: React.FC = () => {
     const [sortedData, setSortedData] = useState(data);
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+    const [minCost, setMinCost] = useState<number | ''>(''); // Minimum cost input
+    const [maxCost, setMaxCost] = useState<number | ''>(''); // Maximum cost input
+    const [numItemsFilter, setNumItemsFilter] = useState<number | ''>(''); // Number of items input
+    const [fulfilledFilter, setFulfilledFilter] = useState<string | ''>(''); // Fulfilled filter input
 
     const router = useRouter();
 
@@ -68,9 +72,9 @@ const AdminOrders: React.FC = () => {
             direction = 'desc';
         }
 
-        const sorted = [...sortedData].sort((a, b) => {
-            const aValue = a[key as keyof typeof a];
-            const bValue = b[key as keyof typeof b];
+        const sorted = [...sortedData].sort((item_a, item_b) => {
+            const aValue = item_a[key as keyof typeof item_a];
+            const bValue = item_b[key as keyof typeof item_b];
             if (aValue < bValue) return direction === 'asc' ? -1 : 1;
             if (aValue > bValue) return direction === 'asc' ? 1 : -1;
             return 0;
@@ -78,6 +82,18 @@ const AdminOrders: React.FC = () => {
 
         setSortedData(sorted);
         setSortConfig({ key, direction });
+    };
+
+    const handleFilter = () => {
+        const filtered = data.filter((item) => {
+            const withinMinCost = minCost === '' || item.total >= minCost;
+            const withinMaxCost = maxCost === '' || item.total <= maxCost;
+            const matchesNumItems = numItemsFilter === '' || item.numItems === numItemsFilter;
+            const matchesFulfilled =
+                fulfilledFilter === '' || item.fulfilled.toLowerCase() === fulfilledFilter.toLowerCase();
+            return withinMinCost && withinMaxCost && matchesNumItems && matchesFulfilled;
+        });
+        setSortedData(filtered);
     };
 
     return (
@@ -90,6 +106,56 @@ const AdminOrders: React.FC = () => {
                 <button onClick={handleEngagement} className="engagement-button">Engagement</button>
                 <button onClick={handleSales} className="sales-button">Sales</button>
                 <button onClick={handleCatalogue} className="catalogue-button">Catalogue</button>
+            </div>
+
+            {/* Filter Section */}
+            <div className="filter-container">
+                <label>
+                    Min Cost:
+                    <input
+                        type="number"
+                        value={minCost}
+                        onChange={(filter_input) => setMinCost(filter_input.target.value === '' ? '' : parseFloat(filter_input.target.value))}
+                        placeholder="e.g., 100"
+                    />
+                </label>
+                <label>
+                    Max Cost:
+                    <input
+                        type="number"
+                        value={maxCost}
+                        onChange={(filter_input) => setMaxCost(filter_input.target.value === '' ? '' : parseFloat(filter_input.target.value))}
+                        placeholder="e.g., 200"
+                    />
+                </label>
+                <label>
+                    Number of Items:
+                    <input
+                        type="number"
+                        value={numItemsFilter}
+                        onChange={(filter_input) => setNumItemsFilter(filter_input.target.value === '' ? '' : parseInt(filter_input.target.value))}
+                        placeholder="e.g., 5"
+                    />
+                </label>
+                <div className="fulfilled-filter">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={fulfilledFilter === 'yes'}
+                            onChange={(filter_check) => setFulfilledFilter(filter_check.target.checked ? 'yes' : '')}
+                        />
+                        Fulfilled
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={fulfilledFilter === 'no'}
+                            onChange={(filter_check) => setFulfilledFilter(filter_check.target.checked ? 'no' : '')}
+                        />
+                        Non-Fulfilled
+                    </label>
+                </div>
+                <button onClick={handleFilter}>Apply Filter</button>
             </div>
 
             <table className="content-table">
