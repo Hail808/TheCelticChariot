@@ -29,6 +29,36 @@
     font-weight: bold;
 }
 
+/* Add hover effect for headers */
+.content-table th {
+    cursor: pointer; /* Make headers clickable */
+    position: relative; /* For positioning icons */
+    padding: 10px;
+    background-color: #1f380f;
+    transition: background-color 0.3s ease;
+}
+
+.content-table th:hover {
+    background-color: #5B6D50; /* Highlight on hover */
+}
+
+/* Add styles for sorting arrows */
+.content-table th::after {
+    content: ''; /* Default empty content */
+    position: absolute;
+    right: 10px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.content-table th.sorted-asc::after {
+    content: '▲'; /* Up arrow for ascending */
+}
+
+.content-table th.sorted-desc::after {
+    content: '▼'; /* Down arrow for descending */
+}
+
 /* table formatting */
 .content-table th,
 .content-table td {
