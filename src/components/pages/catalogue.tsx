@@ -6,33 +6,35 @@ import {useRouter} from 'next/navigation';
 import '../../styles/catalogue.css';
 import Image from 'next/image';
 import React, { useState, useEffect } from "react";
+import { items } from "./catalogue_items";
 
 const Catalogue: React.FC = () => {
     const router = useRouter(); 
 
     //List of every item in the catalogue
     //Similar items can be given similar ids 
-    const items = [
-        {id: 1, name: "Whimsigoth Sun Auburn Bearded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whisigoth-Sun-Auburn-Beaded-Necklace-in-Bronze.png"}, 
-        {id: 2, name: "Whimsigoth Dragonfly Auburn Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-Beaded-Necklace-in-Bronze.png"},
-        {id: 3, name: "Whimsigoth Dragonfly Auburn & Deep Green Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.55, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-&-Deep-Green-Beaded-Necklace-in-Bronze.png"}, 
-        {id: 4, name: "Whimsigoth Moon Burgundy Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Moon-Burgundy-Beaded-Necklace-in-Bronze.png"}, 
-        
-        {id: 5, name: "Whimsigoth Bohemian Flower Fall Earring in Bronze", tags: "Fairycore | Whimsicle", category: "Earrings", price: 8.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Bohemian-Flower-Fall-Earrings-in-Bronze.png"},
-        {id: 6, name: "Whimaitee Bronze Auburn Flower Cord Necklace", tags: "Cottagecore | Whimsigoth | Bohemian", category: "Necklace", price: 10.50, image: "/cataloguethumbnails/Necklace-Images/Whimistwee-Bronze-Auburn-Flower-Cord-Necklace.png"}, 
-        {id: 7, name: "Bronze Heart Pendant Necklace in Burgundy", tags: "Gothic | Whimsigoth | Artsy | Alternative", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Bronze-Heart-Pendant-Beaded-Necklace-in-Burgundy.png"}, 
-        {id: 8, name: "Gothic Floral Trumpet Flower Dangling Earrings in Bronze", tags: "Grunge | Whimsigoth", category: "Earrings", price: 12.50, image: "/cataloguethumbnails/Earrings-Images/Gothic-Floral-Trumpet-Flower-Dangling-Earrings-in-Bronze.png"}, 
-        
-        {id: 9, name: "Fairy Bronze Mushroom Earrings", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Fairy-Bronze-Mushroom-Earrings.png"}, 
-        {id: 10, name: "Fairy Iridescent Aura Beaded Earrings with Star Charms", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 8.50, image: "/cataloguethumbnails/Earrings-Images/Fairy-Iridescent-Aura-Beading-with-Star-Charms.png"}, 
-        {id: 11, name: "Whimsitwee Red Floral Tulip Earrings in Bronze/Silver/Gold", tags: "Fairycore | Whimsigoth", category: "Earrings", price: 9.50, image: "/cataloguethumbnails/Earrings-Images/Whimsitwee-Red-Floral-Tulip-Earrings-in-Bronze-Gold-Silver.png"}, 
-        {id: 12, name: "Bronze Goddess Moon Trinity Pendant Dangling Earrings", tags: "", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Bronze-Goddess-Moon-Trinity-Pentacle-Dangling-Earrings.png"},
 
-        {id: 13, name: "Whimsigoth Black Trumpet Flower Chandelier", tags: "Goth | Whimsical | Fairycore | Grunge", category: "Earrings", price: 14.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Black-Trumpet-Flower-Chandlier-Earrings.png"}, 
-        {id: 14, name: "Bohemian Beads, 50 Piece Set, Daisy Design Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Bohemian-Daisy-Design-Beads-50-Pieces-Set.png"}, 
-        {id: 15, name: "Celestial Star Rounds Beads, 50 Piece Set, Star Design in Neutral Tones, Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Celestial-Star-Design-Round-Beads-in-Neutral-Tones-50-Pieces-Set.png"}, 
-        {id: 16, name: "Boho Mixed Beads, 50 Piece Set, 3 Styles of Beads in Neutral Tones for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Boho-Mixed-Beads-3-Styles-of-Beads-in-Neutral-Tones-50-Piece-Set.png"}
-    ];
+    // const items = [
+    //     {id: 1, name: "Whimsigoth Sun Auburn Bearded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whisigoth-Sun-Auburn-Beaded-Necklace-in-Bronze.png"}, 
+    //     {id: 2, name: "Whimsigoth Dragonfly Auburn Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-Beaded-Necklace-in-Bronze.png"},
+    //     {id: 3, name: "Whimsigoth Dragonfly Auburn & Deep Green Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.55, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-&-Deep-Green-Beaded-Necklace-in-Bronze.png"}, 
+    //     {id: 4, name: "Whimsigoth Moon Burgundy Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Moon-Burgundy-Beaded-Necklace-in-Bronze.png"}, 
+        
+    //     {id: 5, name: "Whimsigoth Bohemian Flower Fall Earring in Bronze", tags: "Fairycore | Whimsicle", category: "Earrings", price: 8.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Bohemian-Flower-Fall-Earrings-in-Bronze.png"},
+    //     {id: 6, name: "Whimaitee Bronze Auburn Flower Cord Necklace", tags: "Cottagecore | Whimsigoth | Bohemian", category: "Necklace", price: 10.50, image: "/cataloguethumbnails/Necklace-Images/Whimistwee-Bronze-Auburn-Flower-Cord-Necklace.png"}, 
+    //     {id: 7, name: "Bronze Heart Pendant Necklace in Burgundy", tags: "Gothic | Whimsigoth | Artsy | Alternative", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Bronze-Heart-Pendant-Beaded-Necklace-in-Burgundy.png"}, 
+    //     {id: 8, name: "Gothic Floral Trumpet Flower Dangling Earrings in Bronze", tags: "Grunge | Whimsigoth", category: "Earrings", price: 12.50, image: "/cataloguethumbnails/Earrings-Images/Gothic-Floral-Trumpet-Flower-Dangling-Earrings-in-Bronze.png"}, 
+        
+    //     {id: 9, name: "Fairy Bronze Mushroom Earrings", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Fairy-Bronze-Mushroom-Earrings.png"}, 
+    //     {id: 10, name: "Fairy Iridescent Aura Beaded Earrings with Star Charms", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 8.50, image: "/cataloguethumbnails/Earrings-Images/Fairy-Iridescent-Aura-Beading-with-Star-Charms.png"}, 
+    //     {id: 11, name: "Whimsitwee Red Floral Tulip Earrings in Bronze/Silver/Gold", tags: "Fairycore | Whimsigoth", category: "Earrings", price: 9.50, image: "/cataloguethumbnails/Earrings-Images/Whimsitwee-Red-Floral-Tulip-Earrings-in-Bronze-Gold-Silver.png"}, 
+    //     {id: 12, name: "Bronze Goddess Moon Trinity Pendant Dangling Earrings", tags: "", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Bronze-Goddess-Moon-Trinity-Pentacle-Dangling-Earrings.png"},
+
+    //     {id: 13, name: "Whimsigoth Black Trumpet Flower Chandelier", tags: "Goth | Whimsical | Fairycore | Grunge", category: "Earrings", price: 14.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Black-Trumpet-Flower-Chandlier-Earrings.png"}, 
+    //     {id: 14, name: "Bohemian Beads, 50 Piece Set, Daisy Design Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Bohemian-Daisy-Design-Beads-50-Pieces-Set.png"}, 
+    //     {id: 15, name: "Celestial Star Rounds Beads, 50 Piece Set, Star Design in Neutral Tones, Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Celestial-Star-Design-Round-Beads-in-Neutral-Tones-50-Pieces-Set.png"}, 
+    //     {id: 16, name: "Boho Mixed Beads, 50 Piece Set, 3 Styles of Beads in Neutral Tones for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Boho-Mixed-Beads-3-Styles-of-Beads-in-Neutral-Tones-50-Piece-Set.png"}
+    // ];
     
     //Searchbar Query and Filtered Items Functions
     const [query, setQuery] = useState("");
@@ -60,7 +62,6 @@ const Catalogue: React.FC = () => {
         });
         setFilteredItems(sorted);
     };
-      
 
     //Format Price Function
     const formatPrice = (price: number) => {
@@ -155,12 +156,24 @@ const Catalogue: React.FC = () => {
                         <div className="catalogue-text-formatting" key={item.id}>
                             <button onClick={handleProduct} className="catalogue-box">
                                
+                                {/* <Image
+                                    src={item.image}
+                                    alt={item.name}
+                                    width={200}
+                                    height={200}
+                                /> */}
+                                {item.image ? (
                                 <Image
                                     src={item.image}
                                     alt={item.name}
                                     width={200}
                                     height={200}
                                 />
+                                ) : (
+                                <div style={{ width: 200, height: 200, backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <span>No Image</span>
+                                </div>
+                                )}
 
                             </button>
                             <p className="catalogue-label">{item.name}</p>
