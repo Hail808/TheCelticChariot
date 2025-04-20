@@ -4,6 +4,10 @@ import { useRouter } from 'next/navigation';
 import '../../styles/admin_home.css';
 
 const AdminHome: React.FC = () => {
+    const totalViews = 100; // Placeholder for views today, replace with actual data
+    const totalOrders = 12; // Placeholder for sales today, replace with actual data
+    const totalRevenue = 300.00; // Placeholder for unfulfilled orders, replace with actual data
+
     const router = useRouter();
 
     const handleEngagement = () => {
@@ -35,19 +39,19 @@ const AdminHome: React.FC = () => {
             <div className="card-formatting">
                 <div className="card">
                     <div className="card-text">
-                        <h2 className="card-title">Total Views: </h2>
+                        <h2 className="card-title">Total Views: {totalViews}</h2>
                     </div>
                 </div>
 
                 <div className="card">
                     <div className="card-text">
-                        <h2 className="card-title">Orders: </h2>
+                        <h2 className="card-title">Orders: {totalOrders}</h2>
                     </div>
                 </div>
 
                 <div className="card">
                     <div className="card-text">
-                        <h2 className="card-title">Revenue: </h2> 
+                        <h2 className="card-title">Revenue: ${totalRevenue.toFixed(2)}</h2> 
                     </div>
                 </div>
             </div>
