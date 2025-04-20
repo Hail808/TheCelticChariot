@@ -52,8 +52,12 @@ const UserDashboard = () => {
 
 
             <h1>Hello, {accInfo.userName}</h1>
-            <hr className="title-line" />
+            
+            
+            
             <div className="order-section">
+                <hr className="title-line" />
+                <a href='/user_dashboard/settings'>Settings</a>
                 <h1 className='order-header'>Orders</h1>
                 <table className="order-table">
                     <thead>
@@ -80,6 +84,8 @@ const UserDashboard = () => {
                 </table>
                 <div className="account-details">
                     <h1>Account Details</h1>
+                    <hr className="title-line" />
+                   
                     <dl className="list-info">
                         <dt>Username</dt>
                         <dd>{accInfo.userName}</dd>

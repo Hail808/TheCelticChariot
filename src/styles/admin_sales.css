@@ -9,6 +9,14 @@
     font-style: normal;
 }
 
+/* card formatting */
+.card {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 30px 0;
+}
+
 /* table styling */
 .content-table {
     border-collapse: collapse;

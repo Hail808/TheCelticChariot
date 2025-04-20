@@ -32,10 +32,57 @@ const data = [
   ];
 
 const AdminSales: React.FC = () => {
+    const viewsToday = 20; // Placeholder for views today, replace with actual data
+    const salesToday = 5; // Placeholder for sales today, replace with actual data
+    const unfulfilledOrders = 2; // Placeholder for unfulfilled orders, replace with actual data
+
+    const router = useRouter();
+    
+        const handleHome = () => {
+            router.push('/admin_home');
+        }
+        const handleEngagement = () => {
+            router.push('/admin_engagement');
+        }
+        const handleCatalogue = () => {
+            router.push('/admin_catalogue');
+        }
+        const handleOrders = () => {
+            router.push('/admin_orders');
+        }
+
     return (
         <div className="container">
             <h1 className="title">Admin Sales</h1>
             <hr className="title-line" />
+
+            <div className="button-format">
+                <button onClick={handleHome} className="home-button">Home</button>
+                <button onClick={handleEngagement} className="engagement-button">Engagement</button>
+                <button onClick={handleOrders} className="orders-button">Orders</button>
+                <button onClick={handleCatalogue} className="catalogue-button">Catalogue</button>
+            </div>
+
+            {/* Tracked Elements */}
+            <div className="card-formatting">
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Views Today: {viewsToday}</h2>
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Sales Today: {salesToday}</h2> 
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-text">
+                        <h2 className="card-title">Unfulfilled Orders: {unfulfilledOrders}</h2> 
+                    </div>
+                </div>
+            </div>
 
             <table className="content-table"> 
                 <thead>

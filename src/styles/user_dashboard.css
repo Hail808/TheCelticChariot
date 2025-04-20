@@ -25,9 +25,11 @@
     display: flex;
     flex-direction: column;
     
+    
 
 }
-.title-line {
+
+.order-section .title-line {
     width: 80%;
     border: 1px solid black;
     margin-bottom: 20px;
@@ -38,7 +40,7 @@
     
     width: 75%;
     border-collapse: collapse;
-    font-size: 16px;
+    font-size: 23px;
     text-align: left;
     align-items: center;
     margin-top: -20px; 
@@ -60,8 +62,10 @@
   }
 
   .order-table a {
-    color: #596950;
+    color: #5b8a43;
   }
+
+  
 
 
 .account-details {
@@ -71,6 +75,20 @@
     margin-left: 0;
 
 }
+
+.account-details .title-line {
+    width: 200%;
+
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.order-section a {
+    color: #5b8a43;
+    font-size: 26px;
+  }
+
+  
 
 .list-info{
     border: 2px solid black;
