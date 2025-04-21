@@ -1,8 +1,7 @@
-'use client';
-import ProductPage from "@/components/pages/product_page";
+import ProductDetail from '../../components/pages/product_page';
 
-const Productpage = () => {
-  return <ProductPage />;
+const ProductPage = () => {
+  return <ProductDetail />;
 };
 
 export default ProductPage;
