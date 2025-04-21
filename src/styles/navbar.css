@@ -1,82 +1,116 @@
-/* Navbar styles for the application */
-@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
-
-@font-face {
-    font-family: 'Lalezar';
-    src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
-         
-         
-    font-weight: normal;
-    font-style: normal;
+* {
+  box-sizing: border-box;
 }
 
-  .navbar {
-    font-family: 'Lalezar', Arial, Helvetica, sans-serif;
-    /* overflow: hidden; */
+.navbar {
+  background-color: #5B6D50;
+  font-family: 'Lalezar', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  color: white;
+}
+
+.logo img {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+  border-radius: 8px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 12px;
+}
+
+.cart {
+  background-color: #1f380f;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  transition: 0.3s;
+}
+
+/* when clicking hamburger icon (3 bars), it turns into an x after the dropdown appears */
+.hamburger.open div:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open div:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open div:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* responsive dropdown menu*/
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 100px;
+    left: 0;
     background-color: #5B6D50;
-    display: flex; 
-    align-items: center; 
-    background-color: #5B6D50;
-    position: fixed;
-    top: 0;
     width: 100%;
-    height: 150px; 
+    padding: 0;
+    z-index: 998;
+  }
+
+  .nav-links.show {
+    display: flex;
     padding: 10px 20px;
   }
-  
-  .navbar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+
+  .nav-links a {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 16px;
   }
-  
-  .logo{
-    display: flex;
-    align-items: center;
-    font-size: 70px;
-    color: white;
+
+  .cart {
+    background-color: transparent;
+    padding: 0;
   }
-  .logo img {
-    border-radius: 8px;
-    width: 125px;
-    height: 125px;
-    margin-right: 10px;
-  }
-  
-  .nav-links{
-    font-size: 20px;
-    display: flex;
-    margin-left: auto;
-    align-items: flex-end;
-    color: #f2f2f2;
-    background: #5B6D50;
-    text-align: center;
-    padding: 14px 16px;
-    gap: 15px;
-    margin-right: 40px;
-  }
-  
-  .nav-links .cart{
-    background-color: #1f380f;
-    padding: 14px 16px;
-    border-radius: 15px;
-    display: flex;
-    align-items:center;
-    gap: 5px;
-  }
-  
-  
-  .nav-links .cart img {
-    border: #000000;
-    position: relative;
-    top: -3px; 
-  }
-  
-  .navbar a:hover {
-    background: #ddd;
-    color: black;
-  }
-  
+}
