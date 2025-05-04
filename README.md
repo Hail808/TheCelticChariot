@@ -57,13 +57,13 @@
 - Stripe + Resend API keys
 - Vercel account (optional, for deployment)
 
+### Install latest Node JS
+https://nodejs.org/en/download
+### use Setup Wizard to install to desired location
+
 ### Installation
 
 ```bash
-
-# Install latest Node JS
-https://nodejs.org/en/download
-# use Setup Wizard to install to desired location
 # Assure instalation and version
 node -v
 
@@ -76,3 +76,8 @@ npm install
 
 # Start the app
 npm run dev
+
+```
+
+# Should open Prototype Homepage
+![Prototype_Home](./public/prototype_home.png)
