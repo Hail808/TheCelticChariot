@@ -79,5 +79,5 @@ npm run dev
 
 ```
 
-# Should open Prototype Homepage
+# Prototype Homepage
 ![Prototype_Home](./public/prototype_home.png)
