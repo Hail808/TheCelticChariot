@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+# 🛒 The Celtic Chariot
+![Logo](./public/logo.png)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+**The Celtic Chariot** is a full-stack e-commerce web application built to empower independent jewelry sellers. Designed for alternative style pieces, the platform allows our client to manage their own storefront, free from third-party platforms.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 🛍️ Product catalog with dynamic filtering and sorting
+- 🔐 User authentication with **NextAuth.js**
+- 💳 Secure checkout powered by **Stripe**
+- ✉️ Order and notification emails via **Resend**
+- 📦 Admin dashboard for managing inventory and orders
+- 📈 Scalable backend using **NestJS** and **PostgreSQL**
+- 🚀 Deployed on **Vercel** for modern CI/CD
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🧰 Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Backend**: NestJS (Node.js)
+- **Database**: PostgreSQL (hosted or local)
+- **Auth**: NextAuth.js
+- **Payments**: Stripe
+- **Email**: Resend
+- **Deployment**: Vercel
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ERD
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![ERD](./public/TheCelticChariot_ERD_Chart_1.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Testing
 
-### `npm run eject`
+## Deployment
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Dev Instructions
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Timeline
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Milestone 1: Backend (Nest.js) setup and connection to Frontend (Next.js)
+- Milestone 2: Database initialization (PostgreSQL) 
+- Milestone 3: Server Host setup (Vercel)
+- Milestone 4: Payment Implementation (Stripe)
+- Milestone 5: Login and Security Handling (NextAuth.js)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## ⚙️ Getting Started
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Prerequisites
 
-### Code Splitting
+- Node.js v18+
+- PostgreSQL
+- Stripe + Resend API keys
+- Vercel account (optional, for deployment)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Install latest Node JS
+https://nodejs.org/en/download
+### use Setup Wizard to install to desired location
 
-### Analyzing the Bundle Size
+### Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+# Assure instalation and version
+node -v
 
-### Making a Progressive Web App
+# Clone the repository
+git clone https://github.com/Hail808/TheCelticChariot.git
+cd TheCelticChariot
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Install dependencies
+npm install
 
-### Advanced Configuration
+# Start the app
+npm run dev
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Prototype Homepage
+![Prototype_Home](./public/prototype_home.png)
