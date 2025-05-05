@@ -30,6 +30,10 @@
 
 ---
 
+## ERD
+
+![ERD](./public/TheCelticChariot_ERD_Chart_1.png)
+
 ## Testing
 
 ## Deployment
