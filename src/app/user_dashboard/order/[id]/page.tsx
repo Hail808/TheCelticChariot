@@ -1,15 +1,11 @@
-import OrderPage from '../../../../components/pages/order';
 import React from "react";
+import OrderPage from "../../../../components/pages/order";
 
-interface OrderProps {
-    params: {
-      id: string
-    }
-  };
+interface Props {
+  params: Promise<{ id: string }>;
+}
 
- async function Order({ params }: OrderProps){
-  const { id } = await params
-  return <OrderPage id={id}/>
-};
-
-export default Order;
+export default async function Order({ params }: Props) {
+  const { id } = await params;
+  return <OrderPage id={id} />;
+}
