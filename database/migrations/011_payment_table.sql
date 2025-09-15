@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 42dVQDFzcc3qdSaa9xCmCNarUG623GUjq51hfvNfe4tKHs6cO7gu3n8PxSyyhEV
+\restrict IPuVKWtehzygBD5bdoYi3c10MSfezRu4W5Iog462qAiOxBTXeRrqhbcGhFmuew6
 
 -- Dumped from database version 17.5 (1b53132)
 -- Dumped by pg_dump version 17.6
 
--- Started on 2025-09-15 16:13:25
+-- Started on 2025-09-15 16:10:29
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,7 +22,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3449 (class 1262 OID 16391)
+-- TOC entry 3436 (class 1262 OID 16391)
 -- Name: neondb; Type: DATABASE; Schema: -; Owner: neondb_owner
 --
 
@@ -31,9 +31,9 @@ CREATE DATABASE neondb WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVID
 
 ALTER DATABASE neondb OWNER TO neondb_owner;
 
-\unrestrict 42dVQDFzcc3qdSaa9xCmCNarUG623GUjq51hfvNfe4tKHs6cO7gu3n8PxSyyhEV
+\unrestrict IPuVKWtehzygBD5bdoYi3c10MSfezRu4W5Iog462qAiOxBTXeRrqhbcGhFmuew6
 \connect neondb
-\restrict 42dVQDFzcc3qdSaa9xCmCNarUG623GUjq51hfvNfe4tKHs6cO7gu3n8PxSyyhEV
+\restrict IPuVKWtehzygBD5bdoYi3c10MSfezRu4W5Iog462qAiOxBTXeRrqhbcGhFmuew6
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -46,56 +46,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- TOC entry 4 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO pg_database_owner;
-
---
--- TOC entry 3451 (class 0 OID 0)
--- Dependencies: 4
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
---
--- TOC entry 888 (class 1247 OID 73729)
--- Name: payment_status; Type: TYPE; Schema: public; Owner: neondb_owner
---
-
-CREATE TYPE public.payment_status AS ENUM (
-    'pending',
-    'paid',
-    'overdue',
-    'partially paid',
-    'cancelled',
-    'refunded'
-);
-
-
-ALTER TYPE public.payment_status OWNER TO neondb_owner;
-
---
--- TOC entry 894 (class 1247 OID 73755)
--- Name: shipping_status; Type: TYPE; Schema: public; Owner: neondb_owner
---
-
-CREATE TYPE public.shipping_status AS ENUM (
-    'delivered',
-    'shipped',
-    'not yet shipped'
-);
-
-
-ALTER TYPE public.shipping_status OWNER TO neondb_owner;
 
 SET default_tablespace = '';
 
@@ -136,7 +86,7 @@ CREATE SEQUENCE public.address_address_id_seq
 ALTER SEQUENCE public.address_address_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3452 (class 0 OID 0)
+-- TOC entry 3438 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: address_address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -175,7 +125,7 @@ CREATE SEQUENCE public.category_category_id_seq
 ALTER SEQUENCE public.category_category_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3453 (class 0 OID 0)
+-- TOC entry 3439 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: category_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -220,7 +170,7 @@ CREATE SEQUENCE public.customer_customer_id_seq
 ALTER SEQUENCE public.customer_customer_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3454 (class 0 OID 0)
+-- TOC entry 3440 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: customer_customer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -262,7 +212,7 @@ CREATE SEQUENCE public.guest_guest_id_seq
 ALTER SEQUENCE public.guest_guest_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3455 (class 0 OID 0)
+-- TOC entry 3441 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: guest_guest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -305,7 +255,7 @@ CREATE SEQUENCE public.invoice_invoice_id_seq
 ALTER SEQUENCE public.invoice_invoice_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3456 (class 0 OID 0)
+-- TOC entry 3442 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: invoice_invoice_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -346,7 +296,7 @@ CREATE SEQUENCE public.order_item_order_item_id_seq
 ALTER SEQUENCE public.order_item_order_item_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3457 (class 0 OID 0)
+-- TOC entry 3443 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: order_item_order_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -391,7 +341,7 @@ CREATE SEQUENCE public.orders_order_id_seq
 ALTER SEQUENCE public.orders_order_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3458 (class 0 OID 0)
+-- TOC entry 3444 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: orders_order_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -432,7 +382,7 @@ CREATE SEQUENCE public.payment_payment_id_seq
 ALTER SEQUENCE public.payment_payment_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3459 (class 0 OID 0)
+-- TOC entry 3445 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: payment_payment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -475,7 +425,7 @@ CREATE SEQUENCE public.product_product_id_seq
 ALTER SEQUENCE public.product_product_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3460 (class 0 OID 0)
+-- TOC entry 3446 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: product_product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -518,7 +468,7 @@ CREATE SEQUENCE public.reviews_review_id_seq
 ALTER SEQUENCE public.reviews_review_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3461 (class 0 OID 0)
+-- TOC entry 3447 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: reviews_review_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -560,7 +510,7 @@ CREATE SEQUENCE public.shipping_shipping_id_seq
 ALTER SEQUENCE public.shipping_shipping_id_seq OWNER TO neondb_owner;
 
 --
--- TOC entry 3462 (class 0 OID 0)
+-- TOC entry 3448 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: shipping_shipping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: neondb_owner
 --
@@ -569,7 +519,7 @@ ALTER SEQUENCE public.shipping_shipping_id_seq OWNED BY public.shipping.shipping
 
 
 --
--- TOC entry 3244 (class 2604 OID 57348)
+-- TOC entry 3231 (class 2604 OID 57348)
 -- Name: address address_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -577,7 +527,7 @@ ALTER TABLE ONLY public.address ALTER COLUMN address_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3243 (class 2604 OID 40967)
+-- TOC entry 3230 (class 2604 OID 40967)
 -- Name: category category_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -585,7 +535,7 @@ ALTER TABLE ONLY public.category ALTER COLUMN category_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3245 (class 2604 OID 57373)
+-- TOC entry 3232 (class 2604 OID 57373)
 -- Name: customer customer_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -593,7 +543,7 @@ ALTER TABLE ONLY public.customer ALTER COLUMN customer_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3246 (class 2604 OID 57390)
+-- TOC entry 3233 (class 2604 OID 57390)
 -- Name: guest guest_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -601,7 +551,7 @@ ALTER TABLE ONLY public.guest ALTER COLUMN guest_id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3251 (class 2604 OID 73745)
+-- TOC entry 3238 (class 2604 OID 73745)
 -- Name: invoice invoice_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -609,7 +559,7 @@ ALTER TABLE ONLY public.invoice ALTER COLUMN invoice_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3255 (class 2604 OID 73790)
+-- TOC entry 3242 (class 2604 OID 73790)
 -- Name: order_item order_item_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -617,7 +567,7 @@ ALTER TABLE ONLY public.order_item ALTER COLUMN order_item_id SET DEFAULT nextva
 
 
 --
--- TOC entry 3248 (class 2604 OID 57428)
+-- TOC entry 3235 (class 2604 OID 57428)
 -- Name: orders order_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -625,7 +575,7 @@ ALTER TABLE ONLY public.orders ALTER COLUMN order_id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3256 (class 2604 OID 73808)
+-- TOC entry 3243 (class 2604 OID 73808)
 -- Name: payment payment_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -633,7 +583,7 @@ ALTER TABLE ONLY public.payment ALTER COLUMN payment_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3247 (class 2604 OID 57408)
+-- TOC entry 3234 (class 2604 OID 57408)
 -- Name: product product_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -641,7 +591,7 @@ ALTER TABLE ONLY public.product ALTER COLUMN product_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3250 (class 2604 OID 65540)
+-- TOC entry 3237 (class 2604 OID 65540)
 -- Name: reviews review_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -649,7 +599,7 @@ ALTER TABLE ONLY public.reviews ALTER COLUMN review_id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3253 (class 2604 OID 73765)
+-- TOC entry 3240 (class 2604 OID 73765)
 -- Name: shipping shipping_id; Type: DEFAULT; Schema: public; Owner: neondb_owner
 --
 
@@ -657,7 +607,7 @@ ALTER TABLE ONLY public.shipping ALTER COLUMN shipping_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3263 (class 2606 OID 57350)
+-- TOC entry 3250 (class 2606 OID 57350)
 -- Name: address address_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -666,7 +616,7 @@ ALTER TABLE ONLY public.address
 
 
 --
--- TOC entry 3261 (class 2606 OID 40971)
+-- TOC entry 3248 (class 2606 OID 40971)
 -- Name: category category_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -675,7 +625,7 @@ ALTER TABLE ONLY public.category
 
 
 --
--- TOC entry 3265 (class 2606 OID 57375)
+-- TOC entry 3252 (class 2606 OID 57375)
 -- Name: customer customer_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -684,7 +634,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3267 (class 2606 OID 57393)
+-- TOC entry 3254 (class 2606 OID 57393)
 -- Name: guest guest_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -693,7 +643,7 @@ ALTER TABLE ONLY public.guest
 
 
 --
--- TOC entry 3275 (class 2606 OID 73748)
+-- TOC entry 3262 (class 2606 OID 73748)
 -- Name: invoice invoice_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -702,7 +652,7 @@ ALTER TABLE ONLY public.invoice
 
 
 --
--- TOC entry 3279 (class 2606 OID 73792)
+-- TOC entry 3266 (class 2606 OID 73792)
 -- Name: order_item order_item_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -711,7 +661,7 @@ ALTER TABLE ONLY public.order_item
 
 
 --
--- TOC entry 3271 (class 2606 OID 57432)
+-- TOC entry 3258 (class 2606 OID 57432)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -720,7 +670,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3281 (class 2606 OID 73810)
+-- TOC entry 3268 (class 2606 OID 73810)
 -- Name: payment payment_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -729,7 +679,7 @@ ALTER TABLE ONLY public.payment
 
 
 --
--- TOC entry 3269 (class 2606 OID 57412)
+-- TOC entry 3256 (class 2606 OID 57412)
 -- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -738,7 +688,7 @@ ALTER TABLE ONLY public.product
 
 
 --
--- TOC entry 3273 (class 2606 OID 65545)
+-- TOC entry 3260 (class 2606 OID 65545)
 -- Name: reviews reviews_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -747,7 +697,7 @@ ALTER TABLE ONLY public.reviews
 
 
 --
--- TOC entry 3277 (class 2606 OID 73768)
+-- TOC entry 3264 (class 2606 OID 73768)
 -- Name: shipping shipping_pkey; Type: CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -756,7 +706,7 @@ ALTER TABLE ONLY public.shipping
 
 
 --
--- TOC entry 3282 (class 2606 OID 57381)
+-- TOC entry 3269 (class 2606 OID 57381)
 -- Name: customer fk_bill_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -765,7 +715,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3284 (class 2606 OID 57399)
+-- TOC entry 3271 (class 2606 OID 57399)
 -- Name: guest fk_bill_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -774,7 +724,7 @@ ALTER TABLE ONLY public.guest
 
 
 --
--- TOC entry 3287 (class 2606 OID 57438)
+-- TOC entry 3274 (class 2606 OID 57438)
 -- Name: orders fk_bill_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -783,7 +733,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3286 (class 2606 OID 57413)
+-- TOC entry 3273 (class 2606 OID 57413)
 -- Name: product fk_category_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -792,7 +742,7 @@ ALTER TABLE ONLY public.product
 
 
 --
--- TOC entry 3288 (class 2606 OID 57443)
+-- TOC entry 3275 (class 2606 OID 57443)
 -- Name: orders fk_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -801,7 +751,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3291 (class 2606 OID 65546)
+-- TOC entry 3278 (class 2606 OID 65546)
 -- Name: reviews fk_customer_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -810,7 +760,7 @@ ALTER TABLE ONLY public.reviews
 
 
 --
--- TOC entry 3289 (class 2606 OID 57448)
+-- TOC entry 3276 (class 2606 OID 57448)
 -- Name: orders fk_guest_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -819,7 +769,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3298 (class 2606 OID 73811)
+-- TOC entry 3285 (class 2606 OID 73811)
 -- Name: payment fk_invoice_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -828,7 +778,7 @@ ALTER TABLE ONLY public.payment
 
 
 --
--- TOC entry 3293 (class 2606 OID 73749)
+-- TOC entry 3280 (class 2606 OID 73749)
 -- Name: invoice fk_order_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -837,7 +787,7 @@ ALTER TABLE ONLY public.invoice
 
 
 --
--- TOC entry 3294 (class 2606 OID 73769)
+-- TOC entry 3281 (class 2606 OID 73769)
 -- Name: shipping fk_order_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -846,7 +796,7 @@ ALTER TABLE ONLY public.shipping
 
 
 --
--- TOC entry 3296 (class 2606 OID 73793)
+-- TOC entry 3283 (class 2606 OID 73793)
 -- Name: order_item fk_order_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -855,7 +805,7 @@ ALTER TABLE ONLY public.order_item
 
 
 --
--- TOC entry 3292 (class 2606 OID 65551)
+-- TOC entry 3279 (class 2606 OID 65551)
 -- Name: reviews fk_product_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -864,7 +814,7 @@ ALTER TABLE ONLY public.reviews
 
 
 --
--- TOC entry 3297 (class 2606 OID 73798)
+-- TOC entry 3284 (class 2606 OID 73798)
 -- Name: order_item fk_product_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -873,7 +823,7 @@ ALTER TABLE ONLY public.order_item
 
 
 --
--- TOC entry 3283 (class 2606 OID 57376)
+-- TOC entry 3270 (class 2606 OID 57376)
 -- Name: customer fk_ship_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -882,7 +832,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3285 (class 2606 OID 57394)
+-- TOC entry 3272 (class 2606 OID 57394)
 -- Name: guest fk_ship_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -891,7 +841,7 @@ ALTER TABLE ONLY public.guest
 
 
 --
--- TOC entry 3290 (class 2606 OID 57433)
+-- TOC entry 3277 (class 2606 OID 57433)
 -- Name: orders fk_ship_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -900,7 +850,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3295 (class 2606 OID 73774)
+-- TOC entry 3282 (class 2606 OID 73774)
 -- Name: shipping fk_shipping_address_id; Type: FK CONSTRAINT; Schema: public; Owner: neondb_owner
 --
 
@@ -909,35 +859,19 @@ ALTER TABLE ONLY public.shipping
 
 
 --
--- TOC entry 3450 (class 0 OID 0)
--- Dependencies: 3449
+-- TOC entry 3437 (class 0 OID 0)
+-- Dependencies: 3436
 -- Name: DATABASE neondb; Type: ACL; Schema: -; Owner: neondb_owner
 --
 
 GRANT ALL ON DATABASE neondb TO neon_superuser;
 
 
---
--- TOC entry 2101 (class 826 OID 16394)
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: cloud_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE cloud_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO neon_superuser WITH GRANT OPTION;
-
-
---
--- TOC entry 2100 (class 826 OID 16393)
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: cloud_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE cloud_admin IN SCHEMA public GRANT ALL ON TABLES TO neon_superuser WITH GRANT OPTION;
-
-
--- Completed on 2025-09-15 16:13:29
+-- Completed on 2025-09-15 16:10:34
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 42dVQDFzcc3qdSaa9xCmCNarUG623GUjq51hfvNfe4tKHs6cO7gu3n8PxSyyhEV
+\unrestrict IPuVKWtehzygBD5bdoYi3c10MSfezRu4W5Iog462qAiOxBTXeRrqhbcGhFmuew6
 
