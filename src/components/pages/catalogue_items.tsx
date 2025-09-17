@@ -264,6 +264,7 @@ export const items: CatalogueItem[] = [
     ///// DIY Bead Sets
     {id: 104, name: "50pc Boho Daisy Beads - White & Black Jewelry Making Supplies", tags: "", category: "DIY Bead Sets", price: 3.75, image: ""},
     {id: 105, name: "50pc Boho Daisy Wood Beads - Jewelry Making Supplies", tags: "", category: "DIY Bead Sets", price: 3.75, image: ""}
+    
 
 ];
 
