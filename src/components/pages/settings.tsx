@@ -3,6 +3,7 @@
 import '../../styles/settings.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from '../../../lib/actions/auth-actions';
 
 const SettingsContent = () => {
   const [usernameData, setUsernameData] = useState({
@@ -53,6 +54,11 @@ const SettingsContent = () => {
     router.push('/user_dashboard')
   };
 
+  const logout = async () => {
+    await signOut();
+    router.push('/login')
+  }
+
   const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => { //Will need to add validation 
     e.preventDefault()
     if(passwordData.newPassword==passwordData.confirmPassword)
@@ -89,6 +95,7 @@ const SettingsContent = () => {
       </div>
     <div className='settings-container'>
       <div className='change-login-info'>
+        <button onClick={logout}>Sign Out</button>
         <form onSubmit={handleUsernameSubmit}>
 
           <div>
@@ -160,6 +167,7 @@ const SettingsContent = () => {
         <button onClick={toggleNotifications}>
             {notificationsEnabled ? "Disable Notifications" : "Enable Notifications"}
         </button>
+         
         <button className='delete' onClick={handleDelete}>Delete Account</button>
 
       </div>
