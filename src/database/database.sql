@@ -1,0 +1,6 @@
+CREATE DATABASE testDB
+
+CREATE TABLE test(
+    test_id SERIAL PRIMARY KEY,
+    desc VARCHAR(255)
+);
