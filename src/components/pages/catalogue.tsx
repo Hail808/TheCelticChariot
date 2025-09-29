@@ -1,194 +1,216 @@
-"use client";  // Mark as client component
+"use client";
 
-import {useRouter} from 'next/navigation';
-//import { useState } from 'react';
-//import React from "react";
+import { useRouter } from 'next/navigation';
 import '../../styles/catalogue.css';
 import Image from 'next/image';
 import React, { useState, useEffect } from "react";
-import { items } from "./catalogue_items";
+import { getProducts, Product } from '@/lib/api';
 
 const Catalogue: React.FC = () => {
-    const router = useRouter(); 
+    const router = useRouter();
 
-    //List of every item in the catalogue
-    //Similar items can be given similar ids 
+    // State for API products
+    const [products, setProducts] = useState<Product[]>([]);
+    const [filteredItems, setFilteredItems] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // const items = [
-    //     {id: 1, name: "Whimsigoth Sun Auburn Bearded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whisigoth-Sun-Auburn-Beaded-Necklace-in-Bronze.png"}, 
-    //     {id: 2, name: "Whimsigoth Dragonfly Auburn Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-Beaded-Necklace-in-Bronze.png"},
-    //     {id: 3, name: "Whimsigoth Dragonfly Auburn & Deep Green Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.55, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-&-Deep-Green-Beaded-Necklace-in-Bronze.png"}, 
-    //     {id: 4, name: "Whimsigoth Moon Burgundy Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Moon-Burgundy-Beaded-Necklace-in-Bronze.png"}, 
-        
-    //     {id: 5, name: "Whimsigoth Bohemian Flower Fall Earring in Bronze", tags: "Fairycore | Whimsicle", category: "Earrings", price: 8.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Bohemian-Flower-Fall-Earrings-in-Bronze.png"},
-    //     {id: 6, name: "Whimaitee Bronze Auburn Flower Cord Necklace", tags: "Cottagecore | Whimsigoth | Bohemian", category: "Necklace", price: 10.50, image: "/cataloguethumbnails/Necklace-Images/Whimistwee-Bronze-Auburn-Flower-Cord-Necklace.png"}, 
-    //     {id: 7, name: "Bronze Heart Pendant Necklace in Burgundy", tags: "Gothic | Whimsigoth | Artsy | Alternative", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Bronze-Heart-Pendant-Beaded-Necklace-in-Burgundy.png"}, 
-    //     {id: 8, name: "Gothic Floral Trumpet Flower Dangling Earrings in Bronze", tags: "Grunge | Whimsigoth", category: "Earrings", price: 12.50, image: "/cataloguethumbnails/Earrings-Images/Gothic-Floral-Trumpet-Flower-Dangling-Earrings-in-Bronze.png"}, 
-        
-    //     {id: 9, name: "Fairy Bronze Mushroom Earrings", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Fairy-Bronze-Mushroom-Earrings.png"}, 
-    //     {id: 10, name: "Fairy Iridescent Aura Beaded Earrings with Star Charms", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 8.50, image: "/cataloguethumbnails/Earrings-Images/Fairy-Iridescent-Aura-Beading-with-Star-Charms.png"}, 
-    //     {id: 11, name: "Whimsitwee Red Floral Tulip Earrings in Bronze/Silver/Gold", tags: "Fairycore | Whimsigoth", category: "Earrings", price: 9.50, image: "/cataloguethumbnails/Earrings-Images/Whimsitwee-Red-Floral-Tulip-Earrings-in-Bronze-Gold-Silver.png"}, 
-    //     {id: 12, name: "Bronze Goddess Moon Trinity Pendant Dangling Earrings", tags: "", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Bronze-Goddess-Moon-Trinity-Pentacle-Dangling-Earrings.png"},
-
-    //     {id: 13, name: "Whimsigoth Black Trumpet Flower Chandelier", tags: "Goth | Whimsical | Fairycore | Grunge", category: "Earrings", price: 14.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Black-Trumpet-Flower-Chandlier-Earrings.png"}, 
-    //     {id: 14, name: "Bohemian Beads, 50 Piece Set, Daisy Design Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Bohemian-Daisy-Design-Beads-50-Pieces-Set.png"}, 
-    //     {id: 15, name: "Celestial Star Rounds Beads, 50 Piece Set, Star Design in Neutral Tones, Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Celestial-Star-Design-Round-Beads-in-Neutral-Tones-50-Pieces-Set.png"}, 
-    //     {id: 16, name: "Boho Mixed Beads, 50 Piece Set, 3 Styles of Beads in Neutral Tones for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Boho-Mixed-Beads-3-Styles-of-Beads-in-Neutral-Tones-50-Piece-Set.png"}
-    // ];
-    
-    //Searchbar Query and Filtered Items Functions
+    // State for filters
     const [query, setQuery] = useState("");
-    const [filteredItems, setFilteredItems] = useState(items);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
+    // Fetch products from API on mount
+    useEffect(() => {
+        loadProducts();
+    }, []);
 
-    //Searchbar Filter
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        const filteredResults = items.filter(item =>
-          item.name.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredItems(filteredResults);
+    const loadProducts = async () => {
+        try {
+            setLoading(true);
+            const response = await getProducts({ limit: 100 });
+            setProducts(response.data);
+            setFilteredItems(response.data);
+            setError(null);
+        } catch (err) {
+            setError('Failed to load products');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    //Sort Filter by Price
+    // Search handler
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        const filtered = products.filter(item =>
+            item.product_name.toLowerCase().includes(query.toLowerCase()) ||
+            (item.description && item.description.toLowerCase().includes(query.toLowerCase()))
+        );
+        setFilteredItems(filtered);
+        handleSort(sortOrder, filtered);
+    };
+
+    // Sort by price
     const handleSort = (order: "asc" | "desc", data = filteredItems) => {
-        setSortOrder(order); // update state
+        setSortOrder(order);
         const sorted = [...data].sort((a, b) => {
-          if (a.price === b.price) {
-            return a.name.localeCompare(b.name);
-          }
-          return order === "asc" ? a.price - b.price : b.price - a.price;
+            const priceA = Number(a.price);
+            const priceB = Number(b.price);
+            if (priceA === priceB) {
+                return a.product_name.localeCompare(b.product_name);
+            }
+            return order === "asc" ? priceA - priceB : priceB - priceA;
         });
         setFilteredItems(sorted);
     };
 
-    //Format Price Function
-    const formatPrice = (price: number) => {
+    // Format price
+    const formatPrice = (price: string | number) => {
         return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(price);
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(Number(price));
     };
 
-    //Category Function
-    const handleCategoryFilter = (category: string) => {
-        let filtered;
-        if (category === "All Products") {
-          filtered = items;
-        } else {
-          filtered = items.filter(item =>
-            item.category.toLowerCase() === category.toLowerCase()
-          );
+    // Filter by category
+    const handleCategoryFilter = async (categoryId: number | null) => {
+        setSelectedCategory(categoryId);
+        try {
+            setLoading(true);
+            if (categoryId === null) {
+                // All products
+                const response = await getProducts({ limit: 100 });
+                setFilteredItems(response.data);
+            } else {
+                // Specific category
+                const response = await getProducts({ category_id: categoryId, limit: 100 });
+                setFilteredItems(response.data);
+            }
+        } catch (err) {
+            setError('Failed to filter products');
+        } finally {
+            setLoading(false);
         }
-        handleSort(sortOrder, filtered);
-      };
-      
+    };
 
-    //Link to Product Page
-    const handleProduct = () => {
-        router.push('/product_page')
+    // Navigate to product page
+    const handleProduct = (productId: number) => {
+        router.push(`/product/${productId}`);
+    };
+
+    // Apply default sort on load
+    useEffect(() => {
+        if (filteredItems.length > 0) {
+            handleSort("desc");
+        }
+    }, [products]);
+
+    if (loading && products.length === 0) {
+        return (
+            <div className="catalogue-container">
+                <div className="move-left">
+                    <h1>Loading products...</h1>
+                </div>
+            </div>
+        );
     }
 
-    //Default Sort Order
-    useEffect(() => {
-        handleSort("desc");
-    }, []);
+    if (error) {
+        return (
+            <div className="catalogue-container">
+                <div className="move-left">
+                    <h1>Error: {error}</h1>
+                    <button onClick={loadProducts}>Retry</button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-    //Catalogue Container
-    <div className = "catalogue-container">
-
-        {/* Catalogue Page Label */}
-        <div className = "move-left">
-            <h1>Catalogue Page</h1>
-        </div>
-
-        {/* Search Container Area */}
-        <div className = "search-and-sort-container">
-
-            <div className = "search-bar-container">
-                {/* Search Label */}
-                <p className="default-text">Searching for:</p>
-
-                {/* Search Bar and Button*/}
-                <form onSubmit={handleSearch} className="search-bar">
-                    <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search for products..."
-                    className="search-input"
-                    />
-                    <button type="submit" className="search-button">Search</button>
-                </form>
+        <div className="catalogue-container">
+            {/* Catalogue Page Label */}
+            <div className="move-left">
+                <h1>Catalogue Page</h1>
             </div>
 
-            <div className = "sort-dropdown-container">
-                {/* <label htmlFor="sort">Sort by Price: </label> */}
-                <p className="default-text">Sort By:</p>
-                <select id="sort" onChange={(e) => handleSort(e.target.value as "asc" | "desc")}>
-                    <option value="desc">Price: High to Low</option>
-                    <option value="asc">Price: Low to High</option>
-                </select>
-            </div> 
+            {/* Search Container Area */}
+            <div className="search-and-sort-container">
+                <div className="search-bar-container">
+                    <p className="default-text">Searching for:</p>
+                    <form onSubmit={handleSearch} className="search-bar">
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Search for products..."
+                            className="search-input"
+                        />
+                        <button type="submit" className="search-button">Search</button>
+                    </form>
+                </div>
 
-        </div>
-
-
-        {/* Categories + Catalogue Array Container */}
-        <div className="sorting-and-categories-container">
-            
-            {/* Categories Section */}
-            <div className="categories-container">
-                <p className="hover-text" onClick={() => handleCategoryFilter("All Products")}>All Products</p>
-                <p className="hover-text" onClick={() => handleCategoryFilter("Necklace")}>Necklaces</p>
-                <p className="hover-text" onClick={() => handleCategoryFilter("Earrings")}>Earrings</p>
-                <p className="hover-text" onClick={() => handleCategoryFilter("DIY Bead Sets")}>DIY Beads</p>
+                <div className="sort-dropdown-container">
+                    <p className="default-text">Sort By:</p>
+                    <select id="sort" onChange={(e) => handleSort(e.target.value as "asc" | "desc")} value={sortOrder}>
+                        <option value="desc">Price: High to Low</option>
+                        <option value="asc">Price: Low to High</option>
+                    </select>
+                </div>
             </div>
 
-            {/* Catalogue Array Section */}
-            <div className="catalogue-array-formatting"> 
-                {filteredItems.length > 0 ? (
-                    filteredItems.map((item) => (
-                        <div className="catalogue-text-formatting" key={item.id}>
-                            <button onClick={handleProduct} className="catalogue-box">
-                               
-                                {/* <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    width={200}
-                                    height={200}
-                                /> */}
-                                {item.image ? (
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    width={200}
-                                    height={200}
-                                />
-                                ) : (
-                                <div style={{ width: 200, height: 200, backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    <span>No Image</span>
-                                </div>
+            {/* Categories + Catalogue Array Container */}
+            <div className="sorting-and-categories-container">
+                {/* Categories Section */}
+                <div className="categories-container">
+                    <p className="hover-text" onClick={() => handleCategoryFilter(null)}>All Products</p>
+                    <p className="hover-text" onClick={() => handleCategoryFilter(1)}>Jewelry</p>
+                    <p className="hover-text" onClick={() => handleCategoryFilter(2)}>Home Decor</p>
+                </div>
+
+                {/* Catalogue Array Section */}
+                <div className="catalogue-array-formatting">
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map((item) => (
+                            <div className="catalogue-text-formatting" key={item.product_id}>
+                                <button onClick={() => handleProduct(item.product_id)} className="catalogue-box">
+                                    {item.prod_image_url ? (
+                                        <img
+                                            src={item.prod_image_url}
+                                            alt={item.product_name}
+                                            width={200}
+                                            height={200}
+                                        />
+                                    ) : (
+                                        <div style={{
+                                            width: 200,
+                                            height: 200,
+                                            backgroundColor: "#eee",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}>
+                                            <span>No Image</span>
+                                        </div>
+                                    )}
+                                </button>
+                                <p className="catalogue-label">{item.product_name}</p>
+                                <p>{formatPrice(item.price)}</p>
+                                {item.inventory < 5 && (
+                                    <p style={{ color: 'red', fontSize: '0.9em' }}>
+                                        Only {item.inventory} left!
+                                    </p>
                                 )}
-
-                            </button>
-                            <p className="catalogue-label">{item.name}</p>
-                            <p>{formatPrice(item.price)}</p>
-                        </div> 
-                    ))) 
-                    : ( <p className="no-results">No results found</p> )
-                }
+                            </div>
+                        ))
+                    ) : (
+                        <p className="no-results">No results found</p>
+                    )}
+                </div>
             </div>
-
         </div>
-
-
-    </div>
-
     );
 };
 
