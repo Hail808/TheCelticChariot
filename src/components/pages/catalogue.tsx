@@ -15,7 +15,8 @@ const Catalogue: React.FC = () => {
   // State for filters
   const [query, setQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedCategory2, setSelectedCategory2] = useState<string>("All Products");
 
     
   // Fetch products from API on mount
@@ -154,20 +155,28 @@ const Catalogue: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Left Sidebar: Categories */}
         <div className="lg:w-1/5 flex flex-col gap-4 mb-4 lg:mb-0 text-white">
-          {["All Products", "Necklace", "Earrings", "DIY Bead Sets", "Keychains", "Beaded Belt"].map(
-            (category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryFilter(category)}
-className={`px-4 py-2 rounded transition
-  ${selectedCategory === category 
-    ? "bg-green-700 shadow-lg ring-2 ring-green-400"  // active glowing state
-    : "bg-green-600 hover:bg-green-700"}  // normal
-`}              >
-                {category}
-              </button>
-            )
-          )}
+{[
+  { name: "All Products", id: 1 },
+  { name: "Necklace", id: 2 },
+  { name: "Earrings", id: 3 },
+  { name: "DIY Bead Sets", id: 4 },
+  { name: "Keychains", id: 5 },
+  { name: "Beaded Belt", id: 6 }
+].map(
+  (category) => (
+    <button
+      key={category.name}
+      onClick={() => handleCategoryFilter(category.id)}
+      className={`px-4 py-2 rounded transition
+        ${selectedCategory === category.id
+          ? "bg-green-700 shadow-lg ring-2 ring-green-400"  // active glowing state
+          : "bg-green-600 hover:bg-green-700"}  // normal
+      `}
+    >
+      {category.name}
+    </button>
+  )
+)}
         </div>
 
         {/* Right Content: Catalogue Grid */}
@@ -175,17 +184,17 @@ className={`px-4 py-2 rounded transition
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
               <div
-                key={item.id}
+                key={item.product_id}
                 className="flex flex-col items-center text-center"
               >
                 <button
-                  onClick={handleProduct}
+                  onClick={() => handleProduct(item.product_id)}
                     className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
                 >
-                  {item.image ? (
+                  {item.prod_image_url ? (
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={item.prod_image_url}
+                      alt={item.product_name}
                       fill
                       className="object-cover"
                     />
@@ -195,7 +204,7 @@ className={`px-4 py-2 rounded transition
                     </div>
                   )}
                 </button>
-                <p className="mt-2 font-medium w-full text-left">{item.name}</p>
+                <p className="mt-2 font-medium w-full text-left">{item.product_name}</p>
 
                 <p className="text-indigo-600 font-bold w-full text-left">
                   {formatPrice(item.price)}
