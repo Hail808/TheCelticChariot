@@ -50,7 +50,6 @@ const UserDashboard = () => {
     return (
         <div className="user-dashboard-container">
 
-
             <h1>Hello, {accInfo.userName}</h1>
             
             

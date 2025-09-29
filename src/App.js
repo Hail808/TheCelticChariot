@@ -10,7 +10,6 @@ import Cart from './components/pages/cart.tsx';
 import Review from './components/pages/reviews.tsx';
 import ProductPage from './components/pages/product_page.tsx';
 
-
 function App() {
   return (
     <div className="App"> 
