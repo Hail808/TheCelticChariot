@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+@font-face {
+    font-family: 'Lalezar';
+    src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
+         
+         
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* table styling */
+.content-table {
+    border-collapse: collapse;
+    margin: 50px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Add a border to the table */
+.content-table thead tr {
+    background-color: #5B6D50;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Add hover effect for headers */
+.content-table th {
+    cursor: pointer; /* Make headers clickable */
+    position: relative; /* For positioning icons */
+    padding: 10px;
+    background-color: #1f380f;
+    transition: background-color 0.3s ease;
+}
+
+.content-table th:hover {
+    background-color: #5B6D50; /* Highlight on hover */
+}
+
+/* Add styles for sorting arrows */
+.content-table th::after {
+    content: ''; /* Default empty content */
+    position: absolute;
+    right: 10px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.content-table th.sorted-asc::after {
+    content: '▲'; /* Up arrow for ascending */
+}
+
+.content-table th.sorted-desc::after {
+    content: '▼'; /* Down arrow for descending */
+}
+
+/* table formatting */
+.content-table th,
+.content-table td {
+    text-align: center;
+    padding: 30px 100px;
+}
+
+/* border and table cells color */
+.content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+.content-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+.content-table tbody tr:last-of-type {
+    border-bottom: 2px solid #5B6D50;
+}
+
+/* filter container styling */
+.filter-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+.filter-container label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+}
+
+.filter-container input {
+    padding: 5px;
+    font-size: 1rem;
+    width: 100px;
+}
+
+.filter-container button {
+    padding: 5px 10px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* fulfilled filter styling */
+.fulfilled-filter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.fulfilled-filter label {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.fulfilled-filter input {
+    margin-right: 5px;
+}

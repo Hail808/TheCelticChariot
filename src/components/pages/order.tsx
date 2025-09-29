@@ -1,4 +1,5 @@
-
+import React from 'react'
+import { AppBar, Toolbar, Typography, Container, Card, CardContent, Button, Box, Rating, TextField } from "@mui/material";
 import '../../styles/order.css';
 
 interface Props {
@@ -10,9 +11,9 @@ interface Props {
         id: 1233,
         name: "Whimsigoth Sun Auburn Beaded Necklace in Bronze",
         image: "product.jpg",
-        price: 12.99,
-        quantity: 2,
-        img : '/productimages/necklace3.png'
+        price: 17.00,
+        quantity: 1,
+        img : '/productimages/necklace2.png'
     },
     {
         id: 123,
@@ -20,13 +21,13 @@ interface Props {
         image: "product.jpg",
         price: 17.00,
         quantity: 3,
-        img : '/productimages/necklace1.png'
+        img : '/productimages/necklace2.png'
     },
     {
         id: 1234,
         name: "Whimsigoth Sun Auburn Beaded Necklace in Bronze",
         image: "product.jpg",
-        price: 15.99,
+        price: 117.00,
         quantity: 1,
         img : '/productimages/necklace2.png'
     },

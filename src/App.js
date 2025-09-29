@@ -9,7 +9,6 @@ import About from './components/pages/about_me.tsx';
 import Cart from './components/pages/cart.tsx'; 
 import Review from './components/pages/reviews.tsx';
 import ProductPage from './components/pages/product_page.tsx';
-import OrdersPage from './components/pages/order.tsx';
 
 function App() {
   return (
