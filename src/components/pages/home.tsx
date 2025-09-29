@@ -1,52 +1,50 @@
-"use client";  // Mark as client component
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import '../../styles/home.css';
-
-// Reusable Button Component
-const NavigationButton: React.FC<{ label: string; onClick: () => void }> = ({ label, onClick }) => {
-  return (
-    <button onClick={onClick} className="featured-item-box">
-      {label}
-    </button>
-  );
-};
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import "../../styles/home.css";
 
 const reviews = [
   {
     text: "Yes such a great piece of jewelry",
     stars: 5,
     profileImg: "/userspics/defaultavatar.jpg",
-    productImg: "/productimages/necklace1.png"
+    productImg: "/productimages/necklace1.png",
   },
   {
-    text: "the necklace is beautiful and the bonus jewelry was a nice surprise!",
+    text: "The necklace is beautiful and the bonus jewelry was a nice surprise!",
     stars: 4,
     profileImg: "/userspics/defaultavatar.jpg",
-    productImg: "/productimages/necklace2.png"
+    productImg: "/productimages/necklace2.png",
   },
   {
     text: "Beautiful necklace! Love it and would buy from this seller again.",
     stars: 5,
     profileImg: "/userspics/defaultavatar.jpg",
-    productImg: "/productimages/necklace2.png"
+    productImg: "/productimages/necklace2.png",
   },
   {
-    text: "this piece is soooo beautiful!! arrived so fast and my partner loves it! thank you",
+    text: "This piece is soooo beautiful!! Arrived so fast and my partner loves it! Thank you.",
     stars: 5,
     profileImg: "/userspics/defaultavatar.jpg",
-    productImg: "/productimages/necklace3.png"
+    productImg: "/productimages/necklace3.png",
   },
 ];
 
-const Home: React.FC = () => {
+const categories = [
+  { name: "Necklaces", image: "/categoryimages/necklace.png" },
+  { name: "Earrings", image: "/categoryimages/earrings.png" },
+  { name: "Beads", image: "/categoryimages/beads.png" },
+  { name: "Keychain", image: "/categoryimages/keychain.png" },
+  { name: "Beaded Belt", image: "/categoryimages/belt.png" },
+];
+
+export default function Home() {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Link to /catalogue page
   const navigateToCatalogue = () => {
-    router.push('/catalogue');
+    router.push("/catalogue");
   };
 
   const handlePrev = () => {
@@ -57,104 +55,98 @@ const Home: React.FC = () => {
     setCurrentIndex((prev) => (prev + 1) % reviews.length);
   };
 
-  // 🚀 NEW: Always return 3 reviews: center + left + right
   const getVisibleReviews = () => {
     const total = reviews.length;
     const visible = [];
-
     for (let offset = -1; offset <= 1; offset++) {
       const index = (currentIndex + offset + total) % total;
       visible.push({ ...reviews[index], indexOffset: offset });
     }
-
     return visible;
   };
 
   return (
-    <div className="home-container">
+    <main className="p-8">
 
-      {/*Featured Items Text*/}
-      <div className="label-featured-items">
-        Featured Items
+      {/* ---------- Featured Section ---------- */}
+      <h1 className="font-another text-3xl font-bold text-center mb-6">Featured Items</h1>
+      <div className="featured-section">
+        <button onClick={navigateToCatalogue} className="card featured-card">
+          <img src="/productimages/necklace1.png" alt="Featured Item 1" />
+          <span>Featured Item 1</span>
+        </button>
+
+        <button onClick={navigateToCatalogue} className="card featured-card">
+          <img src="/productimages/necklace2.png" alt="Featured Item 2" />
+          <span>Featured Item 2</span>
+        </button>
       </div>
 
-      {/*Featured Item Boxes*/}
-      <div className="featured-cards">
-        <div className="featured-cards-2">
-          <NavigationButton label="Featured Item 1" onClick={navigateToCatalogue} />
-        </div>
-        <div className="featured-cards-2">
-          <NavigationButton label="Featured Item 2" onClick={navigateToCatalogue} />
-        </div>
-      </div>
-
-      {/* Categories Text Itself */}
-      <div className="label-categories">
-        <p>Categories</p>
-      </div>
-
-      {/* Three Categories Section */}
-      <div className="categories-card">
-        <div className="categories-grouping">
-          <div className="categories-group-label">
-            <p>Necklaces</p>
-          </div>
-          <button onClick={navigateToCatalogue} className="category-box">
-            Necklaces
+      {/* ---------- Categories Section ---------- */}
+      <h1 className="text-3xl font-bold text-center mt-12 mb-6">Categories</h1>
+      <div className="categories-section grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 justify-items-center">
+      {[
+        { name: "Necklaces", className: "category-necklaces" },
+        { name: "Earrings", className: "category-earrings" },
+        { name: "Beads", className: "category-beads" },
+        { name: "Keychain", className: "category-keychain" },
+        { name: "Beaded Belt", className: "category-belt" },
+      ].map((cat) => (
+        <div key={cat.name} className="flex flex-col items-center">
+          <button onClick={navigateToCatalogue} className={`card category-card ${cat.className}`}>
+            {/* Image goes here via background-image in CSS or <Image /> */}
           </button>
+          <span className="mt-2 text-lg font-medium">{cat.name}</span>
         </div>
+      ))}
+    </div>
 
-        <div className="categories-grouping">
-          <div className="categories-group-label">
-            <p>Earrings</p>
-          </div>
-          <button onClick={navigateToCatalogue} className="category-box">
-            Earrings
-          </button>
-        </div>
-
-        <div className="categories-grouping">
-          <div className="categories-group-label">
-            <p>DIY Beads</p>
-          </div>
-          <button onClick={navigateToCatalogue} className="category-box">
-            DIY Beads
-          </button>
-        </div>
-      </div>
-
-      {/* Reviews Section */}
-      <div className="label-reviews">
-        <p>Reviews</p>
-      </div>
-
+      {/* ---------- Reviews Section ---------- */}
+      <h1 className="font-another text-3xl font-bold text-center mb-6 pt-4">Reviews</h1>
       <div className="carousel-wrapper">
-        <button className="carousel-arrow left" onClick={handlePrev}>&lt;</button>
+        <button onClick={handlePrev} className="carousel-arrow">
+          &lt;
+        </button>
+
         <div className="carousel-track">
           {getVisibleReviews().map((review, i) => {
-            const className =
-              review.indexOffset === 0 ? 'center' : 'adjacent';
+            const isCenter = review.indexOffset === 0;
+            const isAdjacent = Math.abs(review.indexOffset) === 1;
 
             return (
-              <div key={i} className={`review-card ${className}`}>
-                <img src={review.productImg} alt="Product" className="review-product-image" />
+              <div
+                key={i}
+                className={`review-card ${
+                  isCenter ? "center" : isAdjacent ? "adjacent" : "hidden"
+                }`}
+              >
+                <img
+                  src={review.productImg}
+                  alt="Product"
+                  className="review-product-image"
+                />
                 <div className="review-details">
-                  <img src={review.profileImg} alt="User" className="review-profile-icon" />
+                  <img
+                    src={review.profileImg}
+                    alt="User"
+                    className="review-profile-icon"
+                  />
                   <div className="review-text">
                     <p>{review.text}</p>
-                    <div className="review-stars">{"⭐".repeat(review.stars)}</div>
+                    <div className="review-stars">
+                      {"⭐".repeat(review.stars)}
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-        <button className="carousel-arrow right" onClick={handleNext}>&gt;</button>
+
+        <button onClick={handleNext} className="carousel-arrow">
+          &gt;
+        </button>
       </div>
-
-
-    </div>
+    </main>
   );
-};
-
-export default Home;
+}
