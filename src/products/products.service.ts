@@ -74,7 +74,12 @@ export class ProductsService {
         take: limit,
         orderBy: { [sort_by]: sort_order },
         include: {
-          category: true,
+          category: {
+            select: {
+              category_id: true,
+              name: true,
+            }
+          },
         },
       }),
       this.prisma.product.count({ where }),
@@ -95,7 +100,12 @@ export class ProductsService {
     const product = await this.prisma.product.findUnique({
       where: { product_id: id },
       include: {
-        category: true,
+        category: {
+          select: {
+            category_id: true,
+            name: true,
+          }
+        },
         reviews: {
           include: {
             customer: {
