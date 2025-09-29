@@ -1,63 +1,110 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+"use client";import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import React, { useState, useEffect } from "react";
-import { items } from "./catalogue_items";
+import { getProducts, Product } from '@/lib/api';
 
 const Catalogue: React.FC = () => {
   const router = useRouter();
 
+  // State for API products
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // State for filters
   const [query, setQuery] = useState("");
-  const [filteredItems, setFilteredItems] = useState(items);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const filteredResults = items.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredItems(filteredResults);
-  };
-
-  const handleSort = (order: "asc" | "desc", data = filteredItems) => {
-    setSortOrder(order);
-    const sorted = [...data].sort((a, b) => {
-      if (a.price === b.price) {
-        return a.name.localeCompare(b.name);
-      }
-      return order === "asc" ? a.price - b.price : b.price - a.price;
-    });
-    setFilteredItems(sorted);
-  };
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(price);
-
-  const handleCategoryFilter = (category: string) => {
-    setSelectedCategory(category);
-    const filtered =
-      category === "All Products"
-        ? items
-        : items.filter(
-            (item) => item.category.toLowerCase() === category.toLowerCase()
-          );
-    handleSort(sortOrder, filtered);
-  };
-
-  const handleProduct = () => {
-    router.push("/product_page");
-  };
-
+    
+  // Fetch products from API on mount
   useEffect(() => {
-    handleSort("desc");
+      loadProducts();
   }, []);
+
+  const loadProducts = async () => {
+        try {
+            setLoading(true);
+            const response = await getProducts({ limit: 100 });
+            setProducts(response.data);
+            setFilteredItems(response.data);
+            setError(null);
+        } catch (err) {
+            setError('Failed to load products');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+   };
+    
+  // Search handler
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        const filtered = products.filter(item =>
+            item.product_name.toLowerCase().includes(query.toLowerCase()) ||
+            (item.description && item.description.toLowerCase().includes(query.toLowerCase()))
+        );
+        setFilteredItems(filtered);
+        handleSort(sortOrder, filtered);
+    };
+
+  // Sort by price
+    const handleSort = (order: "asc" | "desc", data = filteredItems) => {
+        setSortOrder(order);
+        const sorted = [...data].sort((a, b) => {
+            const priceA = Number(a.price);
+            const priceB = Number(b.price);
+            if (priceA === priceB) {
+                return a.product_name.localeCompare(b.product_name);
+            }
+            return order === "asc" ? priceA - priceB : priceB - priceA;
+        });
+        setFilteredItems(sorted);
+    };
+
+  // Format price
+    const formatPrice = (price: string | number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(Number(price));
+    };
+
+  // Filter by category
+    const handleCategoryFilter = async (categoryId: number | null) => {
+        setSelectedCategory(categoryId);
+        try {
+            setLoading(true);
+            if (categoryId === null) {
+                // All products
+                const response = await getProducts({ limit: 100 });
+                setFilteredItems(response.data);
+            } else {
+                // Specific category
+                const response = await getProducts({ category_id: categoryId, limit: 100 });
+                setFilteredItems(response.data);
+            }
+        } catch (err) {
+            setError('Failed to filter products');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+  // Navigate to product page
+    const handleProduct = (productId: number) => {
+        router.push(`/product/${productId}`);
+    };
+
+  // Apply default sort on load
+    useEffect(() => {
+        if (filteredItems.length > 0) {
+            handleSort("desc");
+        }
+    }, [products]);
 
 
 
