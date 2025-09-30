@@ -192,10 +192,10 @@ const Catalogue: React.FC = () => {
                     className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
                 >
                   {item.prod_image_url ? (
-                    <Image
+                    <img
                       src={item.prod_image_url}
                       alt={item.product_name}
-                      fill
+                      //fill
                       className="object-cover"
                     />
                   ) : (
