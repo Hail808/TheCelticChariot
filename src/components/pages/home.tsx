@@ -55,6 +55,7 @@ export default function Home() {
     setCurrentIndex((prev) => (prev + 1) % reviews.length);
   };
 
+  // Always return 3 reviews: center + left + right
   const getVisibleReviews = () => {
     const total = reviews.length;
     const visible = [];

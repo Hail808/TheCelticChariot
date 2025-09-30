@@ -82,7 +82,7 @@ const Catalogue: React.FC = () => {
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+            className="px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
           >
             Search
           </button>
@@ -114,9 +114,9 @@ const Catalogue: React.FC = () => {
                 onClick={() => handleCategoryFilter(category)}
 className={`px-4 py-2 rounded transition
   ${selectedCategory === category 
-    ? "bg-green-700 shadow-lg ring-2 ring-green-400"  // active glowing state
-    : "bg-green-600 hover:bg-green-700"}  // normal
-`}              >
+    ? "bg-[#4a5a40] shadow-lg ring-2 ring-[#5B6D50]"  // active (darker shade)
+    : "bg-[#5B6D50] hover:bg-[#4a5a40]"}  // normal
+`}          >
                 {category}
               </button>
             )
