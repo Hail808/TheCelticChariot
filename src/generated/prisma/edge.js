@@ -305,7 +305,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\tyson\\OneDrive\\Desktop\\School\\Spring2025\\190_SeniorProject\\TheCelticChariot\\src\\generated\\prisma",
+      "value": "C:\\CCW\\TheCelticChariot\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -319,7 +319,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\tyson\\OneDrive\\Desktop\\School\\Spring2025\\190_SeniorProject\\TheCelticChariot\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\CCW\\TheCelticChariot\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
