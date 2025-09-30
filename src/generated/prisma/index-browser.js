@@ -132,8 +132,7 @@ exports.Prisma.AddressScalarFieldEnum = {
 
 exports.Prisma.CategoryScalarFieldEnum = {
   category_id: 'category_id',
-  name: 'name',
-  description: 'description'
+  name: 'name'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {

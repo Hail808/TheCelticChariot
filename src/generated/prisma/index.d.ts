@@ -3752,19 +3752,16 @@ export namespace Prisma {
   export type CategoryMinAggregateOutputType = {
     category_id: number | null
     name: string | null
-    description: string | null
   }
 
   export type CategoryMaxAggregateOutputType = {
     category_id: number | null
     name: string | null
-    description: string | null
   }
 
   export type CategoryCountAggregateOutputType = {
     category_id: number
     name: number
-    description: number
     _all: number
   }
 
@@ -3780,19 +3777,16 @@ export namespace Prisma {
   export type CategoryMinAggregateInputType = {
     category_id?: true
     name?: true
-    description?: true
   }
 
   export type CategoryMaxAggregateInputType = {
     category_id?: true
     name?: true
-    description?: true
   }
 
   export type CategoryCountAggregateInputType = {
     category_id?: true
     name?: true
-    description?: true
     _all?: true
   }
 
@@ -3885,7 +3879,6 @@ export namespace Prisma {
   export type CategoryGroupByOutputType = {
     category_id: number
     name: string
-    description: string | null
     _count: CategoryCountAggregateOutputType | null
     _avg: CategoryAvgAggregateOutputType | null
     _sum: CategorySumAggregateOutputType | null
@@ -3910,7 +3903,6 @@ export namespace Prisma {
   export type categorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     name?: boolean
-    description?: boolean
     product?: boolean | category$productArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -3918,22 +3910,19 @@ export namespace Prisma {
   export type categorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     name?: boolean
-    description?: boolean
   }, ExtArgs["result"]["category"]>
 
   export type categorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     name?: boolean
-    description?: boolean
   }, ExtArgs["result"]["category"]>
 
   export type categorySelectScalar = {
     category_id?: boolean
     name?: boolean
-    description?: boolean
   }
 
-  export type categoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"category_id" | "name" | "description", ExtArgs["result"]["category"]>
+  export type categoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"category_id" | "name", ExtArgs["result"]["category"]>
   export type categoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | category$productArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -3949,7 +3938,6 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       category_id: number
       name: string
-      description: string | null
     }, ExtArgs["result"]["category"]>
     composites: {}
   }
@@ -4376,7 +4364,6 @@ export namespace Prisma {
   interface categoryFieldRefs {
     readonly category_id: FieldRef<"category", 'Int'>
     readonly name: FieldRef<"category", 'String'>
-    readonly description: FieldRef<"category", 'String'>
   }
     
 
@@ -20904,8 +20891,7 @@ export namespace Prisma {
 
   export const CategoryScalarFieldEnum: {
     category_id: 'category_id',
-    name: 'name',
-    description: 'description'
+    name: 'name'
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
@@ -21311,14 +21297,12 @@ export namespace Prisma {
     NOT?: categoryWhereInput | categoryWhereInput[]
     category_id?: IntFilter<"category"> | number
     name?: StringFilter<"category"> | string
-    description?: StringNullableFilter<"category"> | string | null
     product?: ProductListRelationFilter
   }
 
   export type categoryOrderByWithRelationInput = {
     category_id?: SortOrder
     name?: SortOrder
-    description?: SortOrderInput | SortOrder
     product?: productOrderByRelationAggregateInput
   }
 
@@ -21328,14 +21312,12 @@ export namespace Prisma {
     OR?: categoryWhereInput[]
     NOT?: categoryWhereInput | categoryWhereInput[]
     name?: StringFilter<"category"> | string
-    description?: StringNullableFilter<"category"> | string | null
     product?: ProductListRelationFilter
   }, "category_id">
 
   export type categoryOrderByWithAggregationInput = {
     category_id?: SortOrder
     name?: SortOrder
-    description?: SortOrderInput | SortOrder
     _count?: categoryCountOrderByAggregateInput
     _avg?: categoryAvgOrderByAggregateInput
     _max?: categoryMaxOrderByAggregateInput
@@ -21349,7 +21331,6 @@ export namespace Prisma {
     NOT?: categoryScalarWhereWithAggregatesInput | categoryScalarWhereWithAggregatesInput[]
     category_id?: IntWithAggregatesFilter<"category"> | number
     name?: StringWithAggregatesFilter<"category"> | string
-    description?: StringNullableWithAggregatesFilter<"category"> | string | null
   }
 
   export type customerWhereInput = {
@@ -22401,45 +22382,38 @@ export namespace Prisma {
 
   export type categoryCreateInput = {
     name: string
-    description?: string | null
     product?: productCreateNestedManyWithoutCategoryInput
   }
 
   export type categoryUncheckedCreateInput = {
     category_id?: number
     name: string
-    description?: string | null
     product?: productUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type categoryUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
     product?: productUpdateManyWithoutCategoryNestedInput
   }
 
   export type categoryUncheckedUpdateInput = {
     category_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
     product?: productUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type categoryCreateManyInput = {
     category_id?: number
     name: string
-    description?: string | null
   }
 
   export type categoryUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type categoryUncheckedUpdateManyInput = {
     category_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type customerCreateInput = {
@@ -23597,7 +23571,6 @@ export namespace Prisma {
   export type categoryCountOrderByAggregateInput = {
     category_id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
   }
 
   export type categoryAvgOrderByAggregateInput = {
@@ -23607,13 +23580,11 @@ export namespace Prisma {
   export type categoryMaxOrderByAggregateInput = {
     category_id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
   }
 
   export type categoryMinOrderByAggregateInput = {
     category_id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
   }
 
   export type categorySumOrderByAggregateInput = {
@@ -26895,13 +26866,11 @@ export namespace Prisma {
 
   export type categoryCreateWithoutProductInput = {
     name: string
-    description?: string | null
   }
 
   export type categoryUncheckedCreateWithoutProductInput = {
     category_id?: number
     name: string
-    description?: string | null
   }
 
   export type categoryCreateOrConnectWithoutProductInput = {
@@ -26963,13 +26932,11 @@ export namespace Prisma {
 
   export type categoryUpdateWithoutProductInput = {
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type categoryUncheckedUpdateWithoutProductInput = {
     category_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type reviewsUpsertWithWhereUniqueWithoutProductInput = {
