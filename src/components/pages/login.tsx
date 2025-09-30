@@ -53,46 +53,48 @@ const Login = () => {
   }
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div  className="password-container">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <div className="button-container">
-          <button type="submit">Login</button>
-          <button type="button" onClick={handleForgotPassword} className="forgot-password-button"> Forgot Password</button>
-        </div>      
-        <div className="button-format">
-          <button type="submit" className="login-button">Login</button>
-          <button onClick={handleForgotPassword} className="forgot-password-button">Forgot Password?</button>
-          <button onClick={handleCreateAccount} className="create-account-button">Create Account</button>
-        </div>
-        <div className="button-format">
-           <button onClick={handleGoogleAuth} className="google-button">Continue With Google</button>
-        </div>
-        {error && <p className="error-message">{error}</p>}
-      </form>
-      
-    </div>
-  );
-};
+  <div className="login-container">
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="password-container">
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="button-format">
+        <button type="submit" className="login-button">Login</button>
+        <button type="button" onClick={handleForgotPassword} className="forgot-password-button">
+          Forgot Password?
+        </button>
+        <button type="button" onClick={handleCreateAccount} className="create-account-button">
+          Create Account
+        </button>
+      </div>
+      <div className="button-format">
+        <button type="button" onClick={handleGoogleAuth} className="google-button">
+          Continue With Google
+        </button>
+      </div>
+      {error && <p className="error-message">{error}</p>}
+    </form>
+  </div>
+);
+}
 
 export default Login;
