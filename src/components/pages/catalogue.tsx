@@ -135,11 +135,13 @@ const Catalogue: React.FC = () => {
                   onClick={handleProduct}
                     className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
                 >
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
+                  {item.prod_image_url ? (
+                    //Image and fill will currently brcik. Have to reroute item img to database img url that works
+                    //Image
+                    <img
+                      src={item.prod_image_url}
+                      alt={item.product_name}
+                      //fill
                       className="object-cover"
                     />
                   ) : (

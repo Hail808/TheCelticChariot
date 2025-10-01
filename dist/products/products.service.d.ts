@@ -8,32 +8,31 @@ export declare class ProductsService {
     constructor(prisma: PrismaService);
     create(createProductDto: CreateProductDto): Promise<{
         category: {
-            description: string | null;
-            name: string;
             category_id: number;
+            name: string;
         };
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     }>;
     findAll(filterDto: FilterProductDto): Promise<{
         data: ({
             category: {
-                name: string;
                 category_id: number;
+                name: string;
             };
         } & {
-            product_id: number;
-            product_name: string;
-            description: string | null;
-            price: Prisma.Decimal;
             inventory: number;
+            description: string | null;
+            product_name: string;
+            price: Prisma.Decimal;
             prod_image_url: string | null;
+            product_id: number;
             fk_category_id: number | null;
         })[];
         meta: {
@@ -45,8 +44,8 @@ export declare class ProductsService {
     }>;
     findOne(id: number): Promise<{
         category: {
-            name: string;
             category_id: number;
+            name: string;
         };
         reviews: ({
             customer: {
@@ -63,91 +62,87 @@ export declare class ProductsService {
             fk_product_id: number | null;
         })[];
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     }>;
     findByCategory(categoryId: number): Promise<({
         category: {
-            description: string | null;
-            name: string;
             category_id: number;
+            name: string;
         };
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     })[]>;
     update(id: number, updateProductDto: UpdateProductDto): Promise<{
         category: {
-            description: string | null;
-            name: string;
             category_id: number;
+            name: string;
         };
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     }>;
     remove(id: number): Promise<{
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     }>;
     updateInventory(id: number, quantity: number): Promise<{
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     }>;
     checkInventory(id: number, quantity: number): Promise<boolean>;
     getProductsByPriceRange(minPrice: number, maxPrice: number): Promise<({
         category: {
-            description: string | null;
-            name: string;
             category_id: number;
+            name: string;
         };
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     })[]>;
     getLowInventoryProducts(threshold?: number): Promise<({
         category: {
-            description: string | null;
-            name: string;
             category_id: number;
+            name: string;
         };
     } & {
-        product_id: number;
-        product_name: string;
-        description: string | null;
-        price: Prisma.Decimal;
         inventory: number;
+        description: string | null;
+        product_name: string;
+        price: Prisma.Decimal;
         prod_image_url: string | null;
+        product_id: number;
         fk_category_id: number | null;
     })[]>;
 }
