@@ -1,37 +1,21 @@
-@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'AnotherFont';
-  src: url('/Fonts/CELTG.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-body {
-  background-color: rgb(233, 222, 193);
-  font-family: 'AnotherFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 
-        "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  margin: 0;
-  padding: 0;
-}
-
-
+/* Makes sure entire page takes up the full viewport height for formatting */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #e7e7dd; 
+  background: #E5EDE1; /* Set the background color for the entire page */
 }
 
 
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
-  background: #e7e7dd; 
+  min-height: 100vh; /* Ensures the app takes full height */
+  background: #E5EDE1; /* Set the background color for the App container */
 }
 
 

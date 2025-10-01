@@ -28,21 +28,21 @@
     margin: 8px 0;
     width: 100%;
     font-size: 16px;
-    border: 2px solid #1f380f ; 
+    border: 2px solid #5B6D50 ; 
     border-radius: 4px;
-    color: #1f380f;
+    color: #5B6D50;
     
 
 }
 .login-container input:focus {
-    border: 3px solid #1f380f;
+    border: 3px solid #5B6D50;
     outline: none;
     
 }
 
 .login-container button {
     padding: 10px;
-    background: #1f380f;
+    background: #5B6D50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -75,10 +75,6 @@
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    text-align: right;
-    position: absolute;
-    right: -41px;
-
 }
 
 .password-container {
