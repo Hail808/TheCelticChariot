@@ -1,165 +1,95 @@
-/* Makes sure Footer stays at the bottom */
-.footer-container {
-  width: 100%;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Section Wrappers ---------- */
+.featured-section {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4 pb-4 place-items-center max-w-[72rem] mx-auto;
 }
 
-/* Featured Item Boxes */
-.featured-item-box {
-  padding: 20px 40px;
-  font-size: 18px;
-  background-color: gray;
-  color: white;
-  border: none;
-  border-radius: 10px;
+.categories-section {
+  @apply grid grid-cols-3 sm:grid-cols-5 gap-16 pt-4 pb-4 place-items-center max-w-[72rem] mx-auto;
+}
+
+/* ---------- Shared Card Base ---------- */
+.card {
+  @apply relative rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 400px;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 60px;
-  margin: 10px 0;
 }
 
-/* Center content on the homepage */
-.home-container {
-  display: flex; /* Displays accomodate multiple item */
-  flex-direction: column; /* how items are added into flex container */
-  justify-content: center;  /* Center horizontally */
-  align-items: center;  /* Center vertically */
-  text-align: center;  /* Center text */
-  padding: 40px; /* how much space between items */
+.featured-card img,
+.category-card img {
+  @apply object-cover w-full h-full;
 }
 
-.home-container h1 {
-  font-family: 'Lalezar', sans-serif;
-  font-size: 3rem;
-  color: #ffffff;
-  text-shadow: 
-  -1px -1px 0 black,  
-  1px -1px 0 black,
-  -1px 1px 0 black,
-  1px 1px 0 black;
+/* ---------- Featured Section ---------- */
+.featured-card {
+  @apply relative rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform cursor-pointer;
+
+  /*fluid scaling*/
+  width: clamp(18rem, 20vw + 10rem, 28rem);
+  height: clamp(15rem, 18vw + 8rem, 24rem);
 }
 
-/* Featured Item Label */
-.label-featured-items {
+.featured-card span {
+  @apply absolute bottom-0 left-0 right-0 bg-black/50 text-white 
+         text-lg font-semibold py-2 text-center;
+}
+
+/* ---------- Categories Section ---------- */
+.category-card {
+  @apply relative rounded-xl overflow-hidden shadow-md
+         hover:shadow-lg hover:scale-105 transition-transform cursor-pointer;
+
+  /*fluid scaling*/
+  width: clamp(8rem, 10vw + 4rem, 12rem);
+  height: clamp(8rem, 10vw + 4rem, 12rem);
+}
+
+/* ---------- Category Card Variant ---------- */
+
+.category-necklaces {
+  background-image: url('/productimages/ItemThumbnails/NecklaceThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.category-earrings {
+  background-image: url('/productimages/ItemThumbnails/EarringsThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.category-beads {
+  background-image: url('/productimages/ItemThumbnails/DIYBeadsThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.category-keychain {
+  background-image: url('/productimages/ItemThumbnails/KeychainThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.category-belt {
+  background-image: url('/productimages/ItemThumbnails/BeadedBeltThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.category-label {
+  @apply absolute inset-0 flex items-center justify-center text-xl font-semibold;
+}
+
+/* ---------- Reviews Carousel ---------- */
+.label-reviews {
   font-family: 'Lalezar', sans-serif;
   font-size: 40px;
   max-width: 800px;
   text-align: center;
   margin: 10px auto;
   line-height: 0.5;
-}
-
-.featured-item-box:hover {
-  background-color: rgb(194, 194, 194); /* Darker shade on hover */
-}
-
-/* Featured Card Formatting */
-.featured-cards {
-  display: flex;
-  gap: 60px;
-  margin: 30px 0;
-}
-
-.featured-cards-2 {
-  justify-content: center;
-}
-
-/* Categories Label Itself */
-.label-categories {
-  font-family: 'Lalezar', sans-serif;
-  font-size: 36px;
-  max-width: 800px;
-  text-align: center;
-  margin: 10px auto;
-  line-height: 1.5;
-}
-
-/* Category Photos Formatting */
-.categories-card {
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  margin: 10px 0;
-}
-
-/* Category Group Structure */
-.categories-grouping {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  height: 100%; 
-}
-
-/* Category Group Labels */
-.categories-group-label {
-  font-family: 'Lalezar', sans-serif;
-  font-size: 22px;
-  max-width: 800px;
-  text-align: center;
-  margin: 5px auto;
-  line-height: 0.5;
-}
-
-/* Category Boxes */
-.category-box {
-  width: 250px;
-  height: 200px;
-  font-size: 18px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px 40px;
-  gap: 60px;
-  margin: 10px 0;
-
-  background-color: gray;
-  color: white;
-  transition: background-color 0.3s ease;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.category-box:hover {
-  background-color: rgb(194, 194, 194); /* Darker shade on hover */
-}
-
-.default-button {
-  padding: 20px 40px;
-  font-size: 18px;
-  background-color: gray;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  /* width: 400px;
-  height: 300px; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  /* gap: 60px;
-  margin: 10px 0; */
-}
-
-.label-reviews{
-  font-family: 'Lalezar', sans-serif;
-  font-size: 40px;
-  max-width: 800px;
-  text-align: center;
-  margin: 10px auto;
-  line-height: 0.5;
-
 }
 
 .carousel-wrapper {
@@ -173,7 +103,7 @@
 }
 
 .carousel-track {
-  display: flex;
+  display: flex; /* flex so hover scaling works */
   justify-content: center;
   align-items: center;
   overflow: hidden;
@@ -183,7 +113,7 @@
 }
 
 .review-card {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   opacity: 0;
   transform: scale(0.8);
   width: 300px;
@@ -191,6 +121,12 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.review-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .review-card.center {
@@ -199,10 +135,18 @@
   z-index: 2;
 }
 
+.review-card.center:hover {
+  transform: scale(1.2);
+}
+
 .review-card.adjacent {
   opacity: 1;
   transform: scale(0.9);
   z-index: 1;
+}
+
+.review-card.adjacent:hover {
+  transform: scale(1.05);
 }
 
 .review-card.hidden {
@@ -259,4 +203,3 @@
   color: gold;
   margin-top: 5px;
 }
-
