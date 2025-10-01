@@ -1,29 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Makes sure entire page takes up the full viewport height for formatting */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #e7e7dd; /* Set the background color for the entire page */
+  background: #E5EDE1; /* Set the background color for the entire page */
 }
 
-/* App container should be a flexbox to structure layout */
+
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensures the app takes full height */
-  background: #e7e7dd; /* Set the background color for the App container */
+  background: #E5EDE1; /* Set the background color for the App container */
 }
 
-/* push footer down so its not in the middle of screen */
+
 .content {
   flex: 1;
-  padding-top: 150px; /* Maintain your existing spacing */
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  padding-top: 100px;
 }
   
 h1 {

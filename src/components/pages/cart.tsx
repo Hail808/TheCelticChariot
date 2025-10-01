@@ -1,73 +1,136 @@
-'use client';
+"use client";
+
 import React from "react";
-import { useRouter } from 'next/navigation';
-import { AppBar, Toolbar, Typography, Container, List, ListItem, Button, Card, CardMedia, CardContent, Radio, RadioGroup, FormControlLabel, Box } from "@mui/material";
 
 const Cart = () => {
-  const router = useRouter();
-  
   const cartItems = [
-    { id: 1, name: "Whimsical Sun Auburn Beaded Necklace in Bronze", price: "$17.00", image: "item1.jpg" },
+    { id: 1, name: "Whimsical Sun Auburn Beaded Necklace in Bronze", price: "$17.00", image: "/productimages/necklace1.png" },
   ];
 
   const recommendedItems = [
-    { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: "$19.99", image: "item2.jpg" },
-    { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: "$16.50", image: "item3.jpg" },
-    { id: 4, name: "Whimsical Fall Maple Leaves Mountain Beaded Necklace in", price: "$19.99", image: "item4.jpg" },
+    { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: "$19.99", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
+    { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: "$16.50", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
+    { id: 4, name: "Whimsical Fall Maple Leaves Mountain Beaded Necklace in", price: "$19.99", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
   ];
 
   return (
-    <>
-      <Container sx={{ backgroundColor: "#f8f5e4", padding: "20px" }}>
-        <Typography variant="h4" gutterBottom>
-          Cart
-        </Typography>
-        <List>
-          {cartItems.map((item) => (
-            <ListItem key={item.id} divider>
-              <Card sx={{ display: "flex", alignItems: "center", padding: "10px", width: "100%" }}>
-                <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: 100, height: 100, marginRight: "15px" }} />
-                <CardContent>
-                  <Typography variant="h6">{item.name}</Typography>
-                  <Typography variant="body1">{item.price}</Typography>
-                  <Button variant="contained" sx={{ backgroundColor: "#6b7855", marginRight: "10px" }}>Item Count</Button>
-                  <Button variant="contained" color="error">Remove</Button>
-                </CardContent>
-              </Card>
-            </ListItem>
-          ))}
-        </List>
-        <Box sx={{ marginTop: "20px" }}>
-          <Typography variant="h6">How You'll Pay</Typography>
-          <RadioGroup>
-            <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
-            <FormControlLabel value="visa" control={<Radio />} label="VISA" />
-            <FormControlLabel value="mastercard" control={<Radio />} label="MasterCard" />
-          </RadioGroup>
-          <Typography variant="body1">Item Total: $17.00</Typography>
-          <Typography variant="body1">Shipping: $5.00</Typography>
-          <Typography variant="h6">Total: $22.00</Typography>
-          <Button variant="contained" sx={{ backgroundColor: "#6b7855", marginTop: "10px" }}>Checkout</Button>
-        </Box>
-        <Typography variant="h5" sx={{ marginTop: "40px" }}>Recommended Items</Typography>
-        <Box sx={{ display: "flex", gap: "15px", marginTop: "10px" }}>
+    <div className="min-h-screen p-6 space-y-8 max-w-6xl mx-auto">
+      {/* Cart Header */}
+      <h1 className="text-4xl font-bold mb-6 text-[#333]">Cart</h1>
+
+      {/* items in cart */}
+      <div className="space-y-4">
+        {cartItems.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
+          >
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-24 h-24 object-cover rounded mr-4"
+            />
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-[#333]">{item.name}</h2>
+              <p className="text-[#666] mt-1">{item.price}</p>
+              <div className="mt-3 flex gap-3">
+                <button className="bg-[#5B6D50] text-white px-4 py-2 rounded hover:bg-[#4a5a40] transition-colors">
+                  Item Count
+                </button>
+                <button className="bg-[#8b6f5f] text-white px-4 py-2 rounded hover:bg-[#7a5f4f] transition-colors">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* checkout section */}
+      <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
+        <h2 className="text-2xl font-semibold text-[#333] mb-4">How You'll Pay</h2>
+        <div className="space-y-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment" value="paypal" className="cursor-pointer" />
+            <span className="text-[#333]">PayPal</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment" value="visa" className="cursor-pointer" />
+            <span className="text-[#333]">VISA</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment" value="mastercard" className="cursor-pointer" />
+            <span className="text-[#333]">MasterCard</span>
+          </label>
+        </div>
+        <div className="border-t pt-4 mt-4 space-y-2">
+          <p className="text-[#666]">Item Total: $17.00</p>
+          <p className="text-[#666]">Shipping: $5.00</p>
+          <p className="text-xl font-semibold text-[#333] mt-2">Total: $22.00</p>
+        </div>
+        <button className="bg-[#5B6D50] text-white px-8 py-3 rounded hover:bg-[#4a5a40] transition-colors w-full mt-4 font-semibold">
+          Checkout
+        </button>
+      </div>
+
+      {/* recommended items section */}
+      <div>
+        <h2 className="text-3xl font-semibold mb-6 text-[#333]">Recommended Items</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {recommendedItems.map((item) => (
-            <Card key={item.id} sx={{ maxWidth: 200 }}>
-              <CardMedia component="img" image={item.image} alt={item.name} sx={{ height: 140 }} />
-              <CardContent>
-                <Typography variant="body1">{item.name}</Typography>
-                <Typography variant="h6">{item.price}</Typography>
-                <Button variant="contained" sx={{ backgroundColor: "#6b7855" }}>Add to Cart</Button>
-              </CardContent>
-            </Card>
+            <div
+              key={item.id}
+              className="bg-white rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow"
+            >
+              <img
+                src={item.image}
+                alt={item.name}
+                className="h-48 w-full object-cover rounded mb-3"
+              />
+              <p className="font-medium text-[#333] mb-2">{item.name}</p>
+              <p className="text-[#5B6D50] font-semibold mb-3">{item.price}</p>
+              <button className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors">
+                Add to Cart
+              </button>
+            </div>
           ))}
-        </Box>
-      </Container>
-      <Box sx={{ backgroundColor: "#6b7855", padding: "10px", textAlign: "center" }}>
-        <Typography variant="body1" color="white">Accepted Payment Methods</Typography>
-        <img src="visa_mastercard.png" alt="Payment Methods" style={{ width: "100px" }} />
-      </Box>
-    </>
+        </div>
+      </div>
+
+      {/* same payment method section from footer*/}
+      <div className="bg-[#5B6D50] text-white text-center py-6 rounded shadow-md">
+        <h4 className="text-sm font-semibold mb-4">We Accept</h4>
+        <div className="flex items-center justify-center space-x-3 flex-wrap">
+          {/* paypal */}
+          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
+            <span className="text-[#0070ba] text-xs font-bold">PayPal</span>
+          </div>
+          
+          {/* visa */}
+          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
+            <span className="text-[#1a1f71] text-xs font-bold">VISA</span>
+          </div>
+          
+          {/* mastercard */}
+          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-red-500 rounded-full opacity-80"></div>
+              <div className="w-3 h-3 bg-yellow-400 rounded-full opacity-80"></div>
+            </div>
+          </div>
+          
+          {/* discover */}
+          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
+            <span className="text-[#ff6000] text-xs font-bold">DISC</span>
+          </div>
+          
+          {/* klarna */}
+          <div className="bg-[#ffb3c7] rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
+            <span className="text-[#0a0a0a] text-xs font-bold">Klarna</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

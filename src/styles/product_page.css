@@ -31,6 +31,12 @@
     font-size: 1rem;
     color: #555;
   }
+
+  .category-necklaces {
+  background-image: url('/productimages/ItemThumbnails/NecklaceThumbnail.png');
+  background-size: cover;
+  background-position: center;
+}
   
   .product-details {
     flex: 1;

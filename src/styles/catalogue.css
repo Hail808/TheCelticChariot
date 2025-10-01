@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @font-face {
     font-family: 'Lalezar';
     src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
@@ -41,6 +42,16 @@
     margin: 10px auto;
     line-height: 0.5;
 }
+
+/* catalogue.css or in a @layer components section */
+.catalogue-box {
+  @apply relative rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform cursor-pointer;
+
+  /* fluid scaling */
+  width: clamp(8rem, 20vw, 12rem);
+  height: clamp(8rem, 20vw, 12rem);
+}
+
 /*CATALOGUE CONTAINER COMPONENTS - END*/
 
 .move-left {
