@@ -41,12 +41,20 @@ const Navbar = ({session}: {session: Session | null}) => {
           {/* account and cart icon */}
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 mr-2 sm:mr-3 lg:mr-4">
             {/* user account */}
-            <a 
-              href="/user_dashboard"
-              className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
-            >
-              <User size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
-            </a>
+
+            <div className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200">
+            {!session ? (
+              <a href="/login" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"> Login</a>
+            ) : (
+              <a 
+                href="/user_dashboard"
+                className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
+              >
+                <User size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
+              </a>
+            )}
+            </div>
+            
             
             {/* cart */}
             <a 
