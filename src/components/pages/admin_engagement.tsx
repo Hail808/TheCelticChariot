@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -41,16 +42,16 @@ const AdminEngagement: React.FC = () => {
     const router = useRouter();
     
         const handleHome = () => {
-            router.push('/admin_home');
+            router.push('/admin');
         }
         const handleSales = () => {
-            router.push('/admin_sales');
+            router.push('/admin/sales');
         }
         const handleCatalogue = () => {
-            router.push('/admin_catalogue');
+            router.push('/admin/catalogue');
         }
         const handleOrders = () => {
-            router.push('/admin_orders');
+            router.push('/admin/orders');
         }
 
     return (

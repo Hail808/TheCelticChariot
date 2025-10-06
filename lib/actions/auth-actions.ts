@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "../auth";
 import {headers} from "next/headers";
 import { PrismaClient } from "@/generated/prisma";
-
+import { getOrganizations } from "../auth/organizations";
 
 const prisma = new PrismaClient();
 export const signUp = async (email: string, password: string, name: string) => {
@@ -71,10 +71,28 @@ export const signInSocial = async () => {
         redirect(url)
     }
 }
-export default async function getCurrentUser() {
+export  async function getCurrentUser() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   return session?.user ?? null;
+}
+
+export  async function checkForAdmin() {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+    
+      if (!session?.user) {
+        redirect('/login');
+      }
+    
+      const userOrgs = await getOrganizations();
+      
+      const isAdmin = userOrgs.some(org => 
+        org.role === 'ADMIN'
+      );
+      return isAdmin
+    
 }
