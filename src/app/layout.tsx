@@ -2,9 +2,9 @@ import '../styles/global.css';  // Import the global CSS file
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import { ReactNode } from 'react';
-import { auth } from '../../lib/auth';
+import { auth } from '../lib/auth';
 import { headers } from 'next/headers';
-import { checkForAdmin } from '../../lib/actions/auth-actions';
+import { checkForAdmin } from '../lib/actions/auth-actions';
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth.api.getSession({
     headers: await headers(),

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import {checkForAdmin} from "@/../lib/actions/auth-actions"
+import {checkForAdmin} from "@/lib/actions/auth-actions"
 import AdminCatalogue from "@/components/pages/admin_catalogue";
 
 const AdminCataloguePage = async () => {

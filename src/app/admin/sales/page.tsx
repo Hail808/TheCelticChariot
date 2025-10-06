@@ -1,7 +1,7 @@
 
 import AdminSales from "@/components/pages/admin_sales";
 import { redirect } from 'next/navigation';
-import {checkForAdmin} from "@/../lib/actions/auth-actions"
+import {checkForAdmin} from "@/lib/actions/auth-actions"
 
 const AdminSalesPage = async() => {
   
