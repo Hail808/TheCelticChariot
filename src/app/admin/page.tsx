@@ -1,7 +1,7 @@
 
 import AdminHome from "../../components/pages/admin_home";
 import { redirect } from 'next/navigation';
-import {checkForAdmin} from "@/../lib/actions/auth-actions"
+import {checkForAdmin} from "@/lib/actions/auth-actions"
 
 const AdminHomePage = async () => {
  

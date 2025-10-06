@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import '../styles/navbar.css'; // import CSS file for style
-import { auth } from '../../lib/auth';
+import { auth } from '../lib/auth';
 import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
 
 type Session = typeof auth.$Infer.Session
