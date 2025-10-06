@@ -1,15 +1,24 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/navbar.css'; // import CSS file for style
 import { auth } from '../../lib/auth';
 import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
 
 type Session = typeof auth.$Infer.Session
-const Navbar = ({session}: {session: Session | null}) => {
+
+type NavbarProps = {
+  session: Session | null;
+  isAdmin: boolean;
+};
+
+const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+
 
   return (
     <nav className="bg-[#5B6D50] shadow-lg shadow-black/20">
@@ -103,6 +112,14 @@ const Navbar = ({session}: {session: Session | null}) => {
             >
               ABOUT ME
             </a>
+            
+            
+            {isAdmin && (
+              <a href="/admin" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
+                ADMIN
+              </a>
+            )}
+
             {/* <a 
               href="/login" 
               className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
@@ -143,6 +160,15 @@ const Navbar = ({session}: {session: Session | null}) => {
             >
               ABOUT ME
             </a>
+            {isAdmin && (
+              <a 
+                href="/admin"
+                className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                ADMIN
+              </a>
+            )}
             <div className="border-t border-white/20 pt-3 mt-3">
               <a 
                 href="/user_dashboard"

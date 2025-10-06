@@ -1,5 +1,5 @@
 
-import getCurrentUser from '../actions/auth-actions'
+import {getCurrentUser} from '../actions/auth-actions'
 import { PrismaClient } from "@/generated/prisma";
 
 const prisma = new PrismaClient()
