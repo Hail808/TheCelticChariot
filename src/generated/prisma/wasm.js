@@ -92,6 +92,22 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  userId: 'userId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  idToken: 'idToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
+  scope: 'scope',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AddressScalarFieldEnum = {
   address_id: 'address_id',
   street_line1: 'street_line1',
@@ -191,6 +207,17 @@ exports.Prisma.ReviewsScalarFieldEnum = {
   fk_product_id: 'fk_product_id'
 };
 
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId'
+};
+
 exports.Prisma.ShippingScalarFieldEnum = {
   shipping_id: 'shipping_id',
   fk_order_id: 'fk_order_id',
@@ -207,34 +234,8 @@ exports.Prisma.UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  expiresAt: 'expiresAt',
-  token: 'token',
-  createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  userId: 'userId'
-};
-
-exports.Prisma.AccountScalarFieldEnum = {
-  id: 'id',
-  accountId: 'accountId',
-  providerId: 'providerId',
-  userId: 'userId',
-  accessToken: 'accessToken',
-  refreshToken: 'refreshToken',
-  idToken: 'idToken',
-  accessTokenExpiresAt: 'accessTokenExpiresAt',
-  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
-  scope: 'scope',
-  password: 'password',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  guest_id: 'guest_id'
 };
 
 exports.Prisma.VerificationScalarFieldEnum = {
@@ -244,6 +245,18 @@ exports.Prisma.VerificationScalarFieldEnum = {
   expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.OrganizationMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  organizationId: 'organizationId',
+  role: 'role'
 };
 
 exports.Prisma.SortOrder = {
@@ -275,7 +288,13 @@ exports.shipping_status = exports.$Enums.shipping_status = {
   not_yet_shipped: 'not_yet_shipped'
 };
 
+exports.Role = exports.$Enums.Role = {
+  CUSTOMER: 'CUSTOMER',
+  ADMIN: 'ADMIN'
+};
+
 exports.Prisma.ModelName = {
+  account: 'account',
   address: 'address',
   category: 'category',
   customer: 'customer',
@@ -287,11 +306,12 @@ exports.Prisma.ModelName = {
   payment: 'payment',
   product: 'product',
   reviews: 'reviews',
+  session: 'session',
   shipping: 'shipping',
-  User: 'User',
-  Session: 'Session',
-  Account: 'Account',
-  Verification: 'Verification'
+  user: 'user',
+  verification: 'verification',
+  Organization: 'Organization',
+  OrganizationMember: 'OrganizationMember'
 };
 /**
  * Create the Client
@@ -347,7 +367,7 @@ const config = {
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"address\":{\"fields\":[{\"name\":\"address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"street_line1\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"street_line2\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postal_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"addressTocustomer\"},{\"name\":\"guest\",\"kind\":\"object\",\"type\":\"guest\",\"relationName\":\"addressToguest\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"addressToorders\"},{\"name\":\"shipping\",\"kind\":\"object\",\"type\":\"shipping\",\"relationName\":\"addressToshipping\"}],\"dbName\":null},\"category\":{\"fields\":[{\"name\":\"category_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"categoryToproduct\"}],\"dbName\":null},\"customer\":{\"fields\":[{\"name\":\"customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_login\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressTocustomer\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"customerToorders\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"reviews\",\"relationName\":\"customerToreviews\"}],\"dbName\":null},\"guest\":{\"fields\":[{\"name\":\"guest_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToguest\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"guestToorders\"}],\"dbName\":null},\"inventory\":{\"fields\":[{\"name\":\"item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tags\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"}],\"dbName\":null},\"invoice\":{\"fields\":[{\"name\":\"invoice_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"invoice_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"invoice_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"total_price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"due_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payment_status\",\"kind\":\"enum\",\"type\":\"payment_status\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"invoiceToorders\"},{\"name\":\"payment\",\"kind\":\"object\",\"type\":\"payment\",\"relationName\":\"invoiceTopayment\"}],\"dbName\":null},\"order_item\":{\"fields\":[{\"name\":\"order_item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"order_itemToorders\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"order_itemToproduct\"}],\"dbName\":null},\"orders\":{\"fields\":[{\"name\":\"order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"total_price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"order_status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_guest_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"invoice\",\"kind\":\"object\",\"type\":\"invoice\",\"relationName\":\"invoiceToorders\"},{\"name\":\"order_item\",\"kind\":\"object\",\"type\":\"order_item\",\"relationName\":\"order_itemToorders\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToorders\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"customerToorders\"},{\"name\":\"guest\",\"kind\":\"object\",\"type\":\"guest\",\"relationName\":\"guestToorders\"},{\"name\":\"shipping\",\"kind\":\"object\",\"type\":\"shipping\",\"relationName\":\"ordersToshipping\"}],\"dbName\":null},\"payment\":{\"fields\":[{\"name\":\"payment_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_invoice_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"payment_method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payment_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"amount_paid\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"invoice\",\"kind\":\"object\",\"type\":\"invoice\",\"relationName\":\"invoiceTopayment\"}],\"dbName\":null},\"product\":{\"fields\":[{\"name\":\"product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"product_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"inventory\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"prod_image_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_category_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order_item\",\"kind\":\"object\",\"type\":\"order_item\",\"relationName\":\"order_itemToproduct\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"category\",\"relationName\":\"categoryToproduct\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"reviews\",\"relationName\":\"productToreviews\"}],\"dbName\":null},\"reviews\":{\"fields\":[{\"name\":\"review_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"review_text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"review_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"customerToreviews\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"productToreviews\"}],\"dbName\":null},\"shipping\":{\"fields\":[{\"name\":\"shipping_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_shipping_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"tracking_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"carrier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shipping_status\",\"kind\":\"enum\",\"type\":\"shipping_status\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"ordersToshipping\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToshipping\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"accountTouser\"}],\"dbName\":null},\"address\":{\"fields\":[{\"name\":\"address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"street_line1\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"street_line2\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postal_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"addressTocustomer\"},{\"name\":\"guest\",\"kind\":\"object\",\"type\":\"guest\",\"relationName\":\"addressToguest\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"addressToorders\"},{\"name\":\"shipping\",\"kind\":\"object\",\"type\":\"shipping\",\"relationName\":\"addressToshipping\"}],\"dbName\":null},\"category\":{\"fields\":[{\"name\":\"category_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"categoryToproduct\"}],\"dbName\":null},\"customer\":{\"fields\":[{\"name\":\"customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_login\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressTocustomer\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"customerToorders\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"reviews\",\"relationName\":\"customerToreviews\"}],\"dbName\":null},\"guest\":{\"fields\":[{\"name\":\"guest_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToguest\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"guestToorders\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"guestTouser\"}],\"dbName\":null},\"inventory\":{\"fields\":[{\"name\":\"item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tags\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"}],\"dbName\":null},\"invoice\":{\"fields\":[{\"name\":\"invoice_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"invoice_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"invoice_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"total_price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"due_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"payment_status\",\"kind\":\"enum\",\"type\":\"payment_status\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"invoiceToorders\"},{\"name\":\"payment\",\"kind\":\"object\",\"type\":\"payment\",\"relationName\":\"invoiceTopayment\"}],\"dbName\":null},\"order_item\":{\"fields\":[{\"name\":\"order_item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"order_itemToorders\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"order_itemToproduct\"}],\"dbName\":null},\"orders\":{\"fields\":[{\"name\":\"order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"total_price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"order_status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_ship_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_bill_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_guest_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"invoice\",\"kind\":\"object\",\"type\":\"invoice\",\"relationName\":\"invoiceToorders\"},{\"name\":\"order_item\",\"kind\":\"object\",\"type\":\"order_item\",\"relationName\":\"order_itemToorders\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToorders\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"customerToorders\"},{\"name\":\"guest\",\"kind\":\"object\",\"type\":\"guest\",\"relationName\":\"guestToorders\"},{\"name\":\"shipping\",\"kind\":\"object\",\"type\":\"shipping\",\"relationName\":\"ordersToshipping\"}],\"dbName\":null},\"payment\":{\"fields\":[{\"name\":\"payment_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_invoice_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"payment_method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payment_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"amount_paid\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"invoice\",\"kind\":\"object\",\"type\":\"invoice\",\"relationName\":\"invoiceTopayment\"}],\"dbName\":null},\"product\":{\"fields\":[{\"name\":\"product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"product_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"inventory\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"prod_image_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fk_category_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order_item\",\"kind\":\"object\",\"type\":\"order_item\",\"relationName\":\"order_itemToproduct\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"category\",\"relationName\":\"categoryToproduct\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"reviews\",\"relationName\":\"productToreviews\"}],\"dbName\":null},\"reviews\":{\"fields\":[{\"name\":\"review_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"review_text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"review_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_customer_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_product_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"customer\",\"kind\":\"object\",\"type\":\"customer\",\"relationName\":\"customerToreviews\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"product\",\"relationName\":\"productToreviews\"}],\"dbName\":null},\"session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"sessionTouser\"}],\"dbName\":null},\"shipping\":{\"fields\":[{\"name\":\"shipping_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fk_shipping_address_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"tracking_num\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"carrier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shipping_status\",\"kind\":\"enum\",\"type\":\"shipping_status\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"orders\",\"relationName\":\"ordersToshipping\"},{\"name\":\"address\",\"kind\":\"object\",\"type\":\"address\",\"relationName\":\"addressToshipping\"}],\"dbName\":null},\"user\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"guest_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"organizations\",\"kind\":\"object\",\"type\":\"OrganizationMember\",\"relationName\":\"OrganizationMemberTouser\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"account\",\"relationName\":\"accountTouser\"},{\"name\":\"session\",\"kind\":\"object\",\"type\":\"session\",\"relationName\":\"sessionTouser\"},{\"name\":\"guest\",\"kind\":\"object\",\"type\":\"guest\",\"relationName\":\"guestTouser\"}],\"dbName\":null},\"verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Organization\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"OrganizationMember\",\"relationName\":\"OrganizationToOrganizationMember\"}],\"dbName\":null},\"OrganizationMember\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToOrganizationMember\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"user\",\"relationName\":\"OrganizationMemberTouser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

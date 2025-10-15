@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 "use client";
 
 import React, { useState, useEffect } from 'react';
+=======
+"use client"
+import React from 'react';
+>>>>>>> 0a4082d71ef8aa4a504b3355c6c1cd965e47a852
 import { useRouter } from 'next/navigation';
 import '../../styles/home.css';
 
