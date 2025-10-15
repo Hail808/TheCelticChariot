@@ -3,7 +3,7 @@
 import '../../styles/settings.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signOut } from '../../../lib/actions/auth-actions';
+import { signOut } from '../../lib/actions/auth-actions';
 
 const SettingsContent = () => {
   const [usernameData, setUsernameData] = useState({
