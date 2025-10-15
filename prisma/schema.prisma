@@ -1,12 +1,28 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamp(6)
+  refreshTokenExpiresAt DateTime? @db.Timestamp(6)
+  scope                 String?
+  password              String?
+  createdAt             DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt             DateTime? @default(now()) @db.Timestamp(6)
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model address {
@@ -52,6 +68,7 @@ model guest {
   fk_bill_address_id Int?
   address            address? @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
   orders             orders[]
+  user               user?
 }
 
 model inventory {
@@ -105,7 +122,9 @@ model payment {
   payment_id     Int      @id @default(autoincrement())
   fk_invoice_id  Int?     @unique(map: "uq_invoice_id")
   payment_method String   @db.VarChar(50)
+  payment_status payment_status @default(pending)
   payment_date   DateTime @db.Date
+  transaction_id String?        @db.VarChar(100)
   amount_paid    Decimal? @db.Decimal(10, 2)
   invoice        invoice? @relation(fields: [fk_invoice_id], references: [invoice_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_id")
 }
@@ -121,6 +140,7 @@ model product {
   order_item     order_item[]
   category       category?    @relation(fields: [fk_category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_id")
   reviews        reviews[]
+  cartItems      CartItem[]
 }
 
 model reviews {
@@ -134,73 +154,75 @@ model reviews {
   product        product?  @relation(fields: [fk_product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
 }
 
+model session {
+  id        String    @id
+  expiresAt DateTime  @db.Timestamp(6)
+  token     String    @unique
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
 model shipping {
   shipping_id            Int             @id @default(autoincrement())
   fk_order_id            Int?            @unique(map: "uq_shipping_order_id")
   fk_shipping_address_id Int?            @unique(map: "uq_shipping_address_id")
   tracking_num           String?         @db.VarChar(50)
   carrier                String          @db.VarChar(50)
+  shipping_method        String          @db.VarChar(50)  
   shipping_status        shipping_status @default(not_yet_shipped)
+  created_at             DateTime        @default(now())  
   orders                 orders?         @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
   address                address?        @relation(fields: [fk_shipping_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shipping_address_id")
 }
 
-model User {
-  id            String    @id
+model user {
+  id            String               @id
   name          String
-  email         String    @unique
-  emailVerified Boolean?  @default(false)
+  email         String               @unique
+  emailVerified Boolean?             @default(false)
   image         String?
   createdAt     DateTime  @default(now()) @db.Timestamp(6)
   updatedAt     DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   accounts      Account[]
   sessions      Session[]
+  cart          Cart?
 
   @@map("user")
+  createdAt     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime             @default(now()) @db.Timestamp(6)
+  guest_id      Int?                 @unique
+  organizations OrganizationMember[]
+  account       account[]
+  session       session[]
+  guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
 }
 
-model Session {
-  id        String    @id
-  expiresAt DateTime  @db.Timestamp(6)
-  token     String    @unique
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @updatedAt @db.Timestamp(6)
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime? @db.Timestamp(6)
-  refreshTokenExpiresAt DateTime? @db.Timestamp(6)
-  scope                 String?
-  password              String?
-  createdAt             DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt             DateTime? @default(now()) @updatedAt @db.Timestamp(6)
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("account")
-}
-
-model Verification {
+model verification {
   id         String   @id
   identifier String
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+  updatedAt  DateTime @default(now())
+}
 
-  @@map("verification")
+model Organization {
+  id      String               @id @default(cuid())
+  name    String
+  members OrganizationMember[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  role           Role         @default(CUSTOMER)
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  user           user         @relation(fields: [userId], references: [id])
 }
 
 enum payment_status {
@@ -216,4 +238,33 @@ enum shipping_status {
   delivered
   shipped
   not_yet_shipped @map("not yet shipped")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String     @unique  
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+
+model CartItem {
+  id              Int      @id @default(autoincrement())
+  cartId          Int
+  cart            Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         product  @relation(fields: [productId], references: [product_id]) 
+  quantity        Int
+  priceAtAddition Decimal  @db.Decimal(10, 2)
+  addedAt         DateTime @default(now())
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
+}
+enum Role {
+  CUSTOMER
+  ADMIN
 }

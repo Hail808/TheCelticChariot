@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import '../../styles/login.css';
-import { signIn, signInSocial } from '../../../lib/actions/auth-actions';
+import { signIn, signInSocial } from '../../lib/actions/auth-actions';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -35,6 +35,10 @@ const Login = () => {
 
   const handleForgotPassword = () => {
     router.push('/forgot_password');
+  };
+
+  const handleAdminLogin = () => {
+    router.push('/admin_home');
   };
 
   const handleGoogleAuth = async () => {
@@ -80,6 +84,11 @@ const Login = () => {
         
         <div className="button-format">
           <button type="button" onClick={handleGoogleAuth} className="google-button">Continue With Google</button>
+        </div>
+
+        {/* Admin Login Button */}
+        <div className="button-format">
+          <button type="button" onClick={handleAdminLogin} className="admin-button">Admin Login</button>
         </div>
         
         {error && <p className="error-message">{error}</p>}
