@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { auth } from '../../../lib/auth';
+import { auth } from '../../lib/auth';
 import UserDashboard from '../../components/pages/user_dashboard';
 import { redirect } from 'next/navigation';
 
