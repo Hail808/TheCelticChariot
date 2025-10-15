@@ -2,13 +2,14 @@ import '../styles/global.css';  // Import the global CSS file
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import { ReactNode } from 'react';
-import { auth } from '../../lib/auth';
+import { auth } from '../lib/auth';
 import { headers } from 'next/headers';
-
+import { checkForAdmin } from '../lib/actions/auth-actions';
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
+  const isAdmin = await checkForAdmin()
   return (
     <html>
       <head>
@@ -19,7 +20,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
       </head>
       <body>
         <div className="App">
-          <Navbar session={session} />
+          <Navbar session={session} isAdmin={isAdmin} />
           <main className="content">
             {children}
           </main>

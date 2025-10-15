@@ -8,6 +8,23 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamp(6)
+  refreshTokenExpiresAt DateTime? @db.Timestamp(6)
+  scope                 String?
+  password              String?
+  createdAt             DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt             DateTime? @default(now()) @db.Timestamp(6)
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
 model address {
   address_id   Int        @id @default(autoincrement())
   street_line1 String     @db.VarChar(100)
@@ -51,6 +68,7 @@ model guest {
   fk_bill_address_id Int?
   address            address? @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
   orders             orders[]
+  user               user?
 }
 
 model inventory {
@@ -133,6 +151,18 @@ model reviews {
   product        product?  @relation(fields: [fk_product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
 }
 
+model session {
+  id        String    @id
+  expiresAt DateTime  @db.Timestamp(6)
+  token     String    @unique
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
 model shipping {
   shipping_id            Int             @id @default(autoincrement())
   fk_order_id            Int?            @unique(map: "uq_shipping_order_id")
@@ -144,62 +174,43 @@ model shipping {
   address                address?        @relation(fields: [fk_shipping_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shipping_address_id")
 }
 
-model User {
-  id            String    @id
+model user {
+  id            String               @id
   name          String
-  email         String    @unique
-  emailVerified Boolean?  @default(false)
+  email         String               @unique
+  emailVerified Boolean?             @default(false)
   image         String?
-  createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime  @default(now()) @updatedAt @db.Timestamp(6)
-  accounts      Account[]
-  sessions      Session[]
-
-  @@map("user")
+  createdAt     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime             @default(now()) @db.Timestamp(6)
+  guest_id      Int?                 @unique
+  organizations OrganizationMember[]
+  account       account[]
+  session       session[]
+  guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
 }
 
-model Session {
-  id        String    @id
-  expiresAt DateTime  @db.Timestamp(6)
-  token     String    @unique
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @updatedAt @db.Timestamp(6)
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime? @db.Timestamp(6)
-  refreshTokenExpiresAt DateTime? @db.Timestamp(6)
-  scope                 String?
-  password              String?
-  createdAt             DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt             DateTime? @default(now()) @updatedAt @db.Timestamp(6)
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("account")
-}
-
-model Verification {
+model verification {
   id         String   @id
   identifier String
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+  updatedAt  DateTime @default(now())
+}
 
-  @@map("verification")
+model Organization {
+  id      String               @id @default(cuid())
+  name    String
+  members OrganizationMember[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  role           Role         @default(CUSTOMER)
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  user           user         @relation(fields: [userId], references: [id])
 }
 
 enum payment_status {
@@ -215,4 +226,9 @@ enum shipping_status {
   delivered
   shipped
   not_yet_shipped @map("not yet shipped")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
 }

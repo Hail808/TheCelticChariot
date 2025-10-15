@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import '../../styles/login.css';
-import { signIn, signInSocial } from '../../../lib/actions/auth-actions';
+import { signIn, signInSocial } from '../../lib/actions/auth-actions';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });

@@ -1,41 +1,94 @@
-CREATE TABLE public.category (
+CREATE TABLE category (
     category_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,  
     description TEXT
+    parent_id INT,
+    CONSTRAINT fk_parent_category
+        FOREIGN KEY (parent_id)
+        REFERENCES category(category_id)
+        ON DELETE SET NULL
 );
 
 
-DROP TABLE IF EXISTS public.product CASCADE;
+DROP TABLE IF EXISTS product CASCADE;
 
-CREATE TABLE public.product (
+CREATE TABLE product (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
     description TEXT,
     price NUMERIC(10,2) NOT NULL,
     inventory INT NOT NULL,
     prod_image_url TEXT,
-    fk_category_id INT REFERENCES public.category(category_id)  
 );
 
 
-INSERT INTO public.category (name, description)
+CREATE TABLE product_category (
+    product_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (product_id, category_id),
+    CONSTRAINT fk_pc_product FOREIGN KEY (product_id)
+        REFERENCES product(product_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pc_category FOREIGN KEY (category_id)
+        REFERENCES category(category_id)
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE customer (
+    customer_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    review_text TEXT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fk_customer_id INT REFERENCES customer(customer_id) ON DELETE SET NULL,
+    fk_product_id INT REFERENCES product(product_id) ON DELETE CASCADE,
+    fk_category_id INT REFERENCES category(category_id) ON DELETE SET NULL
+);
+
+
+
+
+INSERT INTO category (name, description)
 VALUES 
-  ('Jewelry', 'Necklaces, rings, bracelets, and more'),
-  ('Clothing', 'Apparel including shirts, dresses, and pants'),
-  ('Accessories', 'Fashion extras like scarves, belts, and hats'),
-  ('Home Decor', 'Decorative items for home and living');
+('Jewelry', 'All jewelry products'),
+('Necklaces', 'Various styles of necklaces'),
+('Bracelets', 'Bracelets and bangles');  
 
 
-INSERT INTO public.product (product_name, description, price, inventory, prod_image_url, fk_category_id)
+UPDATE category
+SET parent_id = (SELECT category_id FROM category WHERE name = 'Jewelry')
+WHERE name = 'Necklaces';
+
+
+
+INSERT INTO product (product_name, description, price, inventory, prod_image_url)
 VALUES 
-  ('Whimsical Sun Auburn Beaded Necklace in Bronze', 'Handmade beaded necklace with sun motif', 17.00, 25, 'item1.jpg', 1),
-  ('Whimsical Dragonfly Auburn Necklace in Bronze', 'Elegant dragonfly design', 19.99, 15, 'item2.jpg', 1),
-  ('Cotton Summer Dress', 'Lightweight cotton dress for summer', 39.99, 10, 'dress.jpg', 2),
-  ('Leather Belt', 'Brown genuine leather belt', 24.99, 30, 'belt.jpg', 3),
-  ('Decorative Candle Holder', 'Metal candle holder with floral design', 14.99, 20, 'candleholder.jpg', 4);
+('Whimsical Sun Auburn Beaded Necklace', 'Handcrafted bronze beaded necklace', 17.00, 20, 'necklace1.jpg'),
+('Dragonfly Pendant Necklace', 'Elegant dragonfly motif necklace', 19.99, 15, 'necklace2.jpg');
+
+INSERT INTO product_category (product_id, category_id)
+SELECT p.product_id, c.category_id
+FROM product p, category c
+WHERE p.product_name LIKE '%Necklace%' AND c.name = 'Necklaces';
 
 
-SELECT p.product_name, p.price, c.name AS category
-FROM public.product p
-JOIN public.category c ON p.fk_category_id = c.category_id
-ORDER BY c.name, p.product_name;
+INSERT INTO customer (first_name, last_name, email, password)
+VALUES ('John', 'Doe', 'john@gmail.com', 'hashed_password');
+
+
+INSERT INTO reviews (review_text, rating, fk_customer_id, fk_product_id, fk_category_id)
+VALUES
+('Beautiful design and quality!', 5, 1, 1, 2),
+('Nice color, but chain feels light.', 4, 1, 2, 2);
+
