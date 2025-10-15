@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import '../../styles/login.css';
-import { signUp } from '../../../lib/actions/auth-actions';
+import { signUp } from '../../lib/actions/auth-actions';
 
 const CreateAccount = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });

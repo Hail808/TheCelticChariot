@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import { requireAuth } from './auth';
+
 
 export class CartService {
   // Get or create cart for user
