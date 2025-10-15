@@ -3,20 +3,62 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { items } from "./catalogue_items";
+
+// Define the Item type to match your database structure
+interface Item {
+  product_id: number;
+  product_name: string;
+  description: string | null;
+  price: number;
+  inventory: number;
+  prod_image_url: string | null;
+  fk_category_id: number | null;
+}
 
 const Catalogue: React.FC = () => {
   const router = useRouter();
 
   const [query, setQuery] = useState("");
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [items, setItems] = useState<Item[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch items from database on component mount
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/items');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch items');
+        }
+        
+        const data = await response.json();
+        setItems(data);
+        setFilteredItems(data);
+        setError(null);
+        
+        // Apply default sort after fetching
+        handleSort("desc", data);
+      } catch (err) {
+        console.error('Error fetching items:', err);
+        setError('Failed to load catalogue items');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const filteredResults = items.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
+      item.product_name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredItems(filteredResults);
   };
@@ -25,7 +67,7 @@ const Catalogue: React.FC = () => {
     setSortOrder(order);
     const sorted = [...data].sort((a, b) => {
       if (a.price === b.price) {
-        return a.name.localeCompare(b.name);
+        return a.product_name.localeCompare(b.product_name);
       }
       return order === "asc" ? a.price - b.price : b.price - a.price;
     });
@@ -42,12 +84,8 @@ const Catalogue: React.FC = () => {
 
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
-    const filtered =
-      category === "All Products"
-        ? items
-        : items.filter(
-            (item) => item.category.toLowerCase() === category.toLowerCase()
-          );
+    // For now, just filter all products - you can enhance this later with category relationships
+    const filtered = category === "All Products" ? items : items;
     handleSort(sortOrder, filtered);
   };
 
@@ -55,11 +93,27 @@ const Catalogue: React.FC = () => {
     router.push("/product_page");
   };
 
-  useEffect(() => {
-    handleSort("desc");
-  }, []);
+  if (loading) {
+    return (
+      <div className="p-6 max-w-[1280px] mx-auto">
+        <h1 className="text-4xl font-bold mb-6 text-center">Catalogue Page</h1>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <p className="text-lg text-gray-600">Loading catalogue...</p>
+        </div>
+      </div>
+    );
+  }
 
-
+  if (error) {
+    return (
+      <div className="p-6 max-w-[1280px] mx-auto">
+        <h1 className="text-4xl font-bold mb-6 text-center">Catalogue Page</h1>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <p className="text-lg text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-[1280px] mx-auto">
@@ -114,9 +168,10 @@ const Catalogue: React.FC = () => {
                 onClick={() => handleCategoryFilter(category)}
                 className={`px-4 py-2 rounded transition
                   ${selectedCategory === category 
-                    ? "bg-[#4a5a40] shadow-lg ring-2 ring-[#5B6D50]"  // active (darker shade)
-                    : "bg-[#5B6D50] hover:bg-[#4a5a40]"}  // normal
-                `}           >
+                    ? "bg-[#4a5a40] shadow-lg ring-2 ring-[#5B6D50]"
+                    : "bg-[#5B6D50] hover:bg-[#4a5a40]"}
+                `}
+              >
                 {category}
               </button>
             )
@@ -128,21 +183,18 @@ const Catalogue: React.FC = () => {
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
               <div
-                key={item.id}
+                key={item.product_id}
                 className="flex flex-col items-center text-center"
               >
                 <button
                   onClick={handleProduct}
-                    className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+                  className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
                 >
                   {item.prod_image_url ? (
-                    //Image and fill will currently brcik. Have to reroute item img to database img url that works
-                    //Image
                     <img
                       src={item.prod_image_url}
                       alt={item.product_name}
-                      //fill
-                      className="object-cover"
+                      className="object-cover w-full h-full"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-300 flex items-center justify-center">
@@ -150,7 +202,7 @@ const Catalogue: React.FC = () => {
                     </div>
                   )}
                 </button>
-                <p className="mt-2 font-medium w-full text-left">{item.name}</p>
+                <p className="mt-2 font-medium w-full text-left">{item.product_name}</p>
 
                 <p className="text-indigo-600 font-bold w-full text-left">
                   {formatPrice(item.price)}

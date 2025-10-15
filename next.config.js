@@ -4,11 +4,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'example.com',
+        hostname: 'i.etsystatic.com',
       },
+      // Add any other image domains you're using
       {
         protocol: 'https',
-        hostname: 'examples.com',
+        hostname: '**.cloudinary.com', // if using Cloudinary
       },
     ],
   },
