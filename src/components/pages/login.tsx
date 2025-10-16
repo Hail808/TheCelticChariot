@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   const handleAdminLogin = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   const handleGoogleAuth = async () => {

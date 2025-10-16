@@ -66,19 +66,19 @@ const AdminOrders: React.FC = () => {
   }, []);
 
   const handleHome = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   const handleEngagement = () => {
-    router.push('/admin_engagement');
+    router.push('/admin/engagement');
   };
 
   const handleSales = () => {
-    router.push('/admin_sales');
+    router.push('/admin/sales');
   };
 
   const handleCatalogue = () => {
-    router.push('/admin_catalogue');
+    router.push('/admin/catalogue');
   };
 
   const handleSort = (key: keyof Order | 'customerName' | 'itemCount') => {

@@ -113,7 +113,7 @@ const AdminCatalogue: React.FC = () => {
   };
 
   const handleBackToAdmin = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   // Add Product
