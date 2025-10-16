@@ -56,9 +56,13 @@ const ProductDetail: React.FC = () => {
 
       try {
         setLoading(true);
+        console.log('Fetching product with ID:', productId);  // Add this
         const response = await fetch(`/api/product/${productId}`);
-        
+        console.log('Response status:', response.status);  // Add this
+            
         if (!response.ok) {
+          const errorData = await response.json();  // Add this
+          console.log('Error data:', errorData);  // Add this
           throw new Error('Failed to fetch product');
         }
         
