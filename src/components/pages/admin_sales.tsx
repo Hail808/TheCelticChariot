@@ -89,19 +89,19 @@ const AdminSales: React.FC = () => {
   }, []);
 
   const handleHome = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   const handleEngagement = () => {
-    router.push('/admin_engagement');
+    router.push('/admin/engagement');
   };
 
   const handleCatalogue = () => {
-    router.push('/admin_catalogue');
+    router.push('/admin/catalogue');
   };
 
   const handleOrders = () => {
-    router.push('/admin_orders');
+    router.push('/admin/orders');
   };
 
   if (loading) {
