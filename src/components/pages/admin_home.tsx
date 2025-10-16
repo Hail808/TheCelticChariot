@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 "use client";
 
 import React, { useState, useEffect } from 'react';
-=======
-"use client"
-import React from 'react';
->>>>>>> 0a4082d71ef8aa4a504b3355c6c1cd965e47a852
 import { useRouter } from 'next/navigation';
 import '../../styles/home.css';
 
@@ -45,19 +40,19 @@ export default function AdminHome() {
   }, []);
 
   const handleEngagement = () => {
-    router.push('/admin_engagement');
+    router.push('/admin/engagement');
   };
 
   const handleSales = () => {
-    router.push('/admin_sales');
+    router.push('/admin/sales');
   };
 
   const handleCatalogue = () => {
-    router.push('/admin_catalogue');
+    router.push('/admin/catalogue');
   };
 
   const handleOrders = () => {
-    router.push('/admin_orders');
+    router.push('/admin/orders');
   };
 
   const handleBackToHome = () => {

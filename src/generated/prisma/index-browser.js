@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.16.2
- * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+ * Prisma Client JS version: 6.17.1
+ * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
  */
 Prisma.prismaVersion = {
-  client: "6.16.2",
-  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
+  client: "6.17.1",
+  engine: "272a37d34178c2894197e17273bf937f25acdeac"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -212,7 +212,9 @@ exports.Prisma.PaymentScalarFieldEnum = {
   payment_id: 'payment_id',
   fk_invoice_id: 'fk_invoice_id',
   payment_method: 'payment_method',
+  payment_status: 'payment_status',
   payment_date: 'payment_date',
+  transaction_id: 'transaction_id',
   amount_paid: 'amount_paid'
 };
 
@@ -252,7 +254,9 @@ exports.Prisma.ShippingScalarFieldEnum = {
   fk_shipping_address_id: 'fk_shipping_address_id',
   tracking_num: 'tracking_num',
   carrier: 'carrier',
-  shipping_status: 'shipping_status'
+  shipping_method: 'shipping_method',
+  shipping_status: 'shipping_status',
+  created_at: 'created_at'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -285,6 +289,22 @@ exports.Prisma.OrganizationMemberScalarFieldEnum = {
   userId: 'userId',
   organizationId: 'organizationId',
   role: 'role'
+};
+
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CartItemScalarFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  productId: 'productId',
+  quantity: 'quantity',
+  priceAtAddition: 'priceAtAddition',
+  addedAt: 'addedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -339,7 +359,9 @@ exports.Prisma.ModelName = {
   user: 'user',
   verification: 'verification',
   Organization: 'Organization',
-  OrganizationMember: 'OrganizationMember'
+  OrganizationMember: 'OrganizationMember',
+  Cart: 'Cart',
+  CartItem: 'CartItem'
 };
 
 /**

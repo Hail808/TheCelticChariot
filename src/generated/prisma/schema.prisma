@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model account {
@@ -119,12 +120,14 @@ model orders {
 }
 
 model payment {
-  payment_id     Int      @id @default(autoincrement())
-  fk_invoice_id  Int?     @unique(map: "uq_invoice_id")
-  payment_method String   @db.VarChar(50)
-  payment_date   DateTime @db.Date
-  amount_paid    Decimal? @db.Decimal(10, 2)
-  invoice        invoice? @relation(fields: [fk_invoice_id], references: [invoice_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_id")
+  payment_id     Int            @id @default(autoincrement())
+  fk_invoice_id  Int?           @unique(map: "uq_invoice_id")
+  payment_method String         @db.VarChar(50)
+  payment_status payment_status @default(pending)
+  payment_date   DateTime       @db.Date
+  transaction_id String?        @db.VarChar(100)
+  amount_paid    Decimal?       @db.Decimal(10, 2)
+  invoice        invoice?       @relation(fields: [fk_invoice_id], references: [invoice_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_id")
 }
 
 model product {
@@ -138,6 +141,7 @@ model product {
   order_item     order_item[]
   category       category?    @relation(fields: [fk_category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_id")
   reviews        reviews[]
+  cartItems      CartItem[]
 }
 
 model reviews {
@@ -169,7 +173,9 @@ model shipping {
   fk_shipping_address_id Int?            @unique(map: "uq_shipping_address_id")
   tracking_num           String?         @db.VarChar(50)
   carrier                String          @db.VarChar(50)
+  shipping_method        String          @db.VarChar(50)
   shipping_status        shipping_status @default(not_yet_shipped)
+  created_at             DateTime        @default(now())
   orders                 orders?         @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
   address                address?        @relation(fields: [fk_shipping_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shipping_address_id")
 }
@@ -181,12 +187,15 @@ model user {
   emailVerified Boolean?             @default(false)
   image         String?
   createdAt     DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime             @default(now()) @updatedAt @db.Timestamp(6)
   guest_id      Int?                 @unique
+  cart          Cart?
   organizations OrganizationMember[]
   account       account[]
   session       session[]
   guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
+
+  @@map("user")
 }
 
 model verification {
@@ -226,6 +235,30 @@ enum shipping_status {
   delivered
   shipped
   not_yet_shipped @map("not yet shipped")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String     @unique
+  user      user       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id              Int      @id @default(autoincrement())
+  cartId          Int
+  cart            Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         product  @relation(fields: [productId], references: [product_id])
+  quantity        Int
+  priceAtAddition Decimal  @db.Decimal(10, 2)
+  addedAt         DateTime @default(now())
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
 }
 
 enum Role {
