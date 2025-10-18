@@ -79,6 +79,20 @@ export  async function getCurrentUser() {
   return session?.user ?? null;
 }
 
-export async function checkForAdmin() {
-    return true; // Temporarily return true for testing
+export  async function checkForAdmin() {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+    
+      if (!session?.user) {
+       return 0;
+      }
+    
+      const userOrgs = await getOrganizations();
+      
+      const isAdmin = userOrgs.some(org => 
+        org.role === 'ADMIN'
+      );
+      return isAdmin
+    
 }
