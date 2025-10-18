@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import {prismaAdapter} from 'better-auth/adapters/prisma'
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/prisma";
 import {nextCookies} from 'better-auth/next-js'
 import { headers } from 'next/headers';
 import { organization } from "better-auth/plugins"
@@ -19,6 +19,12 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         },
     },
+    plugins: [ organization({
+            ac,
+            roles: {
+                customer,
+                admin,
+                }}),nextCookies()]
 }); 
 
 export async function getCurrentUser() {
@@ -46,10 +52,6 @@ export async function requireAuth() {
   
   return user;
 }
-    plugins: [ organization({
-            ac,
-            roles: {
-                customer,
-                admin,
-                }}),nextCookies()]
+    
+                
 
