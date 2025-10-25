@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import { getOrganizations } from "../auth/organizations";
 
 const prisma = new PrismaClient();
+
 export const signUp = async (email: string, password: string, name: string) => {
     const result = await auth.api.signUpEmail({
         body: {
@@ -16,10 +17,41 @@ export const signUp = async (email: string, password: string, name: string) => {
             callbackURL:"/user_dashboard"
         },
     });
-      if (!result.user) return result;
+    
+    if (!result.user) return result;
 
     const userId = result.user.id;
+    
+    const existingGuest = await prisma.guest.findFirst({
+        where: { email: email }
+    });
 
+    if (existingGuest) {
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                guest_id: existingGuest.guest_id
+            }
+        });
+        
+        console.log(`Linked user ${userId} to existing guest ${existingGuest.guest_id}`);
+    } else {
+        const newGuest = await prisma.guest.create({
+            data: {
+                email: email,
+                phone_num: '',
+            }
+        });
+        
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                guest_id: newGuest.guest_id
+            }
+        });
+        
+        console.log(`Created new guest ${newGuest.guest_id} for user ${userId}`);
+    }
     
     const defaultOrg = await prisma.organization.findFirst({
         where: { name: "The Celtic Chariot" }
@@ -29,16 +61,15 @@ export const signUp = async (email: string, password: string, name: string) => {
         throw new Error("Default organization not found");
     }
 
-   
     await prisma.organizationMember.create({
         data: {
-        userId: userId,
-        organizationId: defaultOrg.id,
-        role: "CUSTOMER", 
+            userId: userId,
+            organizationId: defaultOrg.id,
+            role: "CUSTOMER", 
         },
-  });
+    });
 
-  return result;
+    return result;
 }
 
 
@@ -66,17 +97,17 @@ export const signInSocial = async () => {
         },
     });
 
-    if (url)
-    {
+    if (url) {
         redirect(url)
     }
 }
-export  async function getCurrentUser() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
 
-  return session?.user ?? null;
+export async function getCurrentUser() {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    return session?.user ?? null;
 }
 
 export async function checkForAdmin() {
@@ -85,7 +116,7 @@ export async function checkForAdmin() {
     });
 
     if (!session?.user) {
-       return false;
+        return false;
     }
 
     const userOrgs = await getOrganizations();
