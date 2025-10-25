@@ -30,12 +30,6 @@ def test_order_with_new_account():
         test_email = generate_random_email()
         test_password = "TestPassword123!"
         test_name = "Test User"
-        test_address = {
-            "line1": "1234 Howe Avenue",
-            "city": "Sacramento",
-            "state": "CA",
-            "zip": "95825"
-        }
 
         print(f"Starting test with email: {test_email}")
 
@@ -54,7 +48,7 @@ def test_order_with_new_account():
         signup_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
         signup_button.click()
 
-        time.sleep(1)
+        time.sleep(2)
 
         # Go to cart
         print("Adding product to cart")
