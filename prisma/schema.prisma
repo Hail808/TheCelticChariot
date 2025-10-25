@@ -110,6 +110,7 @@ model orders {
   fk_bill_address_id Int?
   fk_customer_id     Int?
   fk_guest_id        Int?
+  reference          String       @unique @db.VarChar(20)
   invoice            invoice?
   order_item         order_item[]
   address            address?     @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
