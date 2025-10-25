@@ -87,7 +87,7 @@ def test_order_with_new_account():
         print("Use test card number: 4242 4242 4242 4242")
         print("Expiry: 4/44   CVC: 444")
         print("Uncheck 'Save my information for a faster checkout'")
-        print("Then click 'Pay' or 'Complete Payment' on the Stripe page.")
+        print("Then click 'Pay' on the Stripe page.")
 
         # Wait for redirect to success page
         wait.until(EC.url_contains("/success"))
