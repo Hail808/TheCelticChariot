@@ -14,7 +14,7 @@ def generate_random_email():
     return f"test_{random_string}@example.com"
 
 
-def test_order_with_new_account():
+def test_order_with_no_account():
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -28,27 +28,7 @@ def test_order_with_new_account():
     try:
         # Test data
         test_email = generate_random_email()
-        test_password = "TestPassword123!"
-        test_name = "Test User"
-
         print(f"Starting test with email: {test_email}")
-
-        print("Creating account...")
-        driver.get("http://localhost:3000/create_account")
-
-        name_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
-        name_field.send_keys(test_name)
-
-        email_field = driver.find_element(By.NAME, "email")
-        email_field.send_keys(test_email)
-
-        password_field = driver.find_element(By.NAME, "password")
-        password_field.send_keys(test_password)
-
-        signup_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        signup_button.click()
-
-        time.sleep(2)
 
         # Go to cart
         driver.get("http://localhost:3000/cart")
@@ -84,38 +64,18 @@ def test_order_with_new_account():
         # Wait for redirect to success page
         wait.until(EC.url_contains("/success"))
         print("Payment completed successfully")
-
-        # Check user dashboard
-        print("Checking user dashboard...")
-        driver.get("http://localhost:3000/user_dashboard")
-        time.sleep(3)
-
-        # Verify order appears
-        print("Verifying order in dashboard...")
-        orders_table = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "order-table")))
-        order_rows = driver.find_elements(By.CSS_SELECTOR, ".order-table tbody tr")
-
-        if len(order_rows) > 0:
-            print(f"✓ Found {len(order_rows)} order(s) in dashboard")
-            first_order = order_rows[0]
-            cells = first_order.find_elements(By.TAG_NAME, "td")
-
-            order_number = cells[0].text
-            order_date = cells[1].text
-            payment_status = cells[2].text
-            total = cells[4].text
-
-            print(f"  Order Number: {order_number}")
-            print(f"  Date: {order_date}")
-            print(f"  Payment Status: {payment_status}")
-            print(f"  Total: {total}")
-
-            assert "paid" in payment_status.lower(), "Order payment status should be 'paid'"
-            print("Order verification successful!")
+        
+        #Check that the order was made and assigned a reference number
+        order_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//p[contains(@class, 'font-mono') and contains(@class, 'font-bold')]"))
+        )
+        
+        order_number = order_element.text.strip()
+        if order_number:
+            print(f"Order successfully saved in DB with reference {order_number}" )
             return True
         else:
-            print("No orders found in dashboard!")
-            return False
+            print("Order failed")
 
     except Exception as e:
         print(f"Test failed with error: {str(e)}")
@@ -129,10 +89,10 @@ def test_order_with_new_account():
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("Starting Order With New Account Test")
+    print("Starting Order with no account test")
     print("=" * 50)
 
-    success = test_order_with_new_account()
+    success = test_order_with_no_account()
 
     print("\n" + "=" * 50)
     if success:
