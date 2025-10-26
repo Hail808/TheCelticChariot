@@ -50,6 +50,7 @@ const UserDashboard = async () => {
     const accInfo = {
         userName: user.name,
         name: user.name,
+        email: user.email,
         address: user.guest?.address?.street_line1 ?? '',
         city: user.guest?.address
             ? [user.guest.address.city, user.guest.address.state, user.guest.address.postal_code]
@@ -118,6 +119,10 @@ const UserDashboard = async () => {
                         <div className="info-row">
                             <dt>Name</dt>
                             <dd>{accInfo.name}</dd>
+                        </div>
+                        <div className="info-row">
+                            <dt>Email</dt>
+                            <dd>{accInfo.email}</dd>
                         </div>
                         <div className="info-row">
                             <dt>Address</dt>
