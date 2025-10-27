@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'AnotherFont';
+  src: url('/fonts/CELTG.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-color: rbg(233, 222, 193);
+  font-family: 'AnotherFont', Arial, "Helvetica Neue", Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 /* Makes sure entire page takes up the full viewport height for formatting */
 html, body {
   height: 100%;
@@ -40,4 +54,19 @@ nav a {
   
 nav a:hover {
   text-decoration: underline;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }

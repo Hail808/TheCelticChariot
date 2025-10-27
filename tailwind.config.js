@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         lalezar: ['Lalezar', 'sans-serif'],
+        another: ['AnotherFont','sans-serif'],
       },
     },
   },
