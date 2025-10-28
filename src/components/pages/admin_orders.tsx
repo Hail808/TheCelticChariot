@@ -73,10 +73,6 @@ const AdminOrders: React.FC = () => {
     router.push('/admin/engagement');
   };
 
-  const handleSales = () => {
-    router.push('/admin/sales');
-  };
-
   const handleCatalogue = () => {
     router.push('/admin/catalogue');
   };
@@ -209,30 +205,24 @@ const AdminOrders: React.FC = () => {
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto">
-      {/* Page Header */}
-      <div className="relative mb-6">
+      {/* ---------- Page Header ---------- */}
+      <div className="relative mb-8">
         <h1 className="text-4xl font-bold text-center">Admin Orders</h1>
+        <button 
+          onClick={handleHome}
+          className="absolute right-0 top-0 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+        >
+          Back to Admin Home
+        </button>
       </div>
 
       {/* Navigation Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <button 
-          onClick={handleHome}
-          className="px-6 py-3 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
-        >
-          Home
-        </button>
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mb-8">
         <button 
           onClick={handleEngagement}
           className="px-6 py-3 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
         >
           Engagement
-        </button>
-        <button 
-          onClick={handleSales}
-          className="px-6 py-3 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
-        >
-          Sales
         </button>
         <button 
           onClick={handleCatalogue}
@@ -246,15 +236,15 @@ const AdminOrders: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Total Orders</h3>
-          <p className="text-4xl font-bold text-blue-600">{totalOrders}</p>
+          <p className="text-4xl font-bold text-gray-700">{totalOrders}</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Pending Orders</h3>
-          <p className="text-4xl font-bold text-orange-600">{pendingOrders}</p>
+          <p className="text-4xl font-bold text-gray-700">{pendingOrders}</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Total Revenue</h3>
-          <p className="text-4xl font-bold text-green-600">${totalRevenue.toFixed(2)}</p>
+          <p className="text-4xl font-bold text-gray-700">${totalRevenue.toFixed(2)}</p>
         </div>
       </div>
 
@@ -300,7 +290,7 @@ const AdminOrders: React.FC = () => {
           <div className="flex items-end gap-2">
             <button 
               onClick={handleFilter}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="flex-1 px-4 py-2 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
             >
               Apply Filter
             </button>
@@ -385,10 +375,10 @@ const AdminOrders: React.FC = () => {
                     <td className="px-6 py-4 text-gray-600 text-sm">
                       {getAddress(order)}
                     </td>
-                    <td className="px-6 py-4 text-green-600 font-bold">
+                    <td className="px-6 py-4 text-gray-800 font-bold">
                       ${Number(order.total_price).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 text-gray-800">
+                    <td className="px-6 py-4 text-gray-800 font-bold">
                       {getTotalItems(order)}
                     </td>
                     <td className="px-6 py-4">
@@ -397,7 +387,7 @@ const AdminOrders: React.FC = () => {
                     <td className="px-6 py-4">
                       <button 
                         onClick={() => alert(`View order details for Order #${order.order_id}`)}
-                        className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                        className="px-4 py-2 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
                       >
                         View Details
                       </button>

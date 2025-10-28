@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import StatisticsSection from "./statistics_section";
 
 // Define the Item type to match your database structure
 interface Item {
@@ -33,6 +34,9 @@ const AdminCatalogue: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // New state for statistics view
+  const [showStatistics, setShowStatistics] = useState(false);
 
   // Modal states
   const [showEditModal, setShowEditModal] = useState(false);
@@ -228,173 +232,201 @@ const AdminCatalogue: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="p-6 max-w-[1280px] mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">Admin Catalogue</h1>
-        <div className="flex justify-center items-center min-h-[400px]">
-          <p className="text-lg text-gray-600">Loading catalogue...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl text-gray-600">Loading catalogue...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 max-w-[1280px] mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">Admin Catalogue</h1>
-        <div className="flex justify-center items-center min-h-[400px]">
-          <p className="text-lg text-red-600">{error}</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl text-red-600">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-[1280px] mx-auto">
-      {/* Page Header with Back Button */}
-      <div className="relative mb-6">
-        <h1 className="text-4xl font-bold text-center">Admin Catalogue</h1>
-        <button 
-          onClick={handleBackToAdmin}
-          className="absolute right-0 top-0 px-4 py-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
-        >
-          Back to Admin Home
-        </button>
-      </div>
-
-      {/* Search, Sort & Add Product */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        {/* Search */}
-        <form
-          onSubmit={handleSearch}
-          className="flex gap-2 w-full md:w-auto"
-        >
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for products..."
-            className="border border-gray-300 rounded px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header with Navigation */}
+        <div className="flex justify-between items-center mb-8">
           <button
-            type="submit"
-            className="px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
+            onClick={handleBackToAdmin}
+            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
           >
-            Search
+            ← Back to Admin
           </button>
-        </form>
-
-        <div className="flex items-center gap-4">
-          {/* Sort */}
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Sort By:</span>
-            <select
-              onChange={(e) =>
-                handleSort(e.target.value as "asc" | "desc")
-              }
-              className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          
+          {/* Toggle Statistics/Catalogue View */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => setShowStatistics(false)}
+              className={`px-6 py-2 rounded font-semibold transition ${
+                !showStatistics 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
-              <option value="desc">Price: High to Low</option>
-              <option value="asc">Price: Low to High</option>
-            </select>
+              Catalogue
+            </button>
+            <button
+              onClick={() => setShowStatistics(true)}
+              className={`px-6 py-2 rounded font-semibold transition ${
+                showStatistics 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              📊 Statistics
+            </button>
           </div>
 
-          {/* Add Product Button */}
           <button
             onClick={handleAddProduct}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold"
+            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold"
           >
-            + Add Product
+            + Add New Product
           </button>
         </div>
-      </div>
 
-      {/* Main Content: Sidebar + Catalogue */}
-      <div className="flex flex-col lg:flex-row gap-12">
-        {/* Left Sidebar: Categories */}
-        <div className="lg:w-1/5 flex flex-col gap-4 mb-4 lg:mb-0 text-white">
-          {["All Products", "Necklace", "Earrings", "DIY Bead Sets", "Keychains", "Beaded Belt"].map(
-            (category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryFilter(category)}
-                className={`px-4 py-2 rounded transition
-                  ${selectedCategory === category 
-                    ? "bg-[#4a5a40] shadow-lg ring-2 ring-[#5B6D50]"
-                    : "bg-[#5B6D50] hover:bg-[#4a5a40]"}
-                `}
-              >
-                {category}
-              </button>
-            )
-          )}
-        </div>
+        {/* Conditional Rendering: Statistics or Catalogue */}
+        {showStatistics ? (
+          <StatisticsSection />
+        ) : (
+          <>
+            {/* Title */}
+            <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+              Admin Product Catalogue
+            </h1>
 
-        {/* Right Content: Catalogue Grid */}
-        <div className="lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <div
-                key={item.product_id}
-                className="flex flex-col items-center text-center"
-              >
+            {/* Search Bar */}
+            <div className="mb-8">
+              <form onSubmit={handleSearch} className="flex gap-4 max-w-2xl mx-auto">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
                 <button
-                  onClick={() => navigateToProduct(item.product_id)}
-                  className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+                  type="submit"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
                 >
-                  {item.prod_image_url ? (
-                    <img
-                      src={item.prod_image_url}
-                      alt={item.product_name}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                      <span>No Image</span>
-                    </div>
-                  )}
+                  Search
                 </button>
-                <p className="mt-2 font-medium w-full text-left line-clamp-2">{item.product_name}</p>
+              </form>
+            </div>
 
-                <p className="text-indigo-600 font-bold w-full text-left">
-                  {formatPrice(item.price)}
-                </p>
-
-                {/* Stock Info */}
-                <p className="text-sm text-gray-600 w-full text-left">
-                  Stock: {item.inventory}
-                </p>
-
-                {/* Admin Action Buttons */}
-                <div className="flex gap-2 w-full mt-2">
-                  <button
-                    onClick={() => handleEditProduct(item)}
-                    className="flex-1 px-3 py-1 bg-[#5B6D50] text-white hover:bg-[#4a5a40] transition font-semibold text-sm rounded shadow-md"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProduct(item.product_id)}
-                    className="flex-1 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition"
-                  >
-                    Delete
-                  </button>
-                </div>
+            {/* Filter and Sort Controls */}
+            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleCategoryFilter("All Products")}
+                  className={`px-4 py-2 rounded ${
+                    selectedCategory === "All Products"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  } transition`}
+                >
+                  All Products
+                </button>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 col-span-full">
-              No results found
-            </p>
-          )}
-        </div>
-      </div>
 
-      {/* Results Count */}
-      {filteredItems.length > 0 && (
-        <div className="mt-8 text-center text-gray-600">
-          Showing {filteredItems.length} of {items.length} products
-        </div>
-      )}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleSort("asc")}
+                  className={`px-4 py-2 rounded ${
+                    sortOrder === "asc"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  } transition`}
+                >
+                  Price: Low to High
+                </button>
+                <button
+                  onClick={() => handleSort("desc")}
+                  className={`px-4 py-2 rounded ${
+                    sortOrder === "desc"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  } transition`}
+                >
+                  Price: High to Low
+                </button>
+              </div>
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <div
+                    key={item.product_id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+                  >
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => navigateToProduct(item.product_id)}
+                    >
+                      <img
+                        src={item.prod_image_url || "/placeholder.jpg"}
+                        alt={item.product_name}
+                        className="w-full h-64 object-cover"
+                      />
+                      <div className="p-4">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                          {item.product_name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                          {item.description || "No description available"}
+                        </p>
+                        <div className="flex justify-between items-center mb-2">
+                          <p className="text-2xl font-bold text-blue-600">
+                            {formatPrice(item.price)}
+                          </p>
+                          <p className={`text-sm font-semibold ${
+                            item.inventory > 10 ? 'text-green-600' : 
+                            item.inventory > 0 ? 'text-orange-600' : 'text-red-600'
+                          }`}>
+                            Stock: {item.inventory}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 pt-0 flex gap-2">
+                      <button
+                        onClick={() => handleEditProduct(item)}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProduct(item.product_id)}
+                        className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition font-semibold"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500 col-span-full">
+                  No results found
+                </p>
+              )}
+            </div>
+
+            {/* Results Count */}
+            {filteredItems.length > 0 && (
+              <div className="mt-8 text-center text-gray-600">
+                Showing {filteredItems.length} of {items.length} products
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* Add Product Modal */}
       {showAddModal && (
@@ -575,7 +607,7 @@ const AdminCatalogue: React.FC = () => {
               <div className="flex gap-4 mt-6">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-[#5B6D50] text-white hover:bg-[#4a5a40] transition font-semibold"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold"
                 >
                   Update Product
                 </button>
