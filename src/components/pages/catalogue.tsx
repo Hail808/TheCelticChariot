@@ -89,8 +89,8 @@ const Catalogue: React.FC = () => {
     handleSort(sortOrder, filtered);
   };
 
-  const handleProduct = () => {
-    router.push("/product_page");
+  const handleProduct = (itemId: number) => {
+    router.push(`/product_page?id=${itemId}`);
   };
 
   if (loading) {
@@ -187,7 +187,7 @@ const Catalogue: React.FC = () => {
                 className="flex flex-col items-center text-center"
               >
                 <button
-                  onClick={handleProduct}
+                  onClick={() => handleProduct(item.product_id)}
                   className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
                 >
                   {item.prod_image_url ? (
