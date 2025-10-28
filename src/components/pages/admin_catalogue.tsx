@@ -113,7 +113,7 @@ const AdminCatalogue: React.FC = () => {
   };
 
   const handleBackToAdmin = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   // Add Product
@@ -255,7 +255,7 @@ const AdminCatalogue: React.FC = () => {
         <h1 className="text-4xl font-bold text-center">Admin Catalogue</h1>
         <button 
           onClick={handleBackToAdmin}
-          className="absolute right-0 top-0 px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
+          className="absolute right-0 top-0 px-4 py-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
         >
           Back to Admin Home
         </button>
@@ -368,7 +368,7 @@ const AdminCatalogue: React.FC = () => {
                 <div className="flex gap-2 w-full mt-2">
                   <button
                     onClick={() => handleEditProduct(item)}
-                    className="flex-1 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                    className="flex-1 px-3 py-1 bg-[#5B6D50] text-white hover:bg-[#4a5a40] transition font-semibold text-sm rounded shadow-md"
                   >
                     Edit
                   </button>
@@ -575,7 +575,7 @@ const AdminCatalogue: React.FC = () => {
               <div className="flex gap-4 mt-6">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold"
+                  className="flex-1 px-4 py-2 bg-[#5B6D50] text-white hover:bg-[#4a5a40] transition font-semibold"
                 >
                   Update Product
                 </button>

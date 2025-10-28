@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   const handleAdminLogin = () => {
-    router.push('/admin_home');
+    router.push('/admin');
   };
 
   const handleGoogleAuth = async () => {
@@ -86,10 +86,7 @@ const Login = () => {
           <button type="button" onClick={handleGoogleAuth} className="google-button">Continue With Google</button>
         </div>
 
-        {/* Admin Login Button */}
-        <div className="button-format">
-          <button type="button" onClick={handleAdminLogin} className="admin-button">Admin Login</button>
-        </div>
+
         
         {error && <p className="error-message">{error}</p>}
       </form>

@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model account {
@@ -181,12 +182,14 @@ model user {
   emailVerified Boolean?             @default(false)
   image         String?
   createdAt     DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime             @default(now()) @updatedAt @db.Timestamp(6)
   guest_id      Int?                 @unique
   organizations OrganizationMember[]
   account       account[]
   session       session[]
   guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
+
+  @@map("user")
 }
 
 model verification {
@@ -211,6 +214,17 @@ model OrganizationMember {
   role           Role         @default(CUSTOMER)
   organization   Organization @relation(fields: [organizationId], references: [id])
   user           user         @relation(fields: [userId], references: [id])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model myReviews {
+  id         Int       @default(autoincrement())
+  name       String?
+  comment    String?
+  rating     Int?
+  created_at DateTime? @db.Timestamptz(6)
+
+  @@ignore
 }
 
 enum payment_status {
