@@ -19,7 +19,7 @@ const Cart = () => {
     setIsLoading(true);
     
     try {
-      // Call the API route to create a checkout session
+      // Call your API route to create a checkout session
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
