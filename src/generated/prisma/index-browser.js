@@ -212,9 +212,7 @@ exports.Prisma.PaymentScalarFieldEnum = {
   payment_id: 'payment_id',
   fk_invoice_id: 'fk_invoice_id',
   payment_method: 'payment_method',
-  payment_status: 'payment_status',
   payment_date: 'payment_date',
-  transaction_id: 'transaction_id',
   amount_paid: 'amount_paid'
 };
 
@@ -254,9 +252,7 @@ exports.Prisma.ShippingScalarFieldEnum = {
   fk_shipping_address_id: 'fk_shipping_address_id',
   tracking_num: 'tracking_num',
   carrier: 'carrier',
-  shipping_method: 'shipping_method',
-  shipping_status: 'shipping_status',
-  created_at: 'created_at'
+  shipping_status: 'shipping_status'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -289,22 +285,6 @@ exports.Prisma.OrganizationMemberScalarFieldEnum = {
   userId: 'userId',
   organizationId: 'organizationId',
   role: 'role'
-};
-
-exports.Prisma.CartScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.CartItemScalarFieldEnum = {
-  id: 'id',
-  cartId: 'cartId',
-  productId: 'productId',
-  quantity: 'quantity',
-  priceAtAddition: 'priceAtAddition',
-  addedAt: 'addedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -359,9 +339,7 @@ exports.Prisma.ModelName = {
   user: 'user',
   verification: 'verification',
   Organization: 'Organization',
-  OrganizationMember: 'OrganizationMember',
-  Cart: 'Cart',
-  CartItem: 'CartItem'
+  OrganizationMember: 'OrganizationMember'
 };
 
 /**

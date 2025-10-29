@@ -1,17 +1,45 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 const Cart = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const cartItems = [
-    { id: 1, name: "Whimsical Sun Auburn Beaded Necklace in Bronze", price: "$17.00", image: "/productimages/necklace1.png" },
+    { id: 1, name: "Whimsical Sun Auburn Beaded Necklace in Bronze", price: 17.00, image: "/productimages/necklace1.png" },
   ];
 
   const recommendedItems = [
-    { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: "$19.99", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
-    { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: "$16.50", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
-    { id: 4, name: "Whimsical Fall Maple Leaves Mountain Beaded Necklace in", price: "$19.99", image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
+    { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: 19.99, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
+    { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: 16.50, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
+    { id: 4, name: "Whimsical Fall Maple Leaves Mountain Beaded Necklace in", price: 19.99, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
   ];
+
+  const handleCheckout = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Call your API route to create a checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: cartItems }),
+      });
+
+      const { url } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Something went wrong. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="min-h-screen p-6 space-y-8 max-w-6xl mx-auto">
@@ -32,7 +60,7 @@ const Cart = () => {
             />
             <div className="flex-1">
               <h2 className="text-lg font-semibold text-[#333]">{item.name}</h2>
-              <p className="text-[#666] mt-1">{item.price}</p>
+              <p className="text-[#666] mt-1">${item.price.toFixed(2)}</p>
               <div className="mt-3 flex gap-3">
                 <button className="bg-[#5B6D50] text-white px-4 py-2 rounded hover:bg-[#4a5a40] transition-colors">
                   Item Count
@@ -46,30 +74,18 @@ const Cart = () => {
         ))}
       </div>
 
-      {/* checkout section */}
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-[#333] mb-4">How You'll Pay</h2>
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="payment" value="paypal" className="cursor-pointer" />
-            <span className="text-[#333]">PayPal</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="payment" value="visa" className="cursor-pointer" />
-            <span className="text-[#333]">VISA</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="payment" value="mastercard" className="cursor-pointer" />
-            <span className="text-[#333]">MasterCard</span>
-          </label>
+      {/* Checkout Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-xl font-semibold text-[#333]">Total:</span>
+          <span className="text-2xl font-bold text-[#5B6D50]">${total.toFixed(2)}</span>
         </div>
-        <div className="border-t pt-4 mt-4 space-y-2">
-          <p className="text-[#666]">Item Total: $17.00</p>
-          <p className="text-[#666]">Shipping: $5.00</p>
-          <p className="text-xl font-semibold text-[#333] mt-2">Total: $22.00</p>
-        </div>
-        <button className="bg-[#5B6D50] text-white px-8 py-3 rounded hover:bg-[#4a5a40] transition-colors w-full mt-4 font-semibold">
-          Checkout
+        <button
+          onClick={handleCheckout}
+          disabled={isLoading}
+          className="w-full bg-[#5B6D50] text-white px-6 py-3 rounded-lg hover:bg-[#4a5a40] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? 'Processing...' : 'Proceed to Checkout'}
         </button>
       </div>
 
@@ -88,7 +104,7 @@ const Cart = () => {
                 className="h-48 w-full object-cover rounded mb-3"
               />
               <p className="font-medium text-[#333] mb-2">{item.name}</p>
-              <p className="text-[#5B6D50] font-semibold mb-3">{item.price}</p>
+              <p className="text-[#5B6D50] font-semibold mb-3">${item.price.toFixed(2)}</p>
               <button className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors">
                 Add to Cart
               </button>

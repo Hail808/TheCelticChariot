@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { trackPageView, getSessionId, getUserId } from '@/lib/analytics';
 import { useSearchParams, useRouter } from "next/navigation";
 
 // Define interfaces
@@ -45,6 +46,17 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ NEW: Track page view when product loads
+  useEffect(() => {
+    if (productId) {
+      const sessionId = getSessionId();
+      const userId = getUserId();
+      
+      // Track this product page view
+      trackPageView(userId, sessionId, parseInt(productId));
+    }
+  }, [productId]);
+
   // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
@@ -56,13 +68,13 @@ const ProductDetail: React.FC = () => {
 
       try {
         setLoading(true);
-        console.log('Fetching product with ID:', productId);  // Add this
+        console.log('Fetching product with ID:', productId);
         const response = await fetch(`/api/product/${productId}`);
-        console.log('Response status:', response.status);  // Add this
+        console.log('Response status:', response.status);
             
         if (!response.ok) {
-          const errorData = await response.json();  // Add this
-          console.log('Error data:', errorData);  // Add this
+          const errorData = await response.json();
+          console.log('Error data:', errorData);
           throw new Error('Failed to fetch product');
         }
         
