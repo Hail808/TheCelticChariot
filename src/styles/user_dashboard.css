@@ -1,106 +1,125 @@
 @import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
 
-@font-face {
-    font-family: 'Lalezar';
-    src: url('https://fonts.gstatic.com/s/lalezar/v10/2sD4c0v1g3Y5f6x8z7k0.woff2') format('woff2');
-         
-         
-    font-weight: normal;
-    font-style: normal;
-}
-  
 .user-dashboard-container {
-    background: #e7e7dd;
-    padding-top: 200px;
+    background: #E5EDE1;
+    padding: 100px 20px 100px 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     font-family: 'Lalezar', sans-serif;
-    padding-bottom: 200px;
-    
 }
+
 .order-section {
-    width: 75%; 
+    width: 90%;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
-    
-    
-
+    gap: 40px;
 }
 
 .order-section .title-line {
-    width: 80%;
-    border: 1px solid black;
+    width: 100%;
+    border: 2px solid #5B6D50;
     margin-bottom: 20px;
-}
-
-
-.order-table{
-    
-    width: 75%;
-    border-collapse: collapse;
-    font-size: 23px;
-    text-align: left;
-    align-items: center;
-    margin-top: -20px; 
-}
-
-.order-table th, .order-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-.order-table thead {
-    
-    background-color: #98A78F;
-    font-weight: bold;
-  }
-  
-.order-table tr:nth-child(even) {
-    background-color: #DFD8BF;
-  }
-
-  .order-table a {
-    color: #5b8a43;
-  }
-
-  
-
-
-.account-details {
-    
-    align-self: flex-start;
-    text-align: left;
-    margin-left: 0;
-
-}
-
-.account-details .title-line {
-    width: 200%;
-
-    border: 1px solid black;
-    margin-bottom: 20px;
+    border-radius: 5px;
 }
 
 .order-section a {
-    color: #5b8a43;
-    font-size: 26px;
-  }
-
-  
-
-.list-info{
-    border: 2px solid black;
-    background-color:#DFD8BF;
-    padding: 20px;
-    border-radius: 20px;
+    color: #5B6D50;
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.list-info dt{
-    font-size: 24px;
-    text-align: left;
-    text-underline-position: below;
-  
+.order-section a:hover {
+    color: #3F4D30;
+    text-decoration: underline;
+}
 
+.order-header {
+    font-size: 36px;
+    color: #3F4D30;
+    margin-bottom: 10px;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 18px;
+    text-align: left;
+    background-color: #F5F8F2;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.order-table th, 
+.order-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.order-table thead {
+    background-color: #98A78F;
+    font-weight: bold;
+    color: #fff;
+}
+
+.order-table tr:nth-child(even) {
+    background-color: #DFD8BF;
+}
+
+.order-table tr:hover {
+    background-color: #C6D3B6;
+}
+
+.order-table a {
+    color: #5B6D50;
+    font-weight: 600;
+}
+
+.account-details {
+    width: 100%;
+    background-color: #DFD8BF;
+    border: 2px solid #5B6D50;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.account-details h1 {
+    font-size: 28px;
+    color: #3F4D30;
+    margin-bottom: 15px;
+}
+
+.list-info {
+
+  background-color: #DFD8BF;
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: 'Lalezar', sans-serif;
+}
+
+.info-row {
+  display: flex;
+  flex-wrap: wrap; 
+  align-items: flex-start; 
+}
+
+.info-row dt {
+  width: 150px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.info-row dd {
+  margin: 0;
+  font-size: 20px;
+  color: #3F4D30;
+  line-height: 1.4;
+}
+.info-row dd div {
+  margin-bottom: 2px;
 }

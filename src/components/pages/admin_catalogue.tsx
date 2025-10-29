@@ -1,203 +1,601 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import React from "react";
-import Image from 'next/image';
+"use client"
 
-import '../../styles/admin_catalogue.css';
+import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+
+// Define the Item type to match your database structure
+interface Item {
+  product_id: number;
+  product_name: string;
+  description: string | null;
+  price: number;
+  inventory: number;
+  prod_image_url: string | null;
+  fk_category_id: number | null;
+}
+
+interface ProductFormData {
+  product_name: string;
+  description: string;
+  price: string;
+  inventory: string;
+  prod_image_url: string;
+  fk_category_id: string;
+}
 
 const AdminCatalogue: React.FC = () => {
-    const router = useRouter(); 
-    
-        //List of every item in the catalogue
-        //Similar items can be given similar ids 
-        const items = [
-            {id: 1, name: "Whimsigoth Sun Auburn Bearded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whisigoth-Sun-Auburn-Beaded-Necklace-in-Bronze.png"}, 
-            {id: 2, name: "Whimsigoth Dragonfly Auburn Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.00, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-Beaded-Necklace-in-Bronze.png"},
-            {id: 3, name: "Whimsigoth Dragonfly Auburn & Deep Green Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 17.55, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Dragonfly-Auburn-&-Deep-Green-Beaded-Necklace-in-Bronze.png"}, 
-            {id: 4, name: "Whimsigoth Moon Burgundy Beaded Necklace in Bronze", tags: "Fairycore | Whimsicle | Naturalist", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Whimsigoth-Moon-Burgundy-Beaded-Necklace-in-Bronze.png"}, 
-            
-            {id: 5, name: "Whimsigoth Bohemian Flower Fall Earring in Bronze", tags: "Fairycore | Whimsicle", category: "Earrings", price: 8.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Bohemian-Flower-Fall-Earrings-in-Bronze.png"},
-            {id: 6, name: "Whimaitee Bronze Auburn Flower Cord Necklace", tags: "Cottagecore | Whimsigoth | Bohemian", category: "Necklace", price: 10.50, image: "/cataloguethumbnails/Necklace-Images/Whimistwee-Bronze-Auburn-Flower-Cord-Necklace.png"}, 
-            {id: 7, name: "Bronze Heart Pendant Necklace in Burgundy", tags: "Gothic | Whimsigoth | Artsy | Alternative", category: "Necklace", price: 15.50, image: "/cataloguethumbnails/Necklace-Images/Bronze-Heart-Pendant-Beaded-Necklace-in-Burgundy.png"}, 
-            {id: 8, name: "Gothic Floral Trumpet Flower Dangling Earrings in Bronze", tags: "Grunge | Whimsigoth", category: "Earrings", price: 12.50, image: "/cataloguethumbnails/Earrings-Images/Gothic-Floral-Trumpet-Flower-Dangling-Earrings-in-Bronze.png"}, 
-            
-            {id: 9, name: "Fairy Bronze Mushroom Earrings", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Fairy-Bronze-Mushroom-Earrings.png"}, 
-            {id: 10, name: "Fairy Iridescent Aura Beaded Earrings with Star Charms", tags: "Fairycore | Whimsigoth | Goblincore", category: "Earrings", price: 8.50, image: "/cataloguethumbnails/Earrings-Images/Fairy-Iridescent-Aura-Beading-with-Star-Charms.png"}, 
-            {id: 11, name: "Whimsitwee Red Floral Tulip Earrings in Bronze/Silver/Gold", tags: "Fairycore | Whimsigoth", category: "Earrings", price: 9.50, image: "/cataloguethumbnails/Earrings-Images/Whimsitwee-Red-Floral-Tulip-Earrings-in-Bronze-Gold-Silver.png"}, 
-            {id: 12, name: "Bronze Goddess Moon Trinity Pendant Dangling Earrings", tags: "", category: "Earrings", price: 10.00, image: "/cataloguethumbnails/Earrings-Images/Bronze-Goddess-Moon-Trinity-Pentacle-Dangling-Earrings.png"},
-    
-            {id: 13, name: "Whimsigoth Black Trumpet Flower Chandelier", tags: "Goth | Whimsical | Fairycore | Grunge", category: "Earrings", price: 14.75, image: "/cataloguethumbnails/Earrings-Images/Whimsigoth-Black-Trumpet-Flower-Chandlier-Earrings.png"}, 
-            {id: 14, name: "Bohemian Beads, 50 Piece Set, Daisy Design Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Bohemian-Daisy-Design-Beads-50-Pieces-Set.png"}, 
-            {id: 15, name: "Celestial Star Rounds Beads, 50 Piece Set, Star Design in Neutral Tones, Beads for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Celestial-Star-Design-Round-Beads-in-Neutral-Tones-50-Pieces-Set.png"}, 
-            {id: 16, name: "Boho Mixed Beads, 50 Piece Set, 3 Styles of Beads in Neutral Tones for Jewelry Making/Beaded Necklace Bracelet Beads DIY", tags: "", category: "DIY Bead Sets", price: 3.75, image: "/cataloguethumbnails/DIY-Beads-Sets-Images/Boho-Mixed-Beads-3-Styles-of-Beads-in-Neutral-Tones-50-Piece-Set.png"}
-        ];
-        
-        //Searchbar Query and Filtered Items Functions
-        const [query, setQuery] = useState("");
-        const [filteredItems, setFilteredItems] = useState(items);
-        const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-        const [itemImages, setItemImages] = useState<{ [key: number]: string }>({});
-    
-    
-        //Searchbar Filter
-        const handleSearch = (e: React.FormEvent) => {
-            e.preventDefault();
-            const filteredResults = items.filter(item =>
-              item.name.toLowerCase().includes(query.toLowerCase())
-            );
-            setFilteredItems(filteredResults);
-        };
-    
-        //Sort Filter by Price
-        const handleSort = (order: "asc" | "desc", data = filteredItems) => {
-            setSortOrder(order); // update state
-            const sorted = [...data].sort((a, b) => {
-              if (a.price === b.price) {
-                return a.name.localeCompare(b.name);
-              }
-              return order === "asc" ? a.price - b.price : b.price - a.price;
-            });
-            setFilteredItems(sorted);
-        };
-          
-    
-        //Format Price Function
-        const formatPrice = (price: number) => {
-            return new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(price);
-        };
-    
-        //Category Function
-        const handleCategoryFilter = (category: string) => {
-            let filtered;
-            if (category === "All Products") {
-              filtered = items;
-            } else {
-              filtered = items.filter(item =>
-                item.category.toLowerCase() === category.toLowerCase()
-              );
-            }
-            handleSort(sortOrder, filtered);
-          };
-          
-    
-        //Link to Product Page
-        const handleProduct = () => {
-            router.push('/product_page')
-        }
+  const router = useRouter();
 
-        const handleImageUpload = (itemId: number, event: React.ChangeEvent<HTMLInputElement>) => {
-            if (event.target.files && event.target.files[0]) {
-                const file = event.target.files[0];
-                const imageUrl = URL.createObjectURL(file); // Create a temporary URL for the uploaded image
-                setItemImages((prevImages) => ({
-                    ...prevImages,
-                    [itemId]: imageUrl, // Update the image for the specific item
-                }));
-            }
-        };
-    
-        //Default Sort Order
-        useEffect(() => {
-            handleSort("desc");
-        }, []);
-    
-        return (
-        //Catalogue Container
-        <div className = "catalogue-container">
-    
-            {/* Catalogue Page Label */}
-            <div className = "move-left">
-                <h1>Catalogue Page</h1>
-            </div>
-    
-            {/* Search Container Area */}
-            <div className = "search-and-sort-container">
-    
-                <div className = "search-bar-container">
-                    {/* Search Label */}
-                    <p className="default-text">Searching for:</p>
-    
-                    {/* Search Bar and Button*/}
-                    <form onSubmit={handleSearch} className="search-bar">
-                        <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search for products..."
-                        className="search-input"
-                        />
-                        <button type="submit" className="search-button">Search</button>
-                    </form>
-                </div>
-    
-                <div className = "sort-dropdown-container">
-                    {/* <label htmlFor="sort">Sort by Price: </label> */}
-                    <p className="default-text">Sort By:</p>
-                    <select id="sort" onChange={(e) => handleSort(e.target.value as "asc" | "desc")}>
-                        <option value="desc">Price: High to Low</option>
-                        <option value="asc">Price: Low to High</option>
-                    </select>
-                </div> 
-    
-            </div>
-    
-    
-            {/* Categories + Catalogue Array Container */}
-            <div className="sorting-and-categories-container">
-                
-                {/* Categories Section */}
-                <div className="categories-container">
-                    <p className="hover-text" onClick={() => handleCategoryFilter("All Products")}>All Products</p>
-                    <p className="hover-text" onClick={() => handleCategoryFilter("Necklace")}>Necklaces</p>
-                    <p className="hover-text" onClick={() => handleCategoryFilter("Earrings")}>Earrings</p>
-                    <p className="hover-text" onClick={() => handleCategoryFilter("DIY Bead Sets")}>DIY Beads</p>
-                </div>
-    
-                {/* Catalogue Array Section */}
-                <div className="catalogue-array-formatting"> 
-                    {filteredItems.length > 0 ? (
-                        filteredItems.map((item) => (
-                            <div className="catalogue-text-formatting" key={item.id}>
-                                <button className="catalogue-box">
-                                    <Image
-                                        src={itemImages[item.id] || item.image} // Use uploaded image or default image
-                                        alt={item.name}
-                                        width={200}
-                                        height={200}
-                                        priority={true}
-                                        className="item-image"
-                                        onClick={() => document.getElementById(`file-input-${item.id}`)?.click()} // Trigger file input on click
-                                    />
-    
-                                </button>
-                                <p className="catalogue-label">{item.name}</p>
-                                <p>{formatPrice(item.price)}</p>
+  const [query, setQuery] = useState("");
+  const [items, setItems] = useState<Item[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-                                {/* Hidden file input for image upload */}
-                                <input
-                                    type="file"
-                                    id={`file-input-${item.id}`}
-                                    style={{ display: 'none' }}
-                                    accept="image/*"
-                                    onChange={(e) => handleImageUpload(item.id, e)}
-                                />
-                            </div> 
-                        ))) 
-                        : ( <p className="no-results">No results found</p> )
-                    }
-                </div>
+  // Modal states
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Item | null>(null);
+  const [formData, setFormData] = useState<ProductFormData>({
+    product_name: '',
+    description: '',
+    price: '',
+    inventory: '',
+    prod_image_url: '',
+    fk_category_id: '',
+  });
+
+  // Fetch items from database on component mount
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/items');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch items');
+      }
+      
+      const data = await response.json();
+      setItems(data);
+      setFilteredItems(data);
+      setError(null);
+      
+      handleSort("desc", data);
+    } catch (err) {
+      console.error('Error fetching items:', err);
+      setError('Failed to load catalogue items');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const filteredResults = items.filter((item) =>
+      item.product_name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredItems(filteredResults);
+  };
+
+  const handleSort = (order: "asc" | "desc", data = filteredItems) => {
+    setSortOrder(order);
+    const sorted = [...data].sort((a, b) => {
+      if (a.price === b.price) {
+        return a.product_name.localeCompare(b.product_name);
+      }
+      return order === "asc" ? Number(a.price) - Number(b.price) : Number(b.price) - Number(a.price);
+    });
+    setFilteredItems(sorted);
+  };
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(price);
+
+  const handleCategoryFilter = (category: string) => {
+    setSelectedCategory(category);
+    const filtered = category === "All Products" ? items : items;
+    handleSort(sortOrder, filtered);
+  };
+
+  const navigateToProduct = (itemId: number) => {
+    router.push(`/product_page?id=${itemId}`);
+  };
+
+  const handleBackToAdmin = () => {
+    router.push('/admin');
+  };
+
+  // Add Product
+  const handleAddProduct = () => {
+    setFormData({
+      product_name: '',
+      description: '',
+      price: '',
+      inventory: '',
+      prod_image_url: '',
+      fk_category_id: '',
+    });
+    setShowAddModal(true);
+  };
+
+  const handleCreateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-            </div>
+    try {
+      const response = await fetch('/api/items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
+
+      setShowAddModal(false);
+      fetchItems(); // Refresh the list
+      alert('Product created successfully!');
+    } catch (err) {
+      console.error('Error creating product:', err);
+      alert('Failed to create product');
+    }
+  };
+
+  // Edit Product
+  const handleEditProduct = (item: Item) => {
+    setEditingProduct(item);
+    setFormData({
+      product_name: item.product_name,
+      description: item.description || '',
+      price: item.price.toString(),
+      inventory: item.inventory.toString(),
+      prod_image_url: item.prod_image_url || '',
+      fk_category_id: item.fk_category_id?.toString() || '',
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    
+    if (!editingProduct) return;
+
+    try {
+      const response = await fetch(`/api/items/${editingProduct.product_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update product');
+      }
+
+      setShowEditModal(false);
+      setEditingProduct(null);
+      fetchItems(); // Refresh the list
+      alert('Product updated successfully!');
+    } catch (err) {
+      console.error('Error updating product:', err);
+      alert('Failed to update product');
+    }
+  };
+
+  // Delete Product
+  const handleDeleteProduct = async (itemId: number) => {
+    if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/items/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete product');
+      }
+
+      fetchItems(); // Refresh the list
+      alert('Product deleted successfully!');
+    } catch (err) {
+      console.error('Error deleting product:', err);
+      alert('Failed to delete product');
+    }
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 max-w-[1280px] mx-auto">
+        <h1 className="text-4xl font-bold mb-6 text-center">Admin Catalogue</h1>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <p className="text-lg text-gray-600">Loading catalogue...</p>
         </div>
-    
-        );
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 max-w-[1280px] mx-auto">
+        <h1 className="text-4xl font-bold mb-6 text-center">Admin Catalogue</h1>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <p className="text-lg text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-[1280px] mx-auto">
+      {/* Page Header with Back Button */}
+      <div className="relative mb-6">
+        <h1 className="text-4xl font-bold text-center">Admin Catalogue</h1>
+        <button 
+          onClick={handleBackToAdmin}
+          className="absolute right-0 top-0 px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
+        >
+          Back to Admin Home
+        </button>
+      </div>
+
+      {/* Search, Sort & Add Product */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        {/* Search */}
+        <form
+          onSubmit={handleSearch}
+          className="flex gap-2 w-full md:w-auto"
+        >
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for products..."
+            className="border border-gray-300 rounded px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
+          >
+            Search
+          </button>
+        </form>
+
+        <div className="flex items-center gap-4">
+          {/* Sort */}
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Sort By:</span>
+            <select
+              onChange={(e) =>
+                handleSort(e.target.value as "asc" | "desc")
+              }
+              className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            >
+              <option value="desc">Price: High to Low</option>
+              <option value="asc">Price: Low to High</option>
+            </select>
+          </div>
+
+          {/* Add Product Button */}
+          <button
+            onClick={handleAddProduct}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold"
+          >
+            + Add Product
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content: Sidebar + Catalogue */}
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Left Sidebar: Categories */}
+        <div className="lg:w-1/5 flex flex-col gap-4 mb-4 lg:mb-0 text-white">
+          {["All Products", "Necklace", "Earrings", "DIY Bead Sets", "Keychains", "Beaded Belt"].map(
+            (category) => (
+              <button
+                key={category}
+                onClick={() => handleCategoryFilter(category)}
+                className={`px-4 py-2 rounded transition
+                  ${selectedCategory === category 
+                    ? "bg-[#4a5a40] shadow-lg ring-2 ring-[#5B6D50]"
+                    : "bg-[#5B6D50] hover:bg-[#4a5a40]"}
+                `}
+              >
+                {category}
+              </button>
+            )
+          )}
+        </div>
+
+        {/* Right Content: Catalogue Grid */}
+        <div className="lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <div
+                key={item.product_id}
+                className="flex flex-col items-center text-center"
+              >
+                <button
+                  onClick={() => navigateToProduct(item.product_id)}
+                  className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+                >
+                  {item.prod_image_url ? (
+                    <img
+                      src={item.prod_image_url}
+                      alt={item.product_name}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+                      <span>No Image</span>
+                    </div>
+                  )}
+                </button>
+                <p className="mt-2 font-medium w-full text-left line-clamp-2">{item.product_name}</p>
+
+                <p className="text-indigo-600 font-bold w-full text-left">
+                  {formatPrice(item.price)}
+                </p>
+
+                {/* Stock Info */}
+                <p className="text-sm text-gray-600 w-full text-left">
+                  Stock: {item.inventory}
+                </p>
+
+                {/* Admin Action Buttons */}
+                <div className="flex gap-2 w-full mt-2">
+                  <button
+                    onClick={() => handleEditProduct(item)}
+                    className="flex-1 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(item.product_id)}
+                    className="flex-1 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 col-span-full">
+              No results found
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Results Count */}
+      {filteredItems.length > 0 && (
+        <div className="mt-8 text-center text-gray-600">
+          Showing {filteredItems.length} of {items.length} products
+        </div>
+      )}
+
+      {/* Add Product Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
+            <form onSubmit={handleCreateProduct}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Product Name *</label>
+                  <input
+                    type="text"
+                    name="product_name"
+                    value={formData.product_name}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleFormChange}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Price *</label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleFormChange}
+                      step="0.01"
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Inventory *</label>
+                    <input
+                      type="number"
+                      name="inventory"
+                      value={formData.inventory}
+                      onChange={handleFormChange}
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Image URL</label>
+                  <input
+                    type="text"
+                    name="prod_image_url"
+                    value={formData.prod_image_url}
+                    onChange={handleFormChange}
+                    placeholder="https://..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Category ID</label>
+                  <input
+                    type="number"
+                    name="fk_category_id"
+                    value={formData.fk_category_id}
+                    onChange={handleFormChange}
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold"
+                >
+                  Create Product
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
+            <form onSubmit={handleUpdateProduct}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Product Name *</label>
+                  <input
+                    type="text"
+                    name="product_name"
+                    value={formData.product_name}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleFormChange}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Price *</label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleFormChange}
+                      step="0.01"
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Inventory *</label>
+                    <input
+                      type="number"
+                      name="inventory"
+                      value={formData.inventory}
+                      onChange={handleFormChange}
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Image URL</label>
+                  <input
+                    type="text"
+                    name="prod_image_url"
+                    value={formData.prod_image_url}
+                    onChange={handleFormChange}
+                    placeholder="https://..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Category ID</label>
+                  <input
+                    type="number"
+                    name="fk_category_id"
+                    value={formData.fk_category_id}
+                    onChange={handleFormChange}
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold"
+                >
+                  Update Product
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setEditingProduct(null);
+                  }}
+                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default AdminCatalogue;
