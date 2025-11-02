@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CartService } from '../../../../../../lib/cart-service';
-import { requireAuth } from '../../../../../../lib/auth';
+import { CartService } from '../../../../../lib/cart-service';
+import { requireAuth } from '../../../../../lib/auth';
 
 // PATCH /api/cart/items/:id - updates item quantity
 export async function PATCH(

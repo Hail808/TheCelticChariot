@@ -5,7 +5,6 @@ import Image from "next/image";
 import { trackPageView, getSessionId, getUserId } from '@/lib/analytics';
 import { useSearchParams, useRouter } from "next/navigation";
 
-// Define interfaces
 interface Customer {
   first_name: string;
   last_name: string;
@@ -46,18 +45,15 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ NEW: Track page view when product loads
   useEffect(() => {
     if (productId) {
       const sessionId = getSessionId();
       const userId = getUserId();
       
-      // Track this product page view
       trackPageView(userId, sessionId, parseInt(productId));
     }
   }, [productId]);
 
-  // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -92,7 +88,6 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [productId]);
 
-  // Fetch related products
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!productId) return;
@@ -112,7 +107,36 @@ const ProductDetail: React.FC = () => {
     fetchRelatedProducts();
   }, [productId]);
 
-  // Calculate average rating
+  // adding to cart function with counter
+  const addToCart = async () => {
+    if (!product) return;
+    
+    try {
+      const response = await fetch('/api/cart/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: product.product_id, 
+          quantity: 1 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('Added to cart successfully');
+        
+        // trigger cart update event
+        window.dispatchEvent(new Event('cartUpdated'));
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add to cart. Please log in first.');
+    }
+  };
+  //Calculate average rating
   const getAverageRating = () => {
     if (!product || product.reviews.length === 0) return 0;
     const sum = product.reviews.reduce((acc, review) => acc + review.rating, 0);
@@ -173,7 +197,7 @@ const ProductDetail: React.FC = () => {
         {/* Product Details */}
         <div className="flex flex-col justify-center space-y-4">
           <h1 className="text-2xl font-bold">{product.product_name}</h1>
-          <p className="text-lg font-semibold text-green-700">
+          <p className="text-lg font-semibold text-[#5B6D50]">
             ${Number(product.price).toFixed(2)}
           </p>
           <div className="flex items-center text-yellow-500">
@@ -188,7 +212,11 @@ const ProductDetail: React.FC = () => {
           <p className="text-sm text-gray-600">
             In stock: {product.inventory}
           </p>
-          <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+          {/* functional add to cart button */}
+          <button 
+            onClick={addToCart}
+            className="bg-[#5B6D50] text-white px-6 py-2 rounded hover:bg-[#4a5a40] transition"
+          >
             Add to Cart
           </button>
         </div>
@@ -231,9 +259,9 @@ const ProductDetail: React.FC = () => {
         <h3 className="text-xl font-semibold">Leave a Review</h3>
         <textarea
           placeholder="Write your review here..."
-          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#5B6D50]"
         ></textarea>
-        <button className="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">
+        <button className="bg-[#5B6D50] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4a5a40] transition">
           Submit Review
         </button>
       </div>
@@ -263,7 +291,7 @@ const ProductDetail: React.FC = () => {
                   )}
                 </div>
                 <p className="font-medium">{relatedProduct.product_name}</p>
-                <p className="text-green-700 font-semibold">
+                <p className="text-[#5B6D50] font-semibold">
                   ${Number(relatedProduct.price).toFixed(2)}
                 </p>
               </button>

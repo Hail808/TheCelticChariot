@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
-import { CartService } from '../../../../../lib/cart-service';
-import { requireAuth } from '../../../../../lib/auth';
+import { CartService } from '../../../../lib/cart-service';
+import { requireAuth } from '../../../../lib/auth';
 
-// GET /api/cart/validate - validating cart inventory
+// GET /api/cart/totals - get shopping cart totals
 export async function GET() {
   try {
     const user = await requireAuth();
-    const validation = await CartService.validateInventory(user.id);
+    const totals = await CartService.calculateTotals(user.id);
 
     return NextResponse.json({
       success: true,
-      data: validation,
+      data: totals,
     });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
