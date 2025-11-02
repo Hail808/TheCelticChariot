@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { CartService } from '../../../../lib/cart-service';
-import { requireAuth } from '../../../../lib/auth';
+import { CartService } from '../../../lib/cart-service';
+import { requireAuth } from '../../../lib/auth';
 
 // GET /api/cart - get user's cart
 export async function GET() {
