@@ -90,7 +90,7 @@ const OrderPage = async ({ id }: Props) => {
                         alt={item.product?.product_name || 'Product'}
                       />
                     )}
-                    <a href={`/product_page?id=${item.product?.product_id}`} className="productName">
+                    <a href={`/product/${item.product?.product_id}`} className="productName">
                       {item.product?.product_name || 'Unknown Product'}
                     </a>
                   </div>
