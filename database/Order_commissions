@@ -1,0 +1,122 @@
+DROP TABLE IF EXISTS commission_messages CASCADE;
+DROP TABLE IF EXISTS commission_request CASCADE;
+
+
+CREATE TABLE commission_request (
+    commission_id SERIAL PRIMARY KEY,
+    request_title VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    reference_image_url TEXT,
+    estimated_budget NUMERIC(10,2) CHECK (estimated_budget >= 0),
+    status VARCHAR(20) DEFAULT 'Pending'
+        CHECK (status IN ('Pending', 'Approved', 'Rejected', 'In Progress', 'Completed')),
+    fk_customer_id INT REFERENCES customer(customer_id) ON DELETE SET NULL,
+    fk_guest_id INT REFERENCES guest(guest_id) ON DELETE SET NULL,
+    fk_product_id INT REFERENCES product(product_id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE commission_request
+ADD CONSTRAINT chk_one_user CHECK (
+  (fk_customer_id IS NOT NULL AND fk_guest_id IS NULL)
+  OR
+  (fk_customer_id IS NULL AND fk_guest_id IS NOT NULL)
+);
+
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_timestamp
+BEFORE UPDATE ON commission_request
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+
+
+CREATE TABLE commission_messages (
+    message_id SERIAL PRIMARY KEY,
+    fk_commission_id INT NOT NULL REFERENCES commission_request(commission_id) ON DELETE CASCADE,
+    sender_type VARCHAR(20) NOT NULL CHECK (sender_type IN ('Customer', 'Guest', 'Admin')),
+    sender_id INT,  
+    message_text TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE INDEX idx_commission_messages_commission_id ON commission_messages(fk_commission_id);
+
+
+INSERT INTO commission_request (request_title, description, reference_image_url, estimated_budget, fk_customer_id)
+VALUES (
+  'Custom Celtic Knot Pendant',
+  'I’d like a silver pendant with a Celtic knot design similar to the one in the image.',
+  'https://example.com/reference1.jpg',
+  120.00,
+  1
+);
+
+
+INSERT INTO commission_request (request_title, description, estimated_budget, fk_guest_id)
+VALUES (
+  'Custom Dragon Bracelet',
+  'Looking for a bronze bracelet with dragon engravings.',
+  95.00,
+  2
+);
+
+
+INSERT INTO commission_messages (fk_commission_id, sender_type, sender_id, message_text)
+VALUES
+  (1, 'Customer', 1, 'Hi, can you make the pendant slightly smaller?'),
+  (1, 'Admin', 101, 'Sure! I can adjust the size and send you a preview soon.');
+
+
+
+UPDATE commission_request
+SET status = 'Approved'
+WHERE commission_id = 1;
+
+UPDATE commission_request
+SET status = 'Completed'
+WHERE commission_id = 2;
+
+
+
+
+SELECT request_title, status, created_at
+FROM commission_request
+WHERE fk_customer_id = 1;
+
+
+SELECT 
+  cr.commission_id,
+  cr.request_title,
+  cr.status,
+  COALESCE(c.email, g.email) AS requester_email,
+  cr.estimated_budget,
+  cr.created_at
+FROM commission_request cr
+LEFT JOIN customer c ON cr.fk_customer_id = c.customer_id
+LEFT JOIN guest g ON cr.fk_guest_id = g.guest_id
+ORDER BY cr.created_at DESC;
+
+
+SELECT 
+  m.message_id,
+  m.sender_type,
+  COALESCE(c.email, g.email, a.email) AS sender_email,
+  m.message_text,
+  m.sent_at
+FROM commission_messages m
+LEFT JOIN customer c ON (m.sender_type = 'Customer' AND m.sender_id = c.customer_id)
+LEFT JOIN guest g ON (m.sender_type = 'Guest' AND m.sender_id = g.guest_id)
+LEFT JOIN admin a ON (m.sender_type = 'Admin' AND m.sender_id = a.admin_id)
+WHERE m.fk_commission_id = 1
+ORDER BY m.sent_at ASC;

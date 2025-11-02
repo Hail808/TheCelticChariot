@@ -1,0 +1,111 @@
+DROP TABLE IF EXISTS discount_redemptions CASCADE;
+DROP TABLE IF EXISTS discount_codes CASCADE;
+
+
+CREATE TABLE discount_codes (
+    discount_id SERIAL PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,                      
+    description TEXT,
+    discount_type VARCHAR(20) NOT NULL CHECK (discount_type IN ('percentage', 'flat', 'free_shipping')),
+    discount_value NUMERIC(10,2) DEFAULT 0,                
+    min_order_value NUMERIC(10,2) DEFAULT 0,               
+    usage_limit INT DEFAULT 0,                             
+    times_used INT DEFAULT 0,                              
+    start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    end_date TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE,
+    created_by_admin_id INT REFERENCES admin(admin_id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE discount_redemptions (
+    redemption_id SERIAL PRIMARY KEY,
+    fk_discount_id INT REFERENCES discount_codes(discount_id) ON DELETE CASCADE,
+    fk_customer_id INT REFERENCES customer(customer_id) ON DELETE SET NULL,
+    fk_guest_id INT REFERENCES guest(guest_id) ON DELETE SET NULL,
+    fk_order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
+    redeemed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE discount_redemptions
+ADD CONSTRAINT chk_one_user_discount CHECK (
+  (fk_customer_id IS NOT NULL AND fk_guest_id IS NULL)
+  OR
+  (fk_customer_id IS NULL AND fk_guest_id IS NOT NULL)
+);
+
+
+INSERT INTO discount_codes (code, description, discount_type, discount_value, min_order_value, usage_limit, end_date, created_by_admin_id)
+VALUES (
+  'CELTIC15',
+  '15% off all jewelry orders over $50',
+  'percentage',
+  15.00,
+  50.00,
+  100, 
+  NOW() + INTERVAL '30 days',
+  101
+);
+
+INSERT INTO discount_codes (code, description, discount_type, discount_value, usage_limit, end_date, created_by_admin_id)
+VALUES (
+  'SAVE10',
+  '$10 off any purchase',
+  'flat',
+  10.00,
+  200,
+  NOW() + INTERVAL '60 days',
+  101
+);
+
+INSERT INTO discount_codes (code, description, discount_type, discount_value, usage_limit, end_date, created_by_admin_id)
+VALUES (
+  'FREESHIP',
+  'Free shipping on all orders!',
+  'free_shipping',
+  0,
+  0, 
+  NOW() + INTERVAL '90 days',
+  101
+);
+
+
+INSERT INTO discount_redemptions (fk_discount_id, fk_customer_id, fk_order_id)
+SELECT discount_id, 1, 10 FROM discount_codes WHERE code = 'CELTIC15';
+
+
+UPDATE discount_codes
+SET times_used = times_used + 1
+WHERE code = 'CELTIC15';
+
+SELECT *
+FROM discount_codes
+WHERE code = 'CELTIC15'
+  AND active = TRUE
+  AND (end_date IS NULL OR end_date > NOW())
+  AND (usage_limit = 0 OR times_used < usage_limit);
+
+SELECT 
+  dc.code,
+  dc.description,
+  dr.redeemed_at,
+  o.total_price
+FROM discount_redemptions dr
+JOIN discount_codes dc ON dr.fk_discount_id = dc.discount_id
+JOIN orders o ON dr.fk_order_id = o.order_id
+WHERE dr.fk_customer_id = 1;
+
+CREATE OR REPLACE FUNCTION deactivate_expired_codes()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE discount_codes
+  SET active = FALSE
+  WHERE end_date IS NOT NULL AND end_date < CURRENT_TIMESTAMP;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_deactivate_expired_codes
+AFTER INSERT OR UPDATE ON discount_codes
+EXECUTE FUNCTION deactivate_expired_codes();
