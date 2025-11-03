@@ -106,7 +106,7 @@ const Cart = () => {
         id: item.product.product_id,
         name: item.product.product_name,
         price: parseFloat(item.priceAtAddition),
-        quantity: item.quantity,
+        quantity: parseInt(item.quantity, 10)
       }));
 
       const response = await fetch('/api/create-checkout-session', {
@@ -244,7 +244,9 @@ const Cart = () => {
                   <span className="px-2">{item.quantity}</span>
                   <button 
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="hover:opacity-80 font-bold"
+                       className={`font-bold hover:opacity-80 ${
+                        item.quantity >= item.product.inventory ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   >
                     +
                   </button>
