@@ -129,17 +129,18 @@ model payment {
 }
 
 model product {
-  product_id     Int          @id @default(autoincrement())
-  product_name   String       @db.VarChar(255)
+  product_id     Int            @id @default(autoincrement())
+  product_name   String         @db.VarChar(255)
   description    String?
-  price          Decimal      @db.Decimal(10, 2)
+  price          Decimal        @db.Decimal(10, 2)
   inventory      Int
-  prod_image_url String?      @db.VarChar(500)
+  prod_image_url String?        @db.VarChar(500)
   fk_category_id Int?
+  cartItems      CartItem[]
   order_item     order_item[]
   page_views     page_views[]
-  cartItems      CartItem[]
-  category       category?    @relation(fields: [fk_category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_id")
+  category       category?      @relation(fields: [fk_category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_id")
+  images         ProductImage[]
   reviews        reviews[]
 }
 
@@ -172,9 +173,9 @@ model shipping {
   fk_shipping_address_id Int?            @unique(map: "uq_shipping_address_id")
   tracking_num           String?         @db.VarChar(50)
   carrier                String          @db.VarChar(50)
-  shipping_method        String?         @db.VarChar(50)
   shipping_status        shipping_status @default(not_yet_shipped)
   created_at             DateTime        @default(now())
+  shipping_method        String?         @db.VarChar(50)
   orders                 orders?         @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
   address                address?        @relation(fields: [fk_shipping_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shipping_address_id")
 }
@@ -188,10 +189,10 @@ model user {
   createdAt     DateTime             @default(now()) @db.Timestamp(6)
   updatedAt     DateTime             @default(now()) @updatedAt @db.Timestamp(6)
   guest_id      Int?                 @unique
+  cart          Cart?
   organizations OrganizationMember[]
   account       account[]
   session       session[]
-  cart          Cart? 
   guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
 
   @@map("user")
@@ -221,6 +222,19 @@ model OrganizationMember {
   user           user         @relation(fields: [userId], references: [id])
 }
 
+model ProductImage {
+  id         Int       @id @default(autoincrement())
+  product_id Int
+  image_url  String
+  is_primary Boolean?  @default(false)
+  order      Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  product    product   @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_product")
+
+  @@index([product_id], map: "idx_product_images_product_id")
+  @@map("product_images")
+}
+
 model contact_messages {
   id         Int       @id @default(autoincrement())
   first_name String
@@ -228,35 +242,6 @@ model contact_messages {
   email      String
   message    String
   created_at DateTime? @default(now()) @db.Timestamp(6)
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model myReviews {
-  id         Int       @default(autoincrement())
-  name       String?
-  comment    String?
-  rating     Int?
-  created_at DateTime? @db.Timestamptz(6)
-
-  @@ignore
-}
-
-enum payment_status {
-  pending
-  paid
-  overdue
-  partially_paid @map("partially paid")
-  cancelled
-  refunded
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model myReviews {
-  id         Int       @default(autoincrement())
-  name       String?
-  comment    String?
-  rating     Int?
-  created_at DateTime? @db.Timestamptz(6)
-
-  @@ignore
 }
 
 model page_views {
@@ -285,26 +270,36 @@ model user_sessions {
 model Cart {
   id        Int        @id @default(autoincrement())
   userId    String     @unique
-  user      user       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  user      user       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
 }
-
 
 model CartItem {
   id              Int      @id @default(autoincrement())
   cartId          Int
-  cart            Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   productId       Int
-  product         product  @relation(fields: [productId], references: [product_id]) 
   quantity        Int
   priceAtAddition Decimal  @db.Decimal(10, 2)
   addedAt         DateTime @default(now())
+  cart            Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product         product  @relation(fields: [productId], references: [product_id])
 
   @@unique([cartId, productId])
   @@index([cartId])
   @@index([productId])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model myReviews {
+  id         Int       @default(autoincrement())
+  name       String?
+  comment    String?
+  rating     Int?
+  created_at DateTime? @db.Timestamptz(6)
+
+  @@ignore
 }
 
 enum payment_status {

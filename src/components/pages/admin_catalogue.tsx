@@ -23,6 +23,11 @@ interface ProductFormData {
   fk_category_id: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const AdminCatalogue: React.FC = () => {
   const router = useRouter();
 
@@ -33,6 +38,7 @@ const AdminCatalogue: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All Products");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // Modal states
   const [showEditModal, setShowEditModal] = useState(false);
@@ -47,9 +53,15 @@ const AdminCatalogue: React.FC = () => {
     fk_category_id: '',
   });
 
-  // Fetch items from database on component mount
+  // Image upload states
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
+
+  // Fetch items and categories on component mount
   useEffect(() => {
     fetchItems();
+    fetchCategories();
   }, []);
 
   const fetchItems = async () => {
@@ -72,6 +84,18 @@ const AdminCatalogue: React.FC = () => {
       setError('Failed to load catalogue items');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
 
@@ -116,6 +140,84 @@ const AdminCatalogue: React.FC = () => {
     router.push('/admin');
   };
 
+ // Handle multiple image selection
+  const handleMultipleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    // Check if adding these files would exceed the limit
+    const totalFiles = selectedImages.length + files.length;
+    if (totalFiles > 5) {
+      alert(`Maximum 5 images allowed. You can add ${5 - selectedImages.length} more image(s).`);
+      return;
+    }
+    
+    // Validate each file
+    const validFiles = files.filter(file => {
+      if (!file.type.startsWith('image/')) {
+        alert(`${file.name} is not an image`);
+        return false;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is too large (max 5MB)`);
+        return false;
+      }
+      return true;
+    });
+    
+    // Add to existing images instead of replacing
+    setSelectedImages(prev => [...prev, ...validFiles]);
+    
+    // Create preview URLs and add to existing previews
+    const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+    
+    // Clear the input so the same file can be selected again if needed
+    e.target.value = '';
+  };
+
+
+
+
+
+  // Upload multiple images
+  const handleUploadMultipleImages = async (): Promise<string[]> => {
+    if (selectedImages.length === 0) return [];
+    
+    setUploadingImages(true);
+    
+    try {
+      const uploadPromises = selectedImages.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/upload-product-image', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) throw new Error('Upload failed');
+        
+        const { url } = await response.json();
+        return url;
+      });
+      
+      const uploadedUrls = await Promise.all(uploadPromises);
+      return uploadedUrls;
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Some images failed to upload');
+      return [];
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  // Remove image from selection
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
   // Add Product
   const handleAddProduct = () => {
     setFormData({
@@ -126,6 +228,8 @@ const AdminCatalogue: React.FC = () => {
       prod_image_url: '',
       fk_category_id: '',
     });
+    setSelectedImages([]);
+    setImagePreviews([]);
     setShowAddModal(true);
   };
 
@@ -133,12 +237,22 @@ const AdminCatalogue: React.FC = () => {
     e.preventDefault();
     
     try {
+      // Upload all images first
+      const uploadedImageUrls = await handleUploadMultipleImages();
+      
+      // Use first image as primary image
+      const primaryImageUrl = uploadedImageUrls[0] || formData.prod_image_url;
+      
       const response = await fetch('/api/items', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          prod_image_url: primaryImageUrl,
+          additionalImages: uploadedImageUrls.slice(1), // Rest of the images
+        }),
       });
 
       if (!response.ok) {
@@ -146,6 +260,8 @@ const AdminCatalogue: React.FC = () => {
       }
 
       setShowAddModal(false);
+      setSelectedImages([]);
+      setImagePreviews([]);
       fetchItems(); // Refresh the list
       alert('Product created successfully!');
     } catch (err) {
@@ -165,6 +281,8 @@ const AdminCatalogue: React.FC = () => {
       prod_image_url: item.prod_image_url || '',
       fk_category_id: item.fk_category_id?.toString() || '',
     });
+    setSelectedImages([]);
+    setImagePreviews([]);
     setShowEditModal(true);
   };
 
@@ -174,12 +292,22 @@ const AdminCatalogue: React.FC = () => {
     if (!editingProduct) return;
 
     try {
+      // Upload new images if any
+      const uploadedImageUrls = await handleUploadMultipleImages();
+      
+      // Use first new image as primary if available, otherwise keep existing
+      const primaryImageUrl = uploadedImageUrls[0] || formData.prod_image_url;
+
       const response = await fetch(`/api/items/${editingProduct.product_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          prod_image_url: primaryImageUrl,
+          additionalImages: uploadedImageUrls.slice(1),
+        }),
       });
 
       if (!response.ok) {
@@ -188,6 +316,8 @@ const AdminCatalogue: React.FC = () => {
 
       setShowEditModal(false);
       setEditingProduct(null);
+      setSelectedImages([]);
+      setImagePreviews([]);
       fetchItems(); // Refresh the list
       alert('Product updated successfully!');
     } catch (err) {
@@ -219,7 +349,7 @@ const AdminCatalogue: React.FC = () => {
     }
   };
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -255,7 +385,7 @@ const AdminCatalogue: React.FC = () => {
         <h1 className="text-4xl font-bold text-center">Admin Catalogue</h1>
         <button 
           onClick={handleBackToAdmin}
-          className="absolute right-0 top-0 px-4 py-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          className="absolute right-0 top-0 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
         >
           Back to Admin Home
         </button>
@@ -451,8 +581,234 @@ const AdminCatalogue: React.FC = () => {
                     />
                   </div>
                 </div>
+
+                {/* Multiple Image Upload Section */}
                 <div>
-                  <label className="block text-sm font-semibold mb-1">Image URL</label>
+                  <label className="block text-sm font-semibold mb-1">Product Images (Max 5)</label>
+                  
+                  {/* Image Previews */}
+                  {imagePreviews.length > 0 && (
+                    <div className="mb-3 grid grid-cols-5 gap-2">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={preview}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-24 object-cover rounded border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                          >
+                            ×
+                          </button>
+                          {index === 0 && (
+                            <span className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-1 rounded">
+                              Primary
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* File Upload */}
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleMultipleImageSelect}
+                      disabled={uploadingImages}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {uploadingImages && (
+                      <p className="text-sm text-blue-600">Uploading images...</p>
+                    )}
+                    <p className="text-xs text-gray-500">
+                      Select up to 5 images. First image will be the primary product image.
+                    </p>
+                  </div>
+                  
+                  {/* Manual URL Input (Optional - for primary image) */}
+                  <div className="mt-2">
+                    <label className="block text-xs text-gray-600 mb-1">Or enter primary image URL manually:</label>
+                    <input
+                      type="text"
+                      name="prod_image_url"
+                      value={formData.prod_image_url}
+                      onChange={handleFormChange}
+                      placeholder="https://..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Category</label>
+                  <select
+                    name="fk_category_id"
+                    value={formData.fk_category_id}
+                    onChange={handleFormChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">-- Select Category --</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  disabled={uploadingImages}
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {uploadingImages ? 'Uploading...' : 'Create Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setSelectedImages([]);
+                    setImagePreviews([]);
+                  }}
+                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
+            <form onSubmit={handleUpdateProduct}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Product Name *</label>
+                  <input
+                    type="text"
+                    name="product_name"
+                    value={formData.product_name}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleFormChange}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Price *</label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleFormChange}
+                      step="0.01"
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Inventory *</label>
+                    <input
+                      type="number"
+                      name="inventory"
+                      value={formData.inventory}
+                      onChange={handleFormChange}
+                      min="0"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Current Image Display */}
+                {formData.prod_image_url && !imagePreviews.length && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Current Image</label>
+                    <img
+                      src={formData.prod_image_url}
+                      alt="Current product"
+                      className="w-32 h-32 object-cover rounded border mb-2"
+                    />
+                  </div>
+                )}
+
+                {/* Multiple Image Upload Section */}
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    {imagePreviews.length ? 'New Images (Max 5)' : 'Add New Images (Max 5)'}
+                  </label>
+                  
+                  {/* Image Previews */}
+                  {imagePreviews.length > 0 && (
+                    <div className="mb-3 grid grid-cols-5 gap-2">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={preview}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-24 object-cover rounded border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                          >
+                            ×
+                          </button>
+                          {index === 0 && (
+                            <span className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-1 rounded">
+                              Primary
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* File Upload */}
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleMultipleImageSelect}
+                      disabled={uploadingImages}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {uploadingImages && (
+                      <p className="text-sm text-blue-600">Uploading images...</p>
+                    )}
+                    <p className="text-xs text-gray-500">
+                      Upload new images to replace existing ones. First image will be the primary.
+                    </p>
+                  </div>
+                  
+                  {/* Manual URL Input */}
+                  <div className="mt-2">
+                    <label className="block text-xs text-gray-600 mb-1">Or enter image URL manually:</label>
                   <input
                     type="text"
                     name="prod_image_url"
@@ -462,6 +818,7 @@ const AdminCatalogue: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+              </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1">Category ID</label>
                   <input
