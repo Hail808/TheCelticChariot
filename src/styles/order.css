@@ -48,7 +48,7 @@
 
 .orderInfo {
     font-family: 'Lalezar', sans-serif;
-    max-width: 60%;
+    max-width: 80%;
     margin: 0 auto;
     padding: 20px;
     border: 5px solid black;
@@ -75,6 +75,7 @@
     padding: 10px;
     vertical-align: middle;
     text-align: center;
+    
 }
 
 .productCell {

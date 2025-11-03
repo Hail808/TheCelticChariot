@@ -90,10 +90,9 @@ const SettingsContent = () => {
     <>
       <div className='header'>
         <h1>Settings</h1>
-        <a href='/user_dashboard'>Return to Account Page</a>
-        <hr className="header-line" />
       </div>
     <div className='settings-container'>
+      <a href='/user_dashboard'>Return to Account Page</a>
       <div className='change-login-info'>
         <button onClick={logout}>Sign Out</button>
         <form onSubmit={handleUsernameSubmit}>

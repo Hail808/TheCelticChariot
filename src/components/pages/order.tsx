@@ -95,9 +95,9 @@ const OrderPage = async ({ id }: Props) => {
                     </a>
                   </div>
                 </td>
-                <td>${Number(item.price).toFixed(2)}</td>
+                <td>${Number(item.product.price).toFixed(2)}</td>
                 <td>{item.quantity}</td>
-                <td>${(Number(item.price) * item.quantity).toFixed(2)} USD</td>
+                <td>${(Number(item.price)).toFixed(2)} USD</td>
               </tr>
             ))}
           </tbody>
