@@ -1,4 +1,6 @@
 PURCHACE WITH NEW ACCOUNT TEST
+This is a test for purchacing an item with a new account
+A new account is made and makes a purchace. In order to pass, the order must be made and is tied to the new account
 
 Instructions:
     This test is verified to work on:
