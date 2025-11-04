@@ -231,7 +231,7 @@ const Cart = () => {
               className="w-24 h-24 object-cover rounded mr-4"
             />
             <div className="flex-1">
-              <h2 className="text-lg font-semibold text-[#333]">{item.product.product_name}</h2>
+              <a className="text-lg font-semibold text-[#333]"  href={`/product_page?id=${item.product.product_id}`}>{item.product.product_name}</a>
               <p className="text-[#666] mt-1">${parseFloat(item.priceAtAddition).toFixed(2)}</p>
               <div className="mt-3 flex gap-3">
                 <div className="bg-[#5B6D50] text-white px-4 py-2 rounded hover:bg-[#4a5a40] transition-colors flex items-center gap-2">
