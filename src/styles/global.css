@@ -41,3 +41,12 @@ nav a {
 nav a:hover {
   text-decoration: underline;
 }
+
+/* remove autofill yellow background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px rgb(238, 237, 237) inset !important;
+}
