@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Define interfaces for order data
+// Updated interfaces for UUID-based orders
 interface Order {
-  order_id: number;
+  order_id: string; // Changed from number to string (UUID)
   order_date: string;
   total_price: number;
   order_status: string;
+  reference: string; // Added reference field
   customer: {
     first_name: string;
     last_name: string;
@@ -47,16 +48,18 @@ const AdminOrders: React.FC = () => {
         const response = await fetch('/api/orders');
         
         if (!response.ok) {
-          throw new Error('Failed to fetch orders');
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(errorData.error || `Failed to fetch orders: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('Orders fetched:', data); // Debug log
         setOrders(data);
         setFilteredOrders(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching orders:', err);
-        setError('Failed to load orders');
+        setError(err instanceof Error ? err.message : 'Failed to load orders');
       } finally {
         setLoading(false);
       }
@@ -192,7 +195,16 @@ const AdminOrders: React.FC = () => {
       <div className="p-6 max-w-[1600px] mx-auto">
         <h1 className="text-4xl font-bold mb-6 text-center">Admin Orders</h1>
         <div className="flex justify-center items-center min-h-[400px]">
-          <p className="text-lg text-red-600">{error}</p>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+            <p className="text-lg text-red-600 font-semibold mb-2">Error Loading Orders</p>
+            <p className="text-sm text-red-500">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -364,7 +376,7 @@ const AdminOrders: React.FC = () => {
                     }`}
                   >
                     <td className="px-6 py-4 text-gray-800 font-medium">
-                      #{order.order_id}
+                      {order.reference}
                     </td>
                     <td className="px-6 py-4 text-gray-600">
                       {formatDate(order.order_date)}
@@ -386,7 +398,7 @@ const AdminOrders: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <button 
-                        onClick={() => alert(`View order details for Order #${order.order_id}`)}
+                        onClick={() => router.push(`/admin/orders/${order.order_id}`)}
                         className="px-4 py-2 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition font-semibold"
                       >
                         View Details
