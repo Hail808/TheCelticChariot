@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         },
         unit_amount: Math.round(item.price * 100), // Convert to cents
       },
-      quantity: item.quantity,
+      quantity: 1,
     }));
 
     // Create Checkout Session

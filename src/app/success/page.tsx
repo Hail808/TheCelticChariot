@@ -20,6 +20,12 @@ export default function Success() {
           <p className="text-[#666]">Thank you for your purchase.</p>
         </div>
         
+        {sessionId && (
+          <div className="bg-gray-50 rounded p-4 mb-6">
+            <p className="text-sm text-[#666]">Order confirmation</p>
+            <p className="text-xs text-[#999] font-mono mt-1 break-all">{sessionId}</p>
+          </div>
+        )}
 
         <p className="text-[#666] mb-6">
           You will receive an email confirmation shortly with your order details.

@@ -35,24 +35,27 @@ export async function GET() {
 // CREATE new product
 export async function POST(request: Request) {
   try {
-   const body = await request.json();
-   const { product_name, price, description, inventory, prod_image_url, fk_category_id, additionalImages } = body;
+    const body = await request.json();
+    const { product_name, description, price, inventory, prod_image_url, fk_category_id } = body;
+
+    // Validation
+    if (!product_name || !price || inventory === undefined) {
+      return NextResponse.json(
+        { error: 'Missing required fields: product_name, price, inventory' },
+        { status: 400 }
+      );
+    }
 
     const newProduct = await prisma.product.create({
       data: {
         product_name,
-        price: Number(price),
-        description,
-        inventory: Number(inventory),
-        prod_image_url, // primary image
-        fk_category_id: fk_category_id ? Number(fk_category_id) : null,
-        images: {
-          create: additionalImages.map((url: string) => ({ image_url: url })),
-        },
+        description: description || null,
+        price: parseFloat(price),
+        inventory: parseInt(inventory),
+        prod_image_url: prod_image_url || null,
+        fk_category_id: fk_category_id ? parseInt(fk_category_id) : null,
       },
-      include: { images: true },
     });
-
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {

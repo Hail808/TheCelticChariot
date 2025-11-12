@@ -114,11 +114,19 @@ const Cart = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+<<<<<<< HEAD
         body: JSON.stringify({ items: stripeItems }),
+=======
+        body: JSON.stringify({ items: cartItems }),
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
       });
 
       const { url } = await response.json();
       
+<<<<<<< HEAD
+=======
+      // Redirect to Stripe Checkout
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
       window.location.href = url;
     } catch (error) {
       console.error('Error:', error);
@@ -127,6 +135,7 @@ const Cart = () => {
     }
   };
 
+<<<<<<< HEAD
   const recommendedItems = [
     { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: 19.99, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
     { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: 16.50, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
@@ -221,11 +230,24 @@ const Cart = () => {
       {/* cart items */}
       <div className="space-y-4">
         {cart.items.map((item) => (
+=======
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+
+  return (
+    <div className="min-h-screen p-6 space-y-8 max-w-6xl mx-auto">
+      {/* Cart Header */}
+      <h1 className="text-4xl font-bold mb-6 text-[#333]">Cart</h1>
+
+      {/* items in cart */}
+      <div className="space-y-4">
+        {cartItems.map((item) => (
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
           <div
             key={item.id}
             className="flex items-center bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
           >
             <img
+<<<<<<< HEAD
               src={item.product.prod_image_url || "/productimages/necklace1.png"}
               alt={item.product.product_name}
               className="w-24 h-24 object-cover rounded mr-4"
@@ -255,6 +277,20 @@ const Cart = () => {
                   onClick={() => removeItem(item.id)}
                   className="bg-[#8b6f5f] text-white px-4 py-2 rounded hover:bg-[#7a5f4f] transition-colors"
                 >
+=======
+              src={item.image}
+              alt={item.name}
+              className="w-24 h-24 object-cover rounded mr-4"
+            />
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-[#333]">{item.name}</h2>
+              <p className="text-[#666] mt-1">${item.price.toFixed(2)}</p>
+              <div className="mt-3 flex gap-3">
+                <button className="bg-[#5B6D50] text-white px-4 py-2 rounded hover:bg-[#4a5a40] transition-colors">
+                  Item Count
+                </button>
+                <button className="bg-[#8b6f5f] text-white px-4 py-2 rounded hover:bg-[#7a5f4f] transition-colors">
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
                   Remove
                 </button>
               </div>
@@ -263,7 +299,11 @@ const Cart = () => {
         ))}
       </div>
 
+<<<<<<< HEAD
       {/* checkout section */}
+=======
+      {/* Checkout Section */}
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <span className="text-xl font-semibold text-[#333]">Total:</span>
@@ -278,7 +318,11 @@ const Cart = () => {
         </button>
       </div>
 
+<<<<<<< HEAD
       {/* recommended items section (need to fill with appropriate products) */}
+=======
+      {/* recommended items section */}
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
       <div>
         <h2 className="text-3xl font-semibold mb-6 text-[#333]">Recommended Items</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -294,10 +338,14 @@ const Cart = () => {
               />
               <p className="font-medium text-[#333] mb-2">{item.name}</p>
               <p className="text-[#5B6D50] font-semibold mb-3">${item.price.toFixed(2)}</p>
+<<<<<<< HEAD
               <button 
                 onClick={() => addToCart(item.id)}
                 className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors"
               >
+=======
+              <button className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors">
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
                 Add to Cart
               </button>
             </div>
@@ -305,7 +353,11 @@ const Cart = () => {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* same payment method section from footer */}
+=======
+      {/* same payment method section from footer*/}
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
       <div className="bg-[#5B6D50] text-white text-center py-6 rounded shadow-md">
         <h4 className="text-sm font-semibold mb-4">We Accept</h4>
         <div className="flex items-center justify-center space-x-3 flex-wrap">
@@ -313,10 +365,18 @@ const Cart = () => {
           <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
             <span className="text-[#0070ba] text-xs font-bold">PayPal</span>
           </div>
+<<<<<<< HEAD
+=======
+          
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
           {/* visa */}
           <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
             <span className="text-[#1a1f71] text-xs font-bold">VISA</span>
           </div>
+<<<<<<< HEAD
+=======
+          
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
           {/* mastercard */}
           <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
             <div className="flex items-center space-x-1">
@@ -324,10 +384,18 @@ const Cart = () => {
               <div className="w-3 h-3 bg-yellow-400 rounded-full opacity-80"></div>
             </div>
           </div>
+<<<<<<< HEAD
+=======
+          
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
           {/* discover */}
           <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
             <span className="text-[#ff6000] text-xs font-bold">DISC</span>
           </div>
+<<<<<<< HEAD
+=======
+          
+>>>>>>> de588211 (my changes before making the reviewsandemails branch)
           {/* klarna */}
           <div className="bg-[#ffb3c7] rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
             <span className="text-[#0a0a0a] text-xs font-bold">Klarna</span>
