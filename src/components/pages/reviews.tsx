@@ -27,6 +27,12 @@ export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+// sorting, search 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
+  const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [helpfulCounts, setHelpfulCounts] = useState<{ [key: number]: number }>({});
+  const [visibleCount, setVisibleCount] = useState(5);
 
   // Fetch reviews from API/database
   useEffect(() => {
@@ -42,6 +48,12 @@ export default function Reviews() {
         const data = await response.json();
         setReviews(data);
         setError(null);
+
+        const avg = data.length > 0 
+          ? data.reduce((sum: number, r: Review) => sum + r.rating, 0) / data.length 
+          : null;
+        setAverageRating(avg);
+
       } catch (err) {
         console.error('Error fetching reviews:', err);
         setError('Failed to load reviews');
@@ -72,10 +84,50 @@ export default function Reviews() {
     });
   };
 
+  const filteredReviews = reviews
+    .filter(r => 
+      r.review_text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.product?.product_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOption === "newest") return new Date(b.review_date).getTime() - new Date(a.review_date).getTime();
+      if (sortOption === "oldest") return new Date(a.review_date).getTime() - new Date(b.review_date).getTime();
+      if (sortOption === "highest") return b.rating - a.rating;
+      if (sortOption === "lowest") return a.rating - b.rating;
+      return 0;
+    });
+
   return (
     <main className="p-8">
       {/* ---------- Page Header ---------- */}
       <h1 className="text-4xl font-bold text-center mb-8">Customer Reviews</h1>
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search reviews..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border px-4 py-2 rounded-lg w-full md:w-1/3"
+        />
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="border px-4 py-2 rounded-lg"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="highest">Highest Rated</option>
+          <option value="lowest">Lowest Rated</option>
+        </select>
+      </div>
+
+      {averageRating !== null && (
+        <div className="max-w-5xl mx-auto text-center mb-8">
+          <p className="text-lg text-gray-700">
+            ⭐ Average Rating: <span className="font-semibold">{averageRating.toFixed(1)} / 5</span>
+          </p>
+        </div>
+      )}
 
       {/* ---------- Reviews Section ---------- */}
       {loading ? (
@@ -155,8 +207,37 @@ export default function Reviews() {
               <p className="text-gray-700 leading-relaxed">
                 {review.review_text || "No review text provided"}
               </p>
+
+              {/* Helpful Button */}
+              <div className="mt-4 flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setHelpfulCounts(prev => ({
+                      ...prev,
+                      [review.review_id]: (prev[review.review_id] || 0) + 1
+                    }));
+                  }}
+                  className="text-green-600 font-semibold hover:text-green-700"
+                >
+                  👍 Helpful
+                </button>
+                <span className="text-gray-600 text-sm">
+                  {helpfulCounts[review.review_id] || 0} found this helpful
+                </span>
+              </div>
             </div>
           ))}
+          {/*  Load More Button */}
+          {visibleCount < filteredReviews.length && (
+            <div className="text-center mt-6">
+              <button 
+                onClick={() => setVisibleCount(prev => prev + 5)} 
+                className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
+              >
+                Load More Reviews
+              </button>
+            </div>
+          )}
         </div>
       )}
 
