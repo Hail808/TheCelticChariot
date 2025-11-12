@@ -1,8 +1,11 @@
 .header {
     padding-top: 100px;
+    padding-bottom: 20px;
     font-family: 'Lalezar', sans-serif;
     text-align: left;
     line-height: 0.5;
+    font-size: 50px;
+
 }
 
 .header-line {
@@ -17,10 +20,13 @@
    padding-left: 10%;
 }
 
-.header a {
+a {
     padding-left: 10%;
+    padding-bottom: 2%;
     font-size: 25px;
-    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #1f380f;
 }
 
 .settings-container {

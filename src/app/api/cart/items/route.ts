@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CartService } from '../../../../../lib/cart-service';
-import { requireAuth } from '../../../../../lib/auth';
+import { CartService } from '../../../../lib/cart-service';
+import { requireAuth } from '../../../../lib/auth';
 
 // POST /api/cart/items - adding item to cart
 export async function POST(request: NextRequest) {

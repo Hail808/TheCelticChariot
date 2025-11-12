@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import {CartService} from "../../../lib/cart-service"
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -76,7 +77,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
   console.log('Amount Total:', fullSession.amount_total);
   console.log('Items:', fullSession.line_items?.data);
 
-  // 1. Save order to database (using your existing Prisma schema)
+  // Save order to database
   try {
     const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
@@ -251,6 +252,8 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
       });
     }
 
+    await CartService.clearCart(guestId.toString());
+
     await prisma.$disconnect();
     console.log(`Order ${order.order_id} saved successfully for guest ${guestId}`);
   } catch (error) {
@@ -259,12 +262,6 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
 
   // 2. Send confirmation email to customer
   // TODO: Implement email sending (see below for examples)
-
-  // 3. Update inventory
-  // TODO: Implement inventory updates
-
-  // 4. Notify fulfillment team
-  // TODO: Send notification to your team
 
   // 5. Create shipping label
   // TODO: Integrate with shipping provider

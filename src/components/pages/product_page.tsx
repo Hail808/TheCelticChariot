@@ -5,7 +5,6 @@ import Image from "next/image";
 import { trackPageView, getSessionId, getUserId } from '@/lib/analytics';
 import { useSearchParams, useRouter } from "next/navigation";
 
-// Define interfaces
 interface Customer {
   first_name: string;
   last_name: string;
@@ -24,6 +23,14 @@ interface Category {
   name: string;
 }
 
+interface ProductImage {
+  id: number;
+  product_id: number;
+  image_url: string;
+  is_primary: boolean;
+  order: number;
+}
+
 interface Product {
   product_id: number;
   product_name: string;
@@ -34,6 +41,7 @@ interface Product {
   fk_category_id: number | null;
   category: Category | null;
   reviews: Review[];
+  images?: ProductImage[];
 }
 
 const ProductDetail: React.FC = () => {
@@ -45,19 +53,17 @@ const ProductDetail: React.FC = () => {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>('');
 
-  // ✅ NEW: Track page view when product loads
   useEffect(() => {
     if (productId) {
       const sessionId = getSessionId();
       const userId = getUserId();
       
-      // Track this product page view
       trackPageView(userId, sessionId, parseInt(productId));
     }
   }, [productId]);
 
-  // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -80,6 +86,14 @@ const ProductDetail: React.FC = () => {
         
         const data = await response.json();
         setProduct(data);
+        
+        // Set initial selected image
+        if (data.prod_image_url) {
+          setSelectedImage(data.prod_image_url);
+        } else if (data.images && data.images.length > 0) {
+          setSelectedImage(data.images[0].image_url);
+        }
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -92,7 +106,6 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [productId]);
 
-  // Fetch related products
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!productId) return;
@@ -112,7 +125,59 @@ const ProductDetail: React.FC = () => {
     fetchRelatedProducts();
   }, [productId]);
 
-  // Calculate average rating
+  // Get all images (primary + additional)
+  const getAllImages = (): string[] => {
+    if (!product) return [];
+    
+    const images: string[] = [];
+    
+    // Add primary image first
+    if (product.prod_image_url) {
+      images.push(product.prod_image_url);
+    }
+    
+    // Add additional images
+    if (product.images && product.images.length > 0) {
+      const additionalImages = product.images
+        .sort((a, b) => a.order - b.order)
+        .map(img => img.image_url);
+      images.push(...additionalImages);
+    }
+    
+    return images;
+  };
+
+  // adding to cart function with counter
+  const addToCart = async () => {
+    if (!product) return;
+    
+    try {
+      const response = await fetch('/api/cart/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: product.product_id, 
+          quantity: 1 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('Added to cart successfully');
+        
+        // trigger cart update event
+        window.dispatchEvent(new Event('cartUpdated'));
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add to cart. Please log in first.');
+    }
+  };
+  
+  //Calculate average rating
   const getAverageRating = () => {
     if (!product || product.reviews.length === 0) return 0;
     const sum = product.reviews.reduce((acc, review) => acc + review.rating, 0);
@@ -149,31 +214,59 @@ const ProductDetail: React.FC = () => {
   }
 
   const averageRating = getAverageRating();
+  const allImages = getAllImages();
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-12">
       {/* Product Display */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         
-        {/* Product Image */}
-        <div className="w-full aspect-square relative rounded-lg overflow-hidden bg-gray-200">
-          {product.prod_image_url ? (
-            <img
-              src={product.prod_image_url}
-              alt={product.product_name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <span className="text-gray-500">No image available</span>
+        {/* Product Images with Gallery */}
+        <div className="space-y-4">
+          {/* Main Image */}
+          <div className="w-full aspect-square relative rounded-lg overflow-hidden bg-gray-200">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt={product.product_name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <span className="text-gray-500">No image available</span>
+              </div>
+            )}
+          </div>
+
+          {/* Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="grid grid-cols-5 gap-2">
+              {allImages.map((imageUrl, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(imageUrl)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImage === imageUrl 
+                      ? 'border-[#5B6D50] ring-2 ring-[#5B6D50]' 
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <img
+                    src={imageUrl}
+                    alt={`${product.product_name} ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           )}
+
         </div>
 
         {/* Product Details */}
         <div className="flex flex-col justify-center space-y-4">
           <h1 className="text-2xl font-bold">{product.product_name}</h1>
-          <p className="text-lg font-semibold text-green-700">
+          <p className="text-lg font-semibold text-[#5B6D50]">
             ${Number(product.price).toFixed(2)}
           </p>
           <div className="flex items-center text-yellow-500">
@@ -188,7 +281,11 @@ const ProductDetail: React.FC = () => {
           <p className="text-sm text-gray-600">
             In stock: {product.inventory}
           </p>
-          <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+          {/* functional add to cart button */}
+          <button 
+            onClick={addToCart}
+            className="bg-[#5B6D50] text-white px-6 py-2 rounded hover:bg-[#4a5a40] transition"
+          >
             Add to Cart
           </button>
         </div>
@@ -231,9 +328,9 @@ const ProductDetail: React.FC = () => {
         <h3 className="text-xl font-semibold">Leave a Review</h3>
         <textarea
           placeholder="Write your review here..."
-          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#5B6D50]"
         ></textarea>
-        <button className="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">
+        <button className="bg-[#5B6D50] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4a5a40] transition">
           Submit Review
         </button>
       </div>
@@ -263,7 +360,7 @@ const ProductDetail: React.FC = () => {
                   )}
                 </div>
                 <p className="font-medium">{relatedProduct.product_name}</p>
-                <p className="text-green-700 font-semibold">
+                <p className="text-[#5B6D50] font-semibold">
                   ${Number(relatedProduct.price).toFixed(2)}
                 </p>
               </button>

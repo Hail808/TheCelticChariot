@@ -17,7 +17,7 @@ export class CartService {
 
     if (!cart) {
       cart = await prisma.cart.create({
-        data: { userId },
+        data: { userId } as any,
         include: {
           items: {
             include: {

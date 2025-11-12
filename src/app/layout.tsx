@@ -30,7 +30,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
           <Footer />
           
           {/* Add tracking component */}
-          <AnalyticsTracker />
+          {typeof window !== "undefined" && <AnalyticsTracker />}
         </div>
       </body>
     </html>

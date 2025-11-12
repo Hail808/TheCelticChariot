@@ -10,12 +10,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    console.log('=== PRODUCT ROUTE DEBUG ===');
+    //console.log('=== PRODUCT ROUTE DEBUG ===');
     
     const { id } = await params;
     const productId = parseInt(id);
     
-    console.log('🔍 Requested product ID:', productId);
+    //console.log('🔍 Requested product ID:', productId);
 
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function GET(
     const dbName = await prisma.$queryRaw<[{ current_database: string }]>`
       SELECT current_database();
     `;
-    console.log('📊 Connected to database:', dbName[0]?.current_database);
+    //console.log('📊 Connected to database:', dbName[0]?.current_database);
 
     // Check if product table exists
     const productTableExists = await prisma.$queryRaw<[{ exists: boolean }]>`
@@ -38,7 +38,7 @@ export async function GET(
         AND table_name = 'product'
       );
     `;
-    console.log('✅ Product table exists:', productTableExists[0]?.exists);
+    //console.log('✅ Product table exists:', productTableExists[0]?.exists);
 
     if (!productTableExists[0]?.exists) {
       console.error('❌ Product table does not exist in database!');
@@ -56,10 +56,10 @@ export async function GET(
     const totalProducts = await prisma.$queryRaw<[{ count: bigint }]>`
       SELECT COUNT(*) as count FROM product;
     `;
-    console.log('📦 Total products in database:', Number(totalProducts[0]?.count));
+    //console.log('📦 Total products in database:', Number(totalProducts[0]?.count));
 
     // Fetch the specific product
-    console.log('🔎 Fetching product with ID:', productId);
+    //console.log('🔎 Fetching product with ID:', productId);
     const product = await prisma.product.findUnique({
       where: {
         product_id: productId,
@@ -79,20 +79,25 @@ export async function GET(
             review_date: 'desc',
           },
         },
+        images: {
+          orderBy: {
+            order: 'asc',
+          }
+        }
       },
     });
 
     if (!product) {
-      console.log('⚠️ Product not found with ID:', productId);
+      //console.log('⚠️ Product not found with ID:', productId);
       return NextResponse.json(
         { error: 'Product not found' },
         { status: 404 }
       );
     }
 
-    console.log('✅ Product found:', product.product_name);
-    console.log('📝 Reviews count:', product.reviews.length);
-    console.log('=== END PRODUCT DEBUG ===\n');
+    //console.log('✅ Product found:', product.product_name);
+    //console.log('📝 Reviews count:', product.reviews.length);
+    //console.log('=== END PRODUCT DEBUG ===\n');
 
     return NextResponse.json(product);
     

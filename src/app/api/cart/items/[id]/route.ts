@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CartService } from '../../../../../../lib/cart-service';
-import { requireAuth } from '../../../../../../lib/auth';
+import { CartService } from '../../../../../lib/cart-service';
+import { requireAuth } from '../../../../../lib/auth';
 
 // PATCH /api/cart/items/:id - updates item quantity
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireAuth();
     const body = await request.json();
-    const itemId = parseInt(params.id);
-    
+    const { id } = await context.params;
     const { quantity } = body;
+    const itemId = parseInt(id, 10);
 
     if (!quantity) {
       return NextResponse.json(
