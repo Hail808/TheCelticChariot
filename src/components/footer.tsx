@@ -23,8 +23,8 @@ const Footer = () => {
             <h3 className="font-lalezar text-lg font-semibold text-white">Shop</h3>
             <ul className="space-y-2 font-lalezar">
               <li><a href="/catalogue" className="text-white/80 hover:text-white transition-colors duration-200">All Products</a></li>
-              <li><a href="/earrings" className="text-white/80 hover:text-white transition-colors duration-200">Earrings</a></li>
-              <li><a href="/beads" className="text-white/80 hover:text-white transition-colors duration-200">DIY Beads</a></li>
+              <li><a href="/catalogue?category=earrings" className="text-white/80 hover:text-white transition-colors duration-200">Earrings</a></li>
+              <li><a href="/catalogue?category=DIY Beads Sets" className="text-white/80 hover:text-white transition-colors duration-200">DIY Beads</a></li>
             </ul>
           </div>
 
@@ -33,6 +33,7 @@ const Footer = () => {
             <h3 className="font-lalezar text-lg font-semibold text-white">Customer Care</h3>
             <ul className="space-y-2 font-lalezar">
               <li><a href="/shipping" className="text-white/80 hover:text-white transition-colors duration-200">Shipping Info</a></li>
+              {/* ✅ Updated to route correctly to /returns */}
               <li><a href="/returns" className="text-white/80 hover:text-white transition-colors duration-200">Returns</a></li>
               <li><a href="/faq" className="text-white/80 hover:text-white transition-colors duration-200">FAQ</a></li>
             </ul>
@@ -101,12 +102,12 @@ const Footer = () => {
                 <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
                   <span className="text-[#0070ba] text-xs font-bold">PayPal</span>
                 </div>
-                
+
                 {/* visa */}
                 <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
                   <span className="text-[#1a1f71] text-xs font-bold">VISA</span>
                 </div>
-                
+
                 {/* mastercard */}
                 <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
                   <div className="flex items-center space-x-1">
@@ -114,12 +115,12 @@ const Footer = () => {
                     <div className="w-3 h-3 bg-yellow-400 rounded-full opacity-80"></div>
                   </div>
                 </div>
-                
+
                 {/* discover */}
                 <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
                   <span className="text-[#ff6000] text-xs font-bold">DISC</span>
                 </div>
-                
+
                 {/* klarna */}
                 <div className="bg-[#ffb3c7] rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
                   <span className="text-[#0a0a0a] text-xs font-bold">Klarna</span>
