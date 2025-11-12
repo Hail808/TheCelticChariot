@@ -74,7 +74,7 @@ const Footer = () => {
               <h4 className="font-lalezar text-sm font-semibold text-white">Follow Us</h4>
               <div className="flex items-center space-x-4">
                 <a 
-                  href="https://instagram.com" 
+                  href="https://www.instagram.com/thecelticchariot/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
@@ -83,7 +83,7 @@ const Footer = () => {
                   <Instagram size={24} />
                 </a>
                 <a 
-                  href="https://tiktok.com" 
+                  href="https://www.tiktok.com/@thecelticchariot" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"

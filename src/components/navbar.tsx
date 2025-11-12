@@ -1,9 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import '../styles/navbar.css';
+import '../styles/navbar.css'; // import CSS file for style
 import { auth } from '../lib/auth';
 import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
-import { useCartCount } from '@/lib/use-cart-count';
 
 type Session = typeof auth.$Infer.Session
 
@@ -14,11 +13,11 @@ type NavbarProps = {
 
 const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { count } = useCartCount(); //cart icon item counter
-
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+
 
   return (
     <nav className="bg-[#5B6D50] shadow-lg shadow-black/20">
@@ -63,19 +62,14 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
             )}
             </div>
             
-            {/* cart number counter badge */}
+            
+            {/* cart */}
             <a 
               href="/cart"
               className="relative p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
             >
               <ShoppingCart size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
-              
-              {/* cart item counter */}
-              {count > 0 && (
-                <span className="absolute -top-1 -right-1 bg-white text-black text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center shadow-lg">
-                  {count}
-                </span>
-              )}
+
             </a>
 
             {/* mobile menu button (only works when display is shrinked down) */}
@@ -110,6 +104,12 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
               REVIEWS
             </a>
             <a 
+              href="/commissions" 
+              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
+            >
+              COMMISSIONS
+            </a>
+            <a 
               href="/about_me" 
               className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
             >
@@ -121,6 +121,13 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
                 ADMIN
               </a>
             )}
+
+            {/* <a 
+              href="/login" 
+              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
+            >
+              SIGN IN
+            </a> */}
           </div>
         </div>
 
@@ -147,6 +154,13 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
               onClick={() => setMenuOpen(false)}
             >
               REVIEWS
+            </a>
+            <a 
+              href="/commissions" 
+              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
+              onClick={() => setMenuOpen(false)}
+            >
+              COMMISSIONS
             </a>
             <a 
               href="/about_me" 

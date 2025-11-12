@@ -83,24 +83,21 @@ export default function Home() {
     const fetchReviews = async () => {
       try {
         setReviewsLoading(true);
-        const response = await fetch('/api/reviews');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch reviews');
-        }
-        
+        const response = await fetch("/api/reviews?page=1&limit=10");
+        if (!response.ok) throw new Error("Failed to fetch reviews");
+
         const data = await response.json();
-        setReviews(data);
+        setReviews(data.reviews || []); // ✅ Use correct property
         setReviewsError(null);
       } catch (err) {
-        console.error('Error fetching reviews:', err);
-        setReviewsError('Failed to load reviews');
+        console.error("Error fetching reviews:", err);
+        setReviewsError("Failed to load reviews");
       } finally {
         setReviewsLoading(false);
       }
     };
 
-    fetchReviews();
+  fetchReviews();
   }, []);
 
   const navigateToCatalogue = () => {
@@ -192,71 +189,111 @@ export default function Home() {
     </div>
 
       {/* ---------- Reviews Section ---------- */}
-      <h1 className="font-another text-3xl font-bold text-center mb-6 pt-4">Reviews</h1>
-      
-      {reviewsLoading ? (
-        <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-lg text-gray-600">Loading reviews...</p>
-        </div>
-      ) : reviewsError ? (
-        <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-lg text-red-600">{reviewsError}</p>
-        </div>
-      ) : reviews.length === 0 ? (
-        <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-lg text-gray-600">No reviews yet</p>
-        </div>
-      ) : (
-        <div className="carousel-wrapper">
-          <button onClick={handlePrev} className="carousel-arrow">
-            &lt;
-          </button>
+<h1 className="font-another text-3xl font-bold text-center mb-6 pt-4">Reviews</h1>
 
-          <div className="carousel-track">
-            {getVisibleReviews().map((review, i) => {
-              const isCenter = review.indexOffset === 0;
-              const isAdjacent = Math.abs(review.indexOffset!) === 1;
+{reviewsLoading ? (
+  <div className="flex justify-center items-center min-h-[300px]">
+    <p className="text-lg text-gray-600">Loading reviews...</p>
+  </div>
+) : reviewsError ? (
+  <div className="flex justify-center items-center min-h-[300px]">
+    <p className="text-lg text-red-600">{reviewsError}</p>
+  </div>
+) : reviews.length === 0 ? (
+  <div className="flex justify-center items-center min-h-[300px]">
+    <p className="text-lg text-gray-600">No reviews yet</p>
+  </div>
+) : (
+  <div className="carousel-wrapper relative flex items-center justify-center gap-4 mt-6">
+    {/* Left Arrow */}
+    <button
+      onClick={() =>
+        setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
+      }
+      className="carousel-arrow text-3xl font-bold px-3 py-1 bg-white shadow rounded-full hover:bg-gray-100 transition"
+    >
+      ‹
+    </button>
 
-              return (
-                <div
-                  key={`${review.review_id}-${review.indexOffset}`}  // Changed: combine ID with offset
-                  className={`review-card ${
-                    isCenter ? "center" : isAdjacent ? "adjacent" : "hidden"
-                  }`}
-                >
-                  <img
-                    src={review.product?.prod_image_url || "/productimages/placeholder.png"}
-                    alt={review.product?.product_name || "Product"}
-                    className="review-product-image"
-                  />
-                  <div className="review-details">
-                    <img
-                      src="/userspics/defaultavatar.jpg"
-                      alt="User"
-                      className="review-profile-icon"
-                    />
-                    <div className="review-text">
-                      <p className="font-semibold">
-                        {review.customer 
-                          ? `${review.customer.first_name} ${review.customer.last_name}`
-                          : "Anonymous"}
-                      </p>
-                      <p>{review.review_text || "No review text"}</p>
-                      <div className="review-stars">
-                        {"⭐".repeat(review.rating)}
-                      </div>
-                    </div>
-                  </div>
+    {/* Reviews */}
+    <div className="carousel-track flex justify-center items-center gap-6">
+      {getVisibleReviews().map((review) => {
+        const isCenter = review.indexOffset === 0;
+        const isAdjacent = Math.abs(review.indexOffset!) === 1;
+
+        return (
+          <div
+            key={`${review.review_id}-${review.indexOffset}`}
+            className={`review-card flex flex-col items-center justify-center bg-white p-4 rounded-xl shadow-md transition-all duration-300 ${
+              isCenter
+                ? "scale-105 opacity-100 z-10"
+                : isAdjacent
+                ? "scale-90 opacity-70 z-5"
+                : "scale-75 opacity-0 pointer-events-none"
+            }`}
+            style={{ minWidth: "18rem", maxWidth: "20rem" }}
+          >
+            {/* Clickable Product Image */}
+            <div
+              onClick={() =>
+                router.push(`/product_page?id=${review.fk_product_id}`)
+              }
+              className="cursor-pointer"
+            >
+              <img
+                src={review.product?.prod_image_url || "/productimages/placeholder.png"}
+                alt={review.product?.product_name || "Product"}
+                className="review-product-image w-64 h-64 object-cover rounded-xl shadow-md mb-3 hover:opacity-90 transition"
+              />
+            </div>
+
+            {/* Review Details */}
+            <div className="review-details flex items-center gap-3">
+              <img
+                src="/userspics/defaultavatar.jpg"
+                alt="User"
+                className="w-10 h-10 rounded-full"
+              />
+              <div>
+                <p className="font-semibold text-gray-800">
+                  {review.customer
+                    ? `${review.customer.first_name} ${review.customer.last_name}`
+                    : "Anonymous"}
+                </p>
+                <p className="text-gray-700 text-sm italic">
+                  {review.review_text || "No review text"}
+                </p>
+                <div className="text-yellow-500 text-sm mt-1">
+                  {"★".repeat(review.rating)}
                 </div>
-              );
-            })}
+              </div>
+            </div>
           </div>
+        );
+      })}
+    </div>
 
-          <button onClick={handleNext} className="carousel-arrow">
-            &gt;
-          </button>
-        </div>
-      )}
+    {/* Right Arrow */}
+    <button
+      onClick={() =>
+        setCurrentIndex((prev) => (prev + 1) % reviews.length)
+      }
+      className="carousel-arrow text-3xl font-bold px-3 py-1 bg-white shadow rounded-full hover:bg-gray-100 transition"
+    >
+      ›
+    </button>
+  </div>
+)}
+
+      
+      <div className="text-center mt-6">
+      <button
+        onClick={() => router.push("/reviews")}
+            className="px-4 py-2 bg-[#5B6D50] text-white rounded hover:bg-[#4a5a40] transition"
+      >
+        All Reviews
+      </button>
+      </div>
     </main>
   );
 }

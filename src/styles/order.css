@@ -1,3 +1,5 @@
+
+
 .header {
     padding-top: 100px;
     font-family: 'Lalezar', sans-serif;
@@ -9,10 +11,12 @@
     width: 80%;
     border: 1px solid black;
     margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-.header h1 {
-    padding-left: 10%;
+.header h1
+{
+   padding-left: 10%;
 }
 
 .header a {
@@ -35,218 +39,168 @@
 .orderNumber h1 {
     font-family: 'Lalezar', sans-serif;
     font-size: 3rem;
+    max-width: 800px;
+    text-align: center;
     margin: 10px auto;
-    line-height: 1.2;
+    line-height: 0.5;
+    padding-top: 50px;
+    padding-bottom: 2%;
+    
 }
 
-.order-date {
-    font-family: 'Lalezar', sans-serif;
-    font-size: 1.2rem;
-    color: #666;
-    margin-top: 10px;
-}
 
-.orderInfo {
+
+.orderInfo{
     font-family: 'Lalezar', sans-serif;
-    max-width: 80%;
+    max-width: 60%;
     margin: 0 auto;
-    padding: 20px;
-    border: 5px solid black;
+    display: block;
+    justify-content: center;
+    padding-top: 20px;
+    border: solid;
+    border-color: black;
     border-radius: 10px;
+    border-width: 5px;
+    
 }
 
-.orderInfo .order-table {
+.orderInfo .order-table{
+   
     width: 100%;
     border-collapse: collapse;
     font-size: 25px;
+    align-items: center;
+    margin-top: -20px; 
+    
+    
 }
 
-.orderInfo .order-table thead {
-    background-color: #98A78F;
-    font-weight: bold;
-}
+.table-divider {
+    margin-top: 20px;
+    border: none;
+    border-top: 2px solid black;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    
+  }
+  
 
-.orderInfo .order-table th {
+.orderInfo .order-table th{
     padding: 12px;
     text-align: center;
 }
 
-.orderInfo .order-table td {
+.orderInfo .order-table td
+{
     padding: 10px;
     vertical-align: middle;
     text-align: center;
-    
 }
 
-.productCell {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: flex-start;
-    text-align: left;
-}
 
-.productCell img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    flex-shrink: 0;
-    border-radius: 8px;
+
+.orderInfo .order-table thead {
+    background-color: #98A78F;
+    font-weight: bold;
+  }
+
+ .productCell {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
 }
 
 .productName {
-    flex: 1;
+  flex: 1;          
+}
+
+.order-table img {     
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 8px;   
+}
+.orderInfo .order-table a {
     color: #596950;
-    text-decoration: none;
-}
+  }
 
-.productName:hover {
-    text-decoration: underline;
-}
-
-.table-divider {
-    margin: 20px auto;
-    border: none;
-    border-top: 2px solid black;
-    width: 80%;
-}
-
-.total-section {
+.total-section{
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    padding: 10px 20px;
+    align-items: flex-end; 
+    padding: 10px;
     font-size: 25px;
+    text-align: right;
 }
 
 .total-section p,
 .total-section h1 {
-    line-height: 1.5;
-    margin: 5px 0;
+  line-height: 1.2; 
+  margin: 0; 
 }
+
 
 .total-wrapper {
     display: inline-block;
     text-align: right;
     margin-top: 10px;
-}
-
-.total-line {
+  }
+  
+  .total-line {
     border: 2px solid black;
     width: 100%;
     margin: 8px 0;
-}
-
-.total {
+  }
+  
+  .total {
     font-size: 35px;
-    font-weight: bold;
     margin: 0;
-}
+  }
 
-.payment-section {
+  .payment-section{
     font-size: 20px;
-    padding: 40px 20px;
+    padding: 20px;
     display: flex;
     justify-content: center;
-    gap: 50px;
-    flex-wrap: wrap;
-}
+    gap: 250px;
+    
+    
+  }
 
-.billing-section,
-.shipping-section {
+  .payment-section .billing-section {
     font-family: 'Lalezar', sans-serif;
-    flex: 1;
-    min-width: 300px;
-    max-width: 400px;
+    display: block;
+    justify-content: center;
     padding: 20px;
-    border: 5px solid black;
+    border: solid;
+    border-color: black;
     border-radius: 10px;
-}
+    border-width: 5px;
+    border: 2px solid black;
+  }
 
-.payment-section h1 {
-    border-bottom: 2px solid black;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    font-size: 28px;
-}
+  .payment-section .shipping-section{
+    font-family: 'Lalezar', sans-serif;
+    display: block;
+    text-align: left;
+    justify-content: center;
+    padding: 20px;
+    border: solid;
+    border-color: black;
+    border-radius: 10px;
+    border-width: 5px;
+    border: 2px solid black;
+  }
 
-.payment-section p {
-    line-height: 1.8;
-    margin: 10px 0;
-}
+  .payment-section h1 {
+    border-bottom:2px solid black;
+  }
 
-.adress {
-    margin-top: 15px;
-}
+  .adress {
+    line-height: .1; 
+    margin: 0; 
+  }
 
-.adress p {
-    line-height: 1.5;
-    margin: 5px 0;
-}
-
-.payment-section a {
-    color: #0066cc;
-    text-decoration: none;
-}
-
-.payment-section a:hover {
-    text-decoration: underline;
-}
-
-/* Status badges */
-.status-paid {
-    color: #596950;
-    font-weight: bold;
-}
-
-.status-pending {
-    color: #ffc107;
-    font-weight: bold;
-}
-
-.status-shipped {
-    color: #17a2b8;
-    font-weight: bold;
-}
-
-.status-delivered {
-    color: #596950;
-    font-weight: bold;
-}
-
-.status-not_yet_shipped {
-    color: #6c757d;
-    font-weight: bold;
-}
-
-/* Responsive design */
-@media (max-width: 1200px) {
-    .payment-section {
-        gap: 30px;
-    }
-}
-
-@media (max-width: 768px) {
-    .orderInfo {
-        max-width: 90%;
-    }
-    
-    .payment-section {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .billing-section,
-    .shipping-section {
-        max-width: 90%;
-    }
-    
-    .orderInfo .order-table {
-        font-size: 18px;
-    }
-    
-    .productCell img {
-        width: 60px;
-        height: 60px;
-    }
+  .payment-section .shipping-section a {
+    color: black;
 }
