@@ -84,8 +84,22 @@ const Catalogue: React.FC = () => {
 
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
-    // For now, just filter all products - you can enhance this later with category relationships
-    const filtered = category === "All Products" ? items : items;
+    
+    // Map category names to IDs (adjust these based on your database)
+    const categoryMap: { [key: string]: number } = {
+      "Necklace": 1,
+      "Earrings": 2,
+      "DIY Bead Sets": 3,
+      "Keychains": 4,
+      "Beaded Belt": 5
+    };
+    
+    const filtered = category === "All Products" 
+      ? items 
+      : items.filter(item => 
+          item.fk_category_id === categoryMap[category]
+        );
+    
     handleSort(sortOrder, filtered);
   };
 
