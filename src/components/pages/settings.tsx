@@ -99,7 +99,7 @@ const SettingsContent = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* account information Card */}
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-normal text-[#5B6D50] mb-6 pb-3 border-b-2 border-[#5B6D50]">
+          <h2 className="text-2xl font-normal text-black mb-6 pb-3 border-b-2 border-[#5B6D50]">
             Account Information
           </h2>
           <form onSubmit={handleUsernameSubmit} className="space-y-6">
@@ -129,7 +129,7 @@ const SettingsContent = () => {
 
         {/* change password section */}
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-normal text-[#5B6D50] mb-6 pb-3 border-b-2 border-[#5B6D50]">
+          <h2 className="text-2xl font-normal text-black mb-6 pb-3 border-b-2 border-[#5B6D50]">
             Change Password
           </h2>
           <form onSubmit={handlePasswordSubmit} className="space-y-6">
@@ -204,7 +204,7 @@ const SettingsContent = () => {
 
         {/* user preferences card */}
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-normal text-[#5B6D50] mb-6 pb-3 border-b-2 border-[#5B6D50]">
+          <h2 className="text-2xl font-normal text-black mb-6 pb-3 border-b-2 border-[#5B6D50]">
             Preferences
           </h2>
           <div className="space-y-4">

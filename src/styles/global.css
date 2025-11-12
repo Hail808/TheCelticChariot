@@ -50,3 +50,20 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   box-shadow: 0 0 0 30px rgb(238, 237, 237) inset !important;
 }
+
+/* remove yellow autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: #333 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* green focus ring for all inputs */
+input:focus {
+  outline: none !important;
+  border-color: #5B6D50 !important;
+  box-shadow: 0 0 0 2px rgba(91, 109, 80, 0.2) !important;
+}
