@@ -243,16 +243,6 @@ model contact_messages {
   message    String
   created_at DateTime? @default(now()) @db.Timestamp(6)
 }
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model myReviews {
-  id         Int       @default(autoincrement())
-  name       String?
-  comment    String?
-  rating     Int?
-  created_at DateTime? @db.Timestamptz(6)
-
-  @@ignore
-}
 
 model page_views {
   view_id    Int       @id @default(autoincrement())
@@ -301,6 +291,16 @@ model CartItem {
   @@index([productId])
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model myReviews {
+  id         Int       @default(autoincrement())
+  name       String?
+  comment    String?
+  rating     Int?
+  created_at DateTime? @db.Timestamptz(6)
+
+  @@ignore
+}
 
 enum payment_status {
   pending
@@ -320,4 +320,15 @@ enum shipping_status {
 enum Role {
   CUSTOMER
   ADMIN
+}
+
+model commissions {
+  id                 Int      @id @default(autoincrement())
+  first_name         String
+  last_name          String
+  email_address      String
+  commission_message String
+  created_at         DateTime @db.Date
+
+  @@map("commissions")
 }

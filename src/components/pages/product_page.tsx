@@ -52,9 +52,19 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const [reviewLoading, setReviewLoading] = useState(false);
+
   const [selectedImage, setSelectedImage] = useState<string>('');
 
+  const [error, setError] = useState<string | null>(null);
+
+
+  
+  // ✅ NEW: Track page view when product loads
   useEffect(() => {
     if (productId) {
       const sessionId = getSessionId();
@@ -125,17 +135,16 @@ const ProductDetail: React.FC = () => {
     fetchRelatedProducts();
   }, [productId]);
 
-  // Get all images (primary + additional)
   const getAllImages = (): string[] => {
     if (!product) return [];
-    
+
     const images: string[] = [];
-    
+
     // Add primary image first
     if (product.prod_image_url) {
       images.push(product.prod_image_url);
     }
-    
+
     // Add additional images
     if (product.images && product.images.length > 0) {
       const additionalImages = product.images
@@ -143,7 +152,7 @@ const ProductDetail: React.FC = () => {
         .map(img => img.image_url);
       images.push(...additionalImages);
     }
-    
+
     return images;
   };
 
@@ -214,6 +223,51 @@ const ProductDetail: React.FC = () => {
   }
 
   const averageRating = getAverageRating();
+
+// Handle review submission
+const handleReviewSubmit = async () => {
+  if (!productId) return setFeedback("❌ Product ID missing.");
+  if (rating === 0) return setFeedback("❌ Please select a rating.");
+
+  try {
+    setReviewLoading(true);
+    setFeedback("");
+
+    const res = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        review_text: reviewText,
+        rating,
+        fk_product_id: parseInt(productId),
+        fk_customer_id: null, // optional for now
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to submit review.");
+    }
+
+    setFeedback("✅ Review submitted successfully!");
+    setReviewText("");
+    setRating(0);
+
+    // Refresh the product data to show the new review
+    setProduct((prev) =>
+      prev
+        ? { ...prev, reviews: [...prev.reviews, data.newReview] }
+        : prev
+    );
+  } catch (err: any) {
+    console.error("Error submitting review:", err);
+    setFeedback(`❌ ${err.message}`);
+  } finally {
+    setReviewLoading(false);
+  }
+};
+
   const allImages = getAllImages();
 
   return (
@@ -323,16 +377,46 @@ const ProductDetail: React.FC = () => {
         )}
       </div>
 
-      {/* Leave a Review */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Leave a Review</h3>
-        <textarea
-          placeholder="Write your review here..."
-          className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#5B6D50]"
-        ></textarea>
-        <button className="bg-[#5B6D50] text-white px-6 py-2 rounded-lg shadow hover:bg-[#4a5a40] transition">
-          Submit Review
-        </button>
+      {/* Review Container */}
+      <div className="bg-white shadow-md rounded-lg p-6 space-y-4">          
+
+        {/* Leave a Review */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Leave a Review</h3>
+          
+          {/*Rating Selector*/}
+          <div className="flex gap-2 text-yellow-500 text-2xl">
+          {[1, 2, 3, 4, 5].map((star) => (
+          <button
+          key={star}
+          type="button"
+          onClick={() => setRating(star)}
+          className={star <= rating ? "text-yellow-500" : "text-gray-400"}
+          >
+          ★
+          </button>
+          ))}
+        </div>
+
+        {/* Review Text */}
+          <textarea
+            placeholder="Write your review here..."
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+          </textarea>
+
+        {/* Submit Button */}
+          <button 
+            onClick={handleReviewSubmit}
+            disabled={reviewLoading}
+            className="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">
+            {reviewLoading ? "Submitting..." : "Submit Review"}
+          </button>
+            {feedback && <p className="text-sm text-center">{feedback}</p>}
+        </div>
+
       </div>
 
       {/* Related Products */}
@@ -360,7 +444,7 @@ const ProductDetail: React.FC = () => {
                   )}
                 </div>
                 <p className="font-medium">{relatedProduct.product_name}</p>
-                <p className="text-[#5B6D50] font-semibold">
+                <p className="text-green-700 font-semibold">
                   ${Number(relatedProduct.price).toFixed(2)}
                 </p>
               </button>
