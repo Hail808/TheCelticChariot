@@ -58,20 +58,22 @@ const ProductDetail: React.FC = () => {
   const [feedback, setFeedback] = useState("");
   const [reviewLoading, setReviewLoading] = useState(false);
 
+  const [selectedImage, setSelectedImage] = useState<string>('');
+
   const [error, setError] = useState<string | null>(null);
 
+
+  
   // ✅ NEW: Track page view when product loads
   useEffect(() => {
     if (productId) {
       const sessionId = getSessionId();
       const userId = getUserId();
       
-      // Track this product page view
       trackPageView(userId, sessionId, parseInt(productId));
     }
   }, [productId]);
 
-  // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -95,6 +97,13 @@ const ProductDetail: React.FC = () => {
         const data = await response.json();
         setProduct(data);
         
+        // Set initial selected image
+        if (data.prod_image_url) {
+          setSelectedImage(data.prod_image_url);
+        } else if (data.images && data.images.length > 0) {
+          setSelectedImage(data.images[0].image_url);
+        }
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -107,7 +116,6 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [productId]);
 
-  // Fetch related products
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!productId) return;
@@ -127,17 +135,16 @@ const ProductDetail: React.FC = () => {
     fetchRelatedProducts();
   }, [productId]);
 
-  // Get all images (primary + additional)
   const getAllImages = (): string[] => {
     if (!product) return [];
-    
+
     const images: string[] = [];
-    
+
     // Add primary image first
     if (product.prod_image_url) {
       images.push(product.prod_image_url);
     }
-    
+
     // Add additional images
     if (product.images && product.images.length > 0) {
       const additionalImages = product.images
@@ -145,7 +152,7 @@ const ProductDetail: React.FC = () => {
         .map(img => img.image_url);
       images.push(...additionalImages);
     }
-    
+
     return images;
   };
 
@@ -261,31 +268,59 @@ const handleReviewSubmit = async () => {
   }
 };
 
+  const allImages = getAllImages();
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-12">
       {/* Product Display */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         
-        {/* Product Image */}
-        <div className="w-full aspect-square relative rounded-lg overflow-hidden bg-gray-200">
-          {product.prod_image_url ? (
-            <img
-              src={product.prod_image_url}
-              alt={product.product_name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <span className="text-gray-500">No image available</span>
+        {/* Product Images with Gallery */}
+        <div className="space-y-4">
+          {/* Main Image */}
+          <div className="w-full aspect-square relative rounded-lg overflow-hidden bg-gray-200">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt={product.product_name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <span className="text-gray-500">No image available</span>
+              </div>
+            )}
+          </div>
+
+          {/* Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="grid grid-cols-5 gap-2">
+              {allImages.map((imageUrl, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(imageUrl)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImage === imageUrl 
+                      ? 'border-[#5B6D50] ring-2 ring-[#5B6D50]' 
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <img
+                    src={imageUrl}
+                    alt={`${product.product_name} ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           )}
+
         </div>
 
         {/* Product Details */}
         <div className="flex flex-col justify-center space-y-4">
           <h1 className="text-2xl font-bold">{product.product_name}</h1>
-          <p className="text-lg font-semibold text-green-700">
+          <p className="text-lg font-semibold text-[#5B6D50]">
             ${Number(product.price).toFixed(2)}
           </p>
           <div className="flex items-center text-yellow-500">
@@ -300,7 +335,11 @@ const handleReviewSubmit = async () => {
           <p className="text-sm text-gray-600">
             In stock: {product.inventory}
           </p>
-          <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+          {/* functional add to cart button */}
+          <button 
+            onClick={addToCart}
+            className="bg-[#5B6D50] text-white px-6 py-2 rounded hover:bg-[#4a5a40] transition"
+          >
             Add to Cart
           </button>
         </div>
