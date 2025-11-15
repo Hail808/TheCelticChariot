@@ -29,8 +29,6 @@ export async function POST(req: Request) {
         
         // Payment was successful
         console.log('Payment successful!', session.id);
-        
-        // TODO: Fulfill the order
         await fulfillOrder(session);
         break;
 
@@ -59,32 +57,31 @@ export async function POST(req: Request) {
 async function fulfillOrder(session: Stripe.Checkout.Session) {
   // Get the full session details including line items
   const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
-    expand: ['line_items'],
+    expand: ['line_items','shipping_cost.shipping_rate', 'total_details', 'customer_details'],
   });
 
-  console.log('Full session object:', JSON.stringify(fullSession, null, 2));
 
-  const customerEmail = fullSession.customer_details?.email || '';
-  const customerName = fullSession.customer_details?.name || '';
-  
   // Shipping details are in customer_details.address or shipping_details
   const shippingAddr = fullSession.customer_details?.address || (fullSession as any).shipping_details?.address;
-
-  console.log('Order Details:');
-  console.log('Customer Email:', customerEmail);
-  console.log('Customer Name:', customerName);
-  console.log('Shipping Address:', shippingAddr);
-  console.log('Amount Total:', fullSession.amount_total);
-  console.log('Items:', fullSession.line_items?.data);
 
   // Save order to database
   try {
     const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
 
+    const fullName = fullSession.customer_details?.name || 'Guest';
+    const nameParts = fullName.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
     const customerEmail = fullSession.customer_details?.email || '';
-    const customerName = fullSession.customer_details?.name || '';
     const shippingAddr = fullSession.customer_details?.address || (fullSession as any).shipping_details?.address;
+    const shippingRate = fullSession.shipping_cost?.shipping_rate;
+    const shippingMethod = typeof shippingRate === 'string' 
+      ? shippingRate 
+      : shippingRate?.display_name || 'N/A';
+    const shippingAmount = fullSession.shipping_cost?.amount_total / 100 || 0;
+    const taxAmount = fullSession.total_details?.amount_tax / 100 || 0;
 
     let addressId = null;
 
@@ -117,7 +114,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
 
     let guestId: number;
 
-    if (existingUser?.guest_id) {
+    if (existingUser && existingUser.guest_id) {
       // User has an account - use their existing guest record
       guestId = existingUser.guest_id;
       
@@ -125,6 +122,8 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
       await prisma.guest.update({
         where: { guest_id: guestId },
         data: {
+          first_name: firstName,
+          last_name: lastName,
           fk_ship_address_id: addressId,
           fk_bill_address_id: addressId,
         },
@@ -156,7 +155,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
         const newGuest = await prisma.guest.create({
           data: {
             email: customerEmail,
-            phone_num: '', // Stripe doesn't collect phone by default
+            phone_num: '',
             fk_ship_address_id: addressId,
             fk_bill_address_id: addressId,
           },
@@ -176,11 +175,13 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
         reference: orderReference, // Store the full reference
         order_date: new Date(),
         total_price: (fullSession.amount_total || 0) / 100,
-        order_status: 'paid',
+        order_status: 'Paid',
+        shipping_cost: shippingAmount,
+        shipping_method: shippingMethod,
         fk_ship_address_id: addressId,
         fk_bill_address_id: addressId,
         fk_guest_id: guestId,
-        fk_customer_id: null,
+        tax: taxAmount
       },
     });
 
@@ -223,7 +224,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
     }
 
     // Create invoice with shorter invoice number
-    const invoiceNumber = `INV-${Date.now()}-${order.order_id}`;
+    const invoiceNumber = `INV-${order.reference}`;
     
     await prisma.invoice.create({
       data: {

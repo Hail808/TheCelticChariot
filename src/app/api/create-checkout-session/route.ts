@@ -32,6 +32,15 @@ export async function POST(req: Request) {
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'], 
       },
+      shipping_options: [
+        { shipping_rate: process.env.GROUND_SHIPPING_RATE_ID! },
+        { shipping_rate: process.env.PRIORITY_SHIPPING_RATE_ID! },
+      ],
+        automatic_tax: {
+          enabled: true,
+      },
+      billing_address_collection: 'required',
+      customer_creation: 'always',
     });
 
     return NextResponse.json({ url: session.url });

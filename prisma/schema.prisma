@@ -56,7 +56,6 @@ model customer {
   fk_ship_address_id Int?
   fk_bill_address_id Int?
   address            address?  @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
-  orders             orders[]
   reviews            reviews[]
 }
 
@@ -66,6 +65,8 @@ model guest {
   phone_num          String   @db.VarChar(15)
   fk_ship_address_id Int?
   fk_bill_address_id Int?
+  first_name         String?  @db.VarChar(20)
+  last_name          String?  @db.VarChar(20)
   address            address? @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
   orders             orders[]
   user               user?
@@ -81,40 +82,45 @@ model inventory {
 
 model invoice {
   invoice_id     Int            @id @default(autoincrement())
-  fk_order_id    Int?           @unique(map: "uq_order_id")
   invoice_number String         @db.VarChar(50)
   invoice_date   DateTime       @db.Date
   total_price    Decimal?       @db.Decimal(10, 2)
   due_date       DateTime       @db.Date
   payment_status payment_status @default(pending)
-  orders         orders?        @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
+  fk_order_id    String?        @unique(map: "uq_order_id") @db.Uuid
+  orders         orders?        @relation(fields: [fk_order_id], references: [order_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_id")
   payment        payment?
+
+  @@index([fk_order_id], map: "idx_invoice_fk_order_id")
 }
 
 model order_item {
   order_item_id Int      @id @default(autoincrement())
-  fk_order_id   Int?
   fk_product_id Int?
   quantity      Int
   price         Decimal  @db.Decimal(10, 2)
-  orders        orders?  @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
+  fk_order_id   String   @db.Uuid
+  orders        orders   @relation(fields: [fk_order_id], references: [order_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_id")
   product       product? @relation(fields: [fk_product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
+
+  @@index([fk_order_id], map: "idx_order_item_fk_order_id")
 }
 
 model orders {
-  order_id           Int          @id @default(autoincrement())
   order_date         DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Date
   total_price        Decimal      @db.Decimal(10, 2)
   order_status       String       @db.VarChar(20)
   fk_ship_address_id Int?
   fk_bill_address_id Int?
-  fk_customer_id     Int?
   fk_guest_id        Int?
   reference          String       @unique @db.VarChar(20)
+  order_id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shipping_cost      Int?         @default(0)
+  shipping_method    String?      @db.VarChar(255)
+  tax                Int?
   invoice            invoice?
   order_item         order_item[]
   address            address?     @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
-  customer           customer?    @relation(fields: [fk_customer_id], references: [customer_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_customer_id")
   guest              guest?       @relation(fields: [fk_guest_id], references: [guest_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_guest_id")
   shipping           shipping?
 }
@@ -169,15 +175,17 @@ model session {
 
 model shipping {
   shipping_id            Int             @id @default(autoincrement())
-  fk_order_id            Int?            @unique(map: "uq_shipping_order_id")
   fk_shipping_address_id Int?            @unique(map: "uq_shipping_address_id")
   tracking_num           String?         @db.VarChar(50)
   carrier                String          @db.VarChar(50)
   shipping_status        shipping_status @default(not_yet_shipped)
   created_at             DateTime        @default(now())
   shipping_method        String?         @db.VarChar(50)
-  orders                 orders?         @relation(fields: [fk_order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_id")
+  fk_order_id            String?         @unique(map: "uq_shipping_order_id") @db.Uuid
+  orders                 orders?         @relation(fields: [fk_order_id], references: [order_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_order_id")
   address                address?        @relation(fields: [fk_shipping_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shipping_address_id")
+
+  @@index([fk_order_id], map: "idx_shipping_fk_order_id")
 }
 
 model user {
@@ -243,6 +251,7 @@ model contact_messages {
   message    String
   created_at DateTime? @default(now()) @db.Timestamp(6)
 }
+
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model myReviews {
   id         Int       @default(autoincrement())
@@ -301,6 +310,67 @@ model CartItem {
   @@index([productId])
 }
 
+model commissions {
+  id                 Int      @id @default(autoincrement())
+  first_name         String
+  last_name          String
+  email_address      String
+  commission_message String
+  created_at         DateTime @db.Date
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model invoice_backup {
+  invoice_id     Int?
+  fk_order_id    Int?
+  invoice_number String?         @db.VarChar(50)
+  invoice_date   DateTime?       @db.Date
+  total_price    Decimal?        @db.Decimal(10, 2)
+  due_date       DateTime?       @db.Date
+  payment_status payment_status?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model order_item_backup {
+  order_item_id Int?
+  fk_order_id   Int?
+  fk_product_id Int?
+  quantity      Int?
+  price         Decimal? @db.Decimal(10, 2)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model orders_backup {
+  order_id           Int?
+  order_date         DateTime? @db.Date
+  total_price        Decimal?  @db.Decimal(10, 2)
+  order_status       String?   @db.VarChar(20)
+  fk_ship_address_id Int?
+  fk_bill_address_id Int?
+  fk_customer_id     Int?
+  fk_guest_id        Int?
+  reference          String?   @db.VarChar(20)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model shipping_backup {
+  shipping_id            Int?
+  fk_order_id            Int?
+  fk_shipping_address_id Int?
+  tracking_num           String?          @db.VarChar(50)
+  carrier                String?          @db.VarChar(50)
+  shipping_status        shipping_status?
+  created_at             DateTime?
+  shipping_method        String?          @db.VarChar(50)
+
+  @@ignore
+}
 
 enum payment_status {
   pending
