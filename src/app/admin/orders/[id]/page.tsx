@@ -8,19 +8,13 @@ interface OrderDetails {
   total_price: number;
   order_status: string;
   reference: string;
-  
-  customer: {
-    customer_id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone_num: string;
-  } | null;
-  
+  tracking_number: string | null;
+
   guest: {
     guest_id: number;
     email: string;
-    phone_num: string;
+    first_name: string;
+    last_name: string;
   } | null;
   
   shipping_address: {
@@ -88,6 +82,10 @@ const OrderDetailsPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState(
+    order?.tracking_number || ''
+  );
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -157,7 +155,7 @@ const OrderDetailsPage: React.FC = () => {
   };
 
   const handleSendEmail = () => {
-    const email = order?.customer?.email || order?.guest?.email;
+    const email = order?.guest?.email;
     if (email) {
       window.location.href = `mailto:${email}?subject=Order ${order?.reference} Update`;
     }
@@ -276,6 +274,33 @@ const OrderDetailsPage: React.FC = () => {
     return parts.join(', ');
   };
 
+  const handleSaveTracking = async () => {
+    if (!trackingNumber.trim()) {
+      alert('Please enter a tracking number');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/orders/${order.reference}/tracking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracking_number: trackingNumber }),
+      });
+
+      if (response.ok) {
+        alert('Tracking number saved!');
+      } else {
+        alert('Failed to save tracking number');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error saving tracking number');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const subtotal = order.order_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = subtotal * 0.0825; // 8.25% tax
   const shipping = 9.99; // Flat shipping
@@ -329,6 +354,24 @@ const OrderDetailsPage: React.FC = () => {
                     >
                       Edit
                     </button>
+                    {/* Show tracking input if status is shipping/shipped */}
+                    {(order.order_status.toLowerCase() === 'shipped') && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder="Enter tracking number"
+                          value={trackingNumber}
+                          onChange={(e) => setTrackingNumber(e.target.value)}
+                          className="px-3 py-1 text-sm border rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                          onClick={handleSaveTracking}
+                          className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
@@ -462,24 +505,20 @@ const OrderDetailsPage: React.FC = () => {
           {/* Customer Information */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Customer Information</h2>
-            {order.customer ? (
+            {order.guest ? (
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-600">Name:</p>
                   <p className="font-semibold">
-                    {order.customer.first_name} {order.customer.last_name}
+                    {order.guest.first_name} {order.guest.last_name}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email:</p>
-                  <p className="font-semibold">{order.customer.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Phone:</p>
-                  <p className="font-semibold">{order.customer.phone_num}</p>
+                  <p className="font-semibold">{order.guest.email}</p>
                 </div>
                 <button
-                  onClick={() => router.push(`/admin/customers/${order.customer?.customer_id}`)}
+                  onClick={() => router.push(`/admin/customers/${order.guest?.guest_id}`)}
                   className="w-full mt-4 px-4 py-2 bg-[#5B6D50] text-white rounded-lg hover:bg-[#4a5a40] transition"
                 >
                   View Customer Profile
@@ -493,10 +532,6 @@ const OrderDetailsPage: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-600">Email:</p>
                   <p className="font-semibold">{order.guest.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Phone:</p>
-                  <p className="font-semibold">{order.guest.phone_num}</p>
                 </div>
               </div>
             ) : (

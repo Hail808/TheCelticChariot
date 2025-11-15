@@ -49,11 +49,12 @@ export async function PATCH(
 // DELETE /api/cart/items/:id - removes item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requireAuth();
-    const itemId = parseInt(params.id);
+    const { id } = await context.params;
+    const itemId = parseInt(id);
 
     await CartService.removeItem(user.id, itemId);
     

@@ -195,34 +195,54 @@ const Catalogue: React.FC = () => {
         {/* Right Content: Catalogue Grid */}
         <div className="lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <div
-                key={item.product_id}
-                className="flex flex-col items-center text-center"
-              >
-                <button
-                  onClick={() => handleProduct(item.product_id)}
-                  className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+            filteredItems.map((item) => {
+              const isOutOfStock = item.inventory <= 0;
+              
+              return (
+                <div
+                  key={item.product_id}
+                  className="flex flex-col items-center text-center"
                 >
-                  {item.prod_image_url ? (
-                    <img
-                      src={item.prod_image_url}
-                      alt={item.product_name}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                      <span>No Image</span>
-                    </div>
-                  )}
-                </button>
-                <p className="mt-2 font-medium w-full text-left">{item.product_name}</p>
+                  <button
+                    onClick={() => handleProduct(item.product_id)}
+                    className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+                  >
+                    {item.prod_image_url ? (
+                      <img
+                        src={item.prod_image_url}
+                        alt={item.product_name}
+                        className={`object-cover w-full h-full transition-all
+                          ${isOutOfStock ? 'opacity-60 saturate-50' : ''}
+                        `}
+                      />
+                    ) : (
+                      <div className={`w-full h-full bg-gray-300 flex items-center justify-center
+                        ${isOutOfStock ? 'opacity-60' : ''}
+                      `}>
+                        <span>No Image</span>
+                      </div>
+                    )}
+                    
+                    {/* Subtle Out of Stock Badge */}
+                    {isOutOfStock && (
+                      <div className="absolute top-2 right-2">
+                        <div className="bg-gray-800 bg-opacity-75 text-white px-3 py-1 rounded text-sm font-medium">
+                          Out of Stock
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                  
+                  <p className="mt-2 font-medium w-full text-left">{item.product_name}</p>
 
-                <p className="text-indigo-600 font-bold w-full text-left">
-                  {formatPrice(item.price)}
-                </p>
-              </div>
-            ))
+                  <p className={`font-bold w-full text-left
+                    ${isOutOfStock ? 'text-gray-500' : 'text-indigo-600'}
+                  `}>
+                    {formatPrice(item.price)}
+                  </p>
+                </div>
+              );
+            })
           ) : (
             <p className="text-center text-gray-500 col-span-full">
               No results found

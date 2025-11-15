@@ -10,13 +10,7 @@ export async function GET() {
           select: {
             order_id: true,
             order_date: true,
-            customer: {
-              select: {
-                first_name: true,
-                last_name: true,
-                email: true,
-              },
-            },
+      
             guest: {
               select: {
                 email: true,
@@ -70,7 +64,7 @@ export async function POST(request: Request) {
 
     const newInvoice = await prisma.invoice.create({
       data: {
-        fk_order_id: fk_order_id ? parseInt(fk_order_id) : null,
+        fk_order_id: fk_order_id ? fk_order_id : null,
         invoice_number,
         invoice_date: new Date(invoice_date),
         total_price: total_price ? parseFloat(total_price) : null,

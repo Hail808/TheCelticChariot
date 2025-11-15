@@ -13,13 +13,6 @@ export async function GET() {
           select: {
             order_id: true,
             order_date: true,
-            customer: {
-              select: {
-                first_name: true,
-                last_name: true,
-                email: true,
-              },
-            },
             guest: {
               select: {
                 email: true,
@@ -87,7 +80,7 @@ export async function POST(request: NextRequest) {
     
     const newShipping = await prisma.shipping.create({
       data: {
-        fk_order_id: fk_order_id ? parseInt(fk_order_id) : null,
+        fk_order_id: fk_order_id ? fk_order_id : null,
         fk_shipping_address_id: fk_shipping_address_id ? parseInt(fk_shipping_address_id) : null,
         shipping_method: shipping_method || null,
         tracking_num: tracking_num || null,

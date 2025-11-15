@@ -149,7 +149,7 @@ const ProductDetail: React.FC = () => {
 
   // adding to cart function with counter
   const addToCart = async () => {
-    if (!product) return;
+    if (!product || product.inventory <= 0) return;
     
     try {
       const response = await fetch('/api/cart/items', {
@@ -215,6 +215,7 @@ const ProductDetail: React.FC = () => {
 
   const averageRating = getAverageRating();
   const allImages = getAllImages();
+  const isOutOfStock = product.inventory <= 0;
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-12">
@@ -278,15 +279,21 @@ const ProductDetail: React.FC = () => {
           {product.description && (
             <p className="text-gray-700">{product.description}</p>
           )}
-          <p className="text-sm text-gray-600">
-            In stock: {product.inventory}
+          <p className={`text-sm font-medium ${isOutOfStock ? 'text-red-600' : 'text-gray-600'}`}>
+            {isOutOfStock ? 'Out of Stock' : `In stock: ${product.inventory}`}
           </p>
-          {/* functional add to cart button */}
+          
+          {/* Add to Cart Button */}
           <button 
             onClick={addToCart}
-            className="bg-[#5B6D50] text-white px-6 py-2 rounded hover:bg-[#4a5a40] transition"
+            disabled={isOutOfStock}
+            className={`px-6 py-2 rounded transition font-medium ${
+              isOutOfStock
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-[#5B6D50] text-white hover:bg-[#4a5a40]'
+            }`}
           >
-            Add to Cart
+            {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
           </button>
         </div>
       </div>
