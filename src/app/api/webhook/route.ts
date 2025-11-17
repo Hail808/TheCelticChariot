@@ -254,8 +254,16 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
       });
     }
 
-
-    await CartService.clearCart(getUserId());
+    const userId = fullSession.metadata?.userId || undefined;
+    const sessionId = fullSession.metadata?.sessionId || undefined;
+    if (userId || sessionId) {
+      try {
+        await CartService.clearCart(userId, sessionId);
+        console.log('Cart cleared successfully');
+      } catch (error) {
+        console.error('Failed to clear cart:', error);
+      }
+    }
 
     await prisma.$disconnect();
     console.log(`Order ${order.order_id} saved successfully for guest ${guestId}`);
