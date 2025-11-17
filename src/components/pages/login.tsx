@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signInSocial } from '../../lib/actions/auth-actions';
+import { CartService } from '@/lib/cart-service';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -20,6 +21,20 @@ const Login = () => {
       if (!result.user) {
         setError("Please try again");
       } else {
+      const guestSessionId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('guest_session_id='))
+      ?.split('=')[1];
+      
+      // Merge guest cart if there was one
+      if (guestSessionId) {
+        try {
+          await CartService.mergeGuestCart(guestSessionId, result.user.id);
+        } catch (err) {
+          console.error('Failed to merge guest cart:', err);
+          // Don't block login if cart merge fails
+        }
+      }
         router.push('/user_dashboard')
       }
     } catch (err) {

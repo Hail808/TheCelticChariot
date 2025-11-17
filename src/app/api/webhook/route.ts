@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import {CartService} from "../../../lib/cart-service"
 import Stripe from 'stripe';
+import { getSessionId, getUserId } from '@/lib/analytics';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-09-30.clover',
@@ -253,7 +254,8 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
       });
     }
 
-    await CartService.clearCart(guestId.toString());
+
+    await CartService.clearCart(getUserId());
 
     await prisma.$disconnect();
     console.log(`Order ${order.order_id} saved successfully for guest ${guestId}`);

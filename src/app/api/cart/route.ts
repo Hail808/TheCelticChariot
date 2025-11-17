@@ -1,25 +1,49 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { CartService } from '../../../lib/cart-service';
-import { requireAuth } from '../../../lib/auth';
+import { auth } from '../../../lib/auth';
+import { v4 as uuidv4 } from 'uuid';
+
+// Helper function to get session identifiers
+function getSessionIdentifiers(request: NextRequest, session: any) {
+  let userId: string | undefined = session?.user?.id;
+  let sessionId: string;
+
+  if (session) {
+    sessionId = session.session.id;
+  } else {
+    // Get guest session from cookie
+    const guestSessionId = request.cookies.get('guest_session_id')?.value;
+    sessionId = guestSessionId || uuidv4();
+  }
+
+  return { userId, sessionId, isNewGuest: !session && !request.cookies.get('guest_session_id')?.value };
+}
 
 // GET /api/cart - get user's cart
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth();
-    const cart = await CartService.getOrCreateCart(user.id);
+    const session = await auth.api.getSession({ headers: request.headers });
+    const { userId, sessionId } = getSessionIdentifiers(request, session);
 
-    return NextResponse.json({
+    const cart = await CartService.getOrCreateCart(userId, sessionId);
+
+    const response = NextResponse.json({
       success: true,
       data: cart,
     });
-  } catch (error: any) {
-    if (error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
+
+    // Set guest session cookie if new guest
+    if (!session && !request.cookies.get('guest_session_id')?.value) {
+      response.cookies.set('guest_session_id', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      });
     }
 
+    return response;
+  } catch (error: any) {
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
@@ -27,24 +51,63 @@ export async function GET() {
   }
 }
 
-// DELETE /api/cart - clears cart
-export async function DELETE() {
+// POST /api/cart/items - add item to cart
+export async function POST(request: NextRequest) {
   try {
-    const user = await requireAuth();
-    await CartService.clearCart(user.id);
+    const session = await auth.api.getSession({ headers: request.headers });
+    const { userId, sessionId, isNewGuest } = getSessionIdentifiers(request, session);
+
+    const body = await request.json();
+    const { productId, quantity } = body;
+
+    if (!productId || !quantity) {
+      return NextResponse.json(
+        { success: false, error: 'Missing productId or quantity' },
+        { status: 400 }
+      );
+    }
+
+    await CartService.addItem(Number(productId), Number(quantity), userId, sessionId);
+    const cart = await CartService.getOrCreateCart(userId, sessionId);
+
+    const response = NextResponse.json({
+      success: true,
+      data: cart,
+      message: 'Item added to cart',
+    });
+
+    // Set guest session cookie if new guest
+    if (isNewGuest) {
+      response.cookies.set('guest_session_id', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      });
+    }
+
+    return response;
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 400 }
+    );
+  }
+}
+
+// DELETE /api/cart - clears cart
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await auth.api.getSession({ headers: request.headers });
+    const { userId, sessionId } = getSessionIdentifiers(request, session);
+
+    await CartService.clearCart(userId, sessionId);
 
     return NextResponse.json({
       success: true,
       message: 'Cart cleared successfully',
     });
   } catch (error: any) {
-    if (error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

@@ -1,11 +1,19 @@
 import { prisma } from './prisma';
 
-
 export class CartService {
-  // Get or create cart for user
-  static async getOrCreateCart(userId: string) {
+  // Get or create cart for user or guest
+  static async getOrCreateCart(userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
+    // Build where clause based on what's provided
+    const where = userId 
+      ? { userId } 
+      : { sessionId: sessionId! };
+
     let cart = await prisma.cart.findUnique({
-      where: { userId },
+      where,
       include: {
         items: {
           include: {
@@ -17,7 +25,10 @@ export class CartService {
 
     if (!cart) {
       cart = await prisma.cart.create({
-        data: { userId } as any,
+        data: {
+          userId: userId || null,
+          sessionId: sessionId || null,
+        } as any,
         include: {
           items: {
             include: {
@@ -31,8 +42,78 @@ export class CartService {
     return cart;
   }
 
+  // Merge guest cart into user cart upon login
+  static async mergeGuestCart(sessionId: string, userId: string) {
+    const guestCart = await prisma.cart.findUnique({
+      where: { sessionId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!guestCart || guestCart.items.length === 0) {
+      return null; // No guest cart to merge
+    }
+
+    // Get or create user cart
+    const userCart = await this.getOrCreateCart(userId);
+
+    // Merge items from guest cart to user cart
+    for (const guestItem of guestCart.items) {
+      // Check if product exists in user cart
+      const existingItem = await prisma.cartItem.findUnique({
+        where: {
+          cartId_productId: {
+            cartId: userCart.id,
+            productId: guestItem.productId,
+          },
+        },
+      });
+
+      if (existingItem) {
+        // Combine quantities
+        const newQuantity = existingItem.quantity + guestItem.quantity;
+        
+        // Check inventory
+        if (guestItem.product.inventory >= newQuantity) {
+          await prisma.cartItem.update({
+            where: { id: existingItem.id },
+            data: { quantity: newQuantity },
+          });
+        } else {
+          // Max out at available inventory
+          await prisma.cartItem.update({
+            where: { id: existingItem.id },
+            data: { quantity: guestItem.product.inventory },
+          });
+        }
+      } else {
+        // Move item to user cart
+        await prisma.cartItem.update({
+          where: { id: guestItem.id },
+          data: { cartId: userCart.id },
+        });
+      }
+    }
+
+    // Delete guest cart
+    await prisma.cart.delete({
+      where: { id: guestCart.id },
+    });
+
+    return await this.getOrCreateCart(userId);
+  }
+
   // Add item to cart
-  static async addItem(userId: string, productId: number, quantity: number) {
+  static async addItem(productId: number, quantity: number, userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
     // Validate product exists and has inventory
     const product = await prisma.product.findUnique({
       where: { product_id: productId },
@@ -51,7 +132,7 @@ export class CartService {
     }
 
     // Get or create cart
-    const cart = await this.getOrCreateCart(userId);
+    const cart = await this.getOrCreateCart(userId, sessionId);
 
     // Check if item already in cart
     const existingItem = await prisma.cartItem.findUnique({
@@ -91,7 +172,11 @@ export class CartService {
   }
 
   // Update cart item quantity
-  static async updateItemQuantity(userId: string, itemId: number, quantity: number) {
+  static async updateItemQuantity(itemId: number, quantity: number, userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
     if (quantity <= 0) {
       throw new Error('Quantity must be greater than 0');
     }
@@ -104,7 +189,16 @@ export class CartService {
       },
     });
 
-    if (!cartItem || cartItem.cart.userId !== userId) {
+    if (!cartItem) {
+      throw new Error('Cart item not found');
+    }
+
+    // Verify ownership
+    const isOwner = userId 
+      ? cartItem.cart.userId === userId
+      : cartItem.cart.sessionId === sessionId;
+
+    if (!isOwner) {
       throw new Error('Cart item not found');
     }
 
@@ -112,33 +206,56 @@ export class CartService {
       throw new Error(`Insufficient inventory. Only ${cartItem.product.inventory} available`);
     }
 
-    return await prisma.cartItem.update({
+    await prisma.cartItem.update({
       where: { id: itemId },
       data: { quantity },
-      include: { product: true },
     });
+
+    return cartItem.cart;
   }
 
   // Remove item from cart
-  static async removeItem(userId: string, itemId: number) {
+  static async removeItem(itemId: number, userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
     const cartItem = await prisma.cartItem.findUnique({
       where: { id: itemId },
       include: { cart: true },
     });
 
-    if (!cartItem || cartItem.cart.userId !== userId) {
+    if (!cartItem) {
       throw new Error('Cart item not found');
     }
 
-    return await prisma.cartItem.delete({
+    // Verify ownership
+    const isOwner = userId 
+      ? cartItem.cart.userId === userId
+      : cartItem.cart.sessionId === sessionId;
+
+    if (!isOwner) {
+      throw new Error('Cart item not found');
+    }
+
+    await prisma.cartItem.delete({
       where: { id: itemId },
     });
+    return cartItem.cart;
   }
 
   // Clear entire cart
-  static async clearCart(userId: string) {
+  static async clearCart(userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
+    const where = userId 
+      ? { userId } 
+      : { sessionId: sessionId! };
+
     const cart = await prisma.cart.findUnique({
-      where: { userId },
+      where,
     });
 
     if (!cart) {
@@ -153,8 +270,12 @@ export class CartService {
   }
 
   // Calculate cart totals
-  static async calculateTotals(userId: string) {
-    const cart = await this.getOrCreateCart(userId);
+  static async calculateTotals(userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
+    const cart = await this.getOrCreateCart(userId, sessionId);
 
     const subtotal = cart.items.reduce((sum, item) => {
       return sum + Number(item.priceAtAddition) * item.quantity;
@@ -177,8 +298,12 @@ export class CartService {
   }
 
   // Validate cart inventory
-  static async validateInventory(userId: string) {
-    const cart = await this.getOrCreateCart(userId);
+  static async validateInventory(userId?: string, sessionId?: string) {
+    if (!userId && !sessionId) {
+      throw new Error('Either userId or sessionId is required');
+    }
+
+    const cart = await this.getOrCreateCart(userId, sessionId);
 
     const invalidItems = [];
 
