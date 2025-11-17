@@ -11,6 +11,8 @@ interface Customer {
   email: string;
   phone_num: string;
   last_login: string | null;
+  is_registered_user: boolean;
+  user_account_id: string | null;
   total_orders: number;
   total_spent: number;
   total_reviews: number;
@@ -21,6 +23,7 @@ interface Customer {
 type SortField = 'name' | 'orders' | 'spent' | 'reviews' | 'last_login';
 type SortOrder = 'asc' | 'desc';
 type FilterStatus = 'all' | 'active' | 'inactive' | 'vip' | 'new';
+type FilterUserType = 'all' | 'registered' | 'guest';
 
 const AdminEngagement: React.FC = () => {
   const router = useRouter();
@@ -33,6 +36,7 @@ const AdminEngagement: React.FC = () => {
   // Filter and sort states
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [filterUserType, setFilterUserType] = useState<FilterUserType>('all');
   const [sortField, setSortField] = useState<SortField>('spent');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
@@ -73,6 +77,15 @@ const AdminEngagement: React.FC = () => {
       );
     }
 
+    // Apply user type filter
+    if (filterUserType !== 'all') {
+      filtered = filtered.filter(c => {
+        if (filterUserType === 'registered') return c.is_registered_user;
+        if (filterUserType === 'guest') return !c.is_registered_user;
+        return true;
+      });
+    }
+
     // Apply status filter
     if (filterStatus !== 'all') {
       filtered = filtered.filter(c => {
@@ -109,7 +122,7 @@ const AdminEngagement: React.FC = () => {
     });
 
     setFilteredCustomers(filtered);
-  }, [customers, searchQuery, filterStatus, sortField, sortOrder]);
+  }, [customers, searchQuery, filterStatus, filterUserType, sortField, sortOrder]);
 
   const handleHome = () => {
     router.push('/admin');
@@ -149,12 +162,12 @@ const AdminEngagement: React.FC = () => {
       return 'vip';
     }
     
-    // New: created in last 30 days (if we have created_at)
-    if (customer.created_at) {
-      const createdDate = new Date(customer.created_at);
+    // New: first order in last 30 days
+    if (customer.first_order_date) {
+      const firstOrderDate = new Date(customer.first_order_date);
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      if (createdDate >= thirtyDaysAgo) {
+      if (firstOrderDate >= thirtyDaysAgo) {
         return 'new';
       }
     }
@@ -189,6 +202,22 @@ const AdminEngagement: React.FC = () => {
         {labels[status]}
       </span>
     );
+  };
+
+  const getUserTypeBadge = (customer: Customer) => {
+    if (customer.is_registered_user) {
+      return (
+        <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-blue-100 text-blue-800 border-blue-300">
+          👤 Registered
+        </span>
+      );
+    } else {
+      return (
+        <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-gray-100 text-gray-800 border-gray-300">
+           Guest
+        </span>
+      );
+    }
   };
 
   const getAvgOrderValue = (customer: Customer): number => {
@@ -236,6 +265,8 @@ const AdminEngagement: React.FC = () => {
   const activeUsers = customers.filter(c => getCustomerStatus(c) === 'active').length;
   const vipUsers = customers.filter(c => getCustomerStatus(c) === 'vip').length;
   const newUsers = customers.filter(c => getCustomerStatus(c) === 'new').length;
+  const registeredUsers = customers.filter(c => c.is_registered_user).length;
+  const guestUsers = customers.filter(c => !c.is_registered_user).length;
   const totalRevenue = customers.reduce((sum, customer) => sum + customer.total_spent, 0);
   const avgCustomerValue = customers.length > 0 ? totalRevenue / customers.length : 0;
   const totalOrders = customers.reduce((sum, c) => sum + c.total_orders, 0);
@@ -270,25 +301,30 @@ const AdminEngagement: React.FC = () => {
       </div>
 
       {/* Enhanced Customer Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-7 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-1">Total Customers</h3>
           <p className="text-3xl font-bold text-gray-700">{customers.length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-1">Registered</h3>
+          <p className="text-3xl font-bold text-blue-600">{registeredUsers}</p>
+          <p className="text-xs text-gray-500 mt-1">{((registeredUsers / customers.length) * 100).toFixed(1)}%</p>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-1">Guests</h3>
+          <p className="text-3xl font-bold text-gray-600">{guestUsers}</p>
+          <p className="text-xs text-gray-500 mt-1">{((guestUsers / customers.length) * 100).toFixed(1)}%</p>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-1">Active Users</h3>
-          <p className="text-3xl font-bold text-gray-700">{activeUsers}</p>
+          <p className="text-3xl font-bold text-green-600">{activeUsers}</p>
           <p className="text-xs text-gray-500 mt-1">Last 30 days</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-1">VIP Customers</h3>
-          <p className="text-3xl font-bold text-gray-700">{vipUsers}</p>
+          <p className="text-3xl font-bold text-purple-600">{vipUsers}</p>
           <p className="text-xs text-gray-500 mt-1">{((vipUsers / customers.length) * 100).toFixed(1)}%</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-1">New Customers</h3>
-          <p className="text-3xl font-bold text-gray-700">{newUsers}</p>
-          <p className="text-xs text-gray-500 mt-1">Last 30 days</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-1">Avg Customer Value</h3>
@@ -304,7 +340,7 @@ const AdminEngagement: React.FC = () => {
 
       {/* Filters and Search */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           {/* Search Bar */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -319,12 +355,51 @@ const AdminEngagement: React.FC = () => {
             />
           </div>
 
+          {/* User Type Filter */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Filter by User Type
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => setFilterUserType('all')}
+                className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  filterUserType === 'all'
+                    ? 'bg-[#5B6D50] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                All ({customers.length})
+              </button>
+              <button
+                onClick={() => setFilterUserType('registered')}
+                className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  filterUserType === 'registered'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                👤 Registered ({registeredUsers})
+              </button>
+              <button
+                onClick={() => setFilterUserType('guest')}
+                className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  filterUserType === 'guest'
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                👥 Guests ({guestUsers})
+              </button>
+            </div>
+          </div>
+
           {/* Status Filter */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Filter by Status
+              Filter by Activity Status
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setFilterStatus('all')}
                 className={`px-4 py-2 rounded-lg font-semibold transition ${
@@ -333,7 +408,7 @@ const AdminEngagement: React.FC = () => {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                All ({customers.length})
+                All
               </button>
               <button
                 onClick={() => setFilterStatus('active')}
@@ -393,6 +468,7 @@ const AdminEngagement: React.FC = () => {
                 >
                   Name {getSortIcon('name')}
                 </th>
+                <th className="px-4 py-4 text-left font-semibold">Type</th>
                 <th className="px-4 py-4 text-left font-semibold">Status</th>
                 <th className="px-4 py-4 text-left font-semibold">Contact</th>
                 <th 
@@ -443,6 +519,9 @@ const AdminEngagement: React.FC = () => {
                         {customer.first_name} {customer.last_name}
                       </td>
                       <td className="px-4 py-4">
+                        {getUserTypeBadge(customer)}
+                      </td>
+                      <td className="px-4 py-4">
                         {getStatusBadge(customer)}
                       </td>
                       <td className="px-4 py-4">
@@ -482,7 +561,7 @@ const AdminEngagement: React.FC = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan={10} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={11} className="px-6 py-8 text-center text-gray-500">
                     No customers found matching your filters
                   </td>
                 </tr>

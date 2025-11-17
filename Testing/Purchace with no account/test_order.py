@@ -50,7 +50,8 @@ def test_order_with_no_account():
         image_field = driver.find_element(By.XPATH, "//span[text()='No Image']/parent::div")
         image_field.click()
         time.sleep(2)
-        driver.find_element(By.XPATH, "//button[text()='Add to Cart']").click()
+        add_to_cart = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Add to Cart']")))
+        add_to_cart.click()
         time.sleep(2)
 
         # Proceed to checkout

@@ -4,7 +4,7 @@ import Footer from '../components/footer';
 import { ReactNode } from 'react';
 import { auth } from '../lib/auth';
 import { headers } from 'next/headers';
-import { checkForAdmin } from '../lib/actions/auth-actions';
+import { checkForAdmin,updateUserLastLogin } from '../lib/actions/auth-actions';
 import AnalyticsTracker from '../components/analytics_tracker';
 
 const Layout = async ({ children }: { children: ReactNode }) => {
@@ -12,6 +12,9 @@ const Layout = async ({ children }: { children: ReactNode }) => {
     headers: await headers(),
   })
   const isAdmin = await checkForAdmin()
+  if (session?.user) {
+    updateUserLastLogin(session.user.id).catch(console.error);
+  }
   
   return (
     <html>

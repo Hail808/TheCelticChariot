@@ -141,3 +141,15 @@ export async function checkForAdmin() {
     );
     return isAdmin;
 }
+
+
+export async function updateUserLastLogin(userId: string) {
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { last_login: new Date() },
+    });
+  } catch (error) {
+    console.error('Failed to update last login:', error);
+  }
+}

@@ -147,6 +147,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
           data: {
             fk_ship_address_id: addressId,
             fk_bill_address_id: addressId,
+            last_login: new Date()
           },
         });
         
@@ -159,6 +160,9 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
             phone_num: '',
             fk_ship_address_id: addressId,
             fk_bill_address_id: addressId,
+            last_login: new Date(),
+            first_name: firstName,
+            last_name: lastName,
           },
         });
         guestId = newGuest.guest_id;

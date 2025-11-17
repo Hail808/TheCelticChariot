@@ -113,7 +113,7 @@ export class CartService {
     if (!userId && !sessionId) {
       throw new Error('Either userId or sessionId is required');
     }
-
+    
     // Validate product exists and has inventory
     const product = await prisma.product.findUnique({
       where: { product_id: productId },
