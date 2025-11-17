@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { signOut } from '@/lib/actions/auth-actions';
+import { email } from 'better-auth/*';
 
 const prisma = new PrismaClient();
 
@@ -40,6 +41,7 @@ const UserDashboard = async () => {
     }
 
     const accInfo = {
+        email: user.email,
         userName: user.name,
         name: user.name,
         address: user.guest?.address?.street_line1 ?? '',
@@ -177,8 +179,8 @@ const UserDashboard = async () => {
                     
                     <div className="space-y-6">
                         <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4 p-4 bg-[#e5ede1] rounded">
-                            <dt className="font-normal text-[#5B6D50] text-lg md:w-1/4">Username</dt>
-                            <dd className="text-gray-700 md:w-3/4">{accInfo.userName}</dd>
+                            <dt className="font-normal text-[#5B6D50] text-lg md:w-1/4">Email</dt>
+                            <dd className="text-gray-700 md:w-3/4">{accInfo.email}</dd>
                         </div>
                         
                         <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4 p-4 bg-[#e5ede1] rounded">

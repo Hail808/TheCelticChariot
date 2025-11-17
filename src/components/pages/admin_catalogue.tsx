@@ -836,111 +836,15 @@ const AdminCatalogue: React.FC = () => {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-semibold"
                 >
-                  Create Product
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Product Modal */}
-      {showEditModal && editingProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
-            <form onSubmit={handleUpdateProduct}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Product Name *</label>
-                  <input
-                    type="text"
-                    name="product_name"
-                    value={formData.product_name}
-                    onChange={handleFormChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleFormChange}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold mb-1">Price *</label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={formData.price}
-                      onChange={handleFormChange}
-                      step="0.01"
-                      min="0"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold mb-1">Inventory *</label>
-                    <input
-                      type="number"
-                      name="inventory"
-                      value={formData.inventory}
-                      onChange={handleFormChange}
-                      min="0"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Image URL</label>
-                  <input
-                    type="text"
-                    name="prod_image_url"
-                    value={formData.prod_image_url}
-                    onChange={handleFormChange}
-                    placeholder="https://..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Category ID</label>
-                  <input
-                    type="number"
-                    name="fk_category_id"
-                    value={formData.fk_category_id}
-                    onChange={handleFormChange}
-                    min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-4 mt-6">
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-[#5B6D50] text-white hover:bg-[#4a5a40] transition font-semibold"
-                >
-                  Update Product
+                  Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setShowEditModal(false);
                     setEditingProduct(null);
+                    setSelectedImages([]);
+                    setImagePreviews([]);
                   }}
                   className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition font-semibold"
                 >
@@ -951,6 +855,8 @@ const AdminCatalogue: React.FC = () => {
           </div>
         </div>
       )}
+
+      
     </div>
   );
 };

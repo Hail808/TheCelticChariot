@@ -22,7 +22,6 @@ export async function GET(
       include: {
         orders: {
           include: {
-            customer: true,
             guest: true,
             order_item: {
               include: {

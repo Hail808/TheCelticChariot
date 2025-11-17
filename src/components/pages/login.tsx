@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signInSocial } from '../../lib/actions/auth-actions';
+import { CartService } from '@/lib/cart-service';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -16,12 +17,9 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await signIn(formData.email, formData.password)
-      if (!result.user) {
-        setError("Please try again");
-      } else {
-        router.push('/user_dashboard')
-      }
+      await signIn(formData.email, formData.password)
+      router.push('/user_dashboard')
+      router.refresh()
     } catch (err) {
       console.error("Sign-in error:", err);
       setError(err instanceof Error ? err.message : "Unknown error");

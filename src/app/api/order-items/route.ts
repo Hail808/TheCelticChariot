@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     const newOrderItem = await prisma.order_item.create({
       data: {
-        fk_order_id: parseInt(fk_order_id),
+        fk_order_id: fk_order_id,
         fk_product_id: parseInt(fk_product_id),
         quantity: parseInt(quantity),
         price: parseFloat(price),

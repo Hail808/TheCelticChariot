@@ -45,9 +45,9 @@ const OrderPage = async ({ id }: Props) => {
     0
   );
 
-  const shippingCost = 0; // You can add shipping cost logic here
-  const tax = 0; // You can add tax calculation here
-  const total = Number(order.total_price);
+  const shippingCost = order.shipping_cost || 0;
+  const tax = order.tax || 0;
+  const total = Number(order.total_price) || 0;
 
   // Format shipping status
   const formatShippingStatus = (status: string) => {

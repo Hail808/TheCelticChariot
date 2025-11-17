@@ -7,12 +7,10 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET( request: Request,  { params }: { params: Promise<{ id: string }> } ) {
     let client;
-  
     try {
-        const { id } = await params;
-        const orderId = id;
+        const orderId = (await params).id;
         client = await pool.connect();
         
         // Get order with customer/guest info
@@ -23,20 +21,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             o.total_price,
             o.order_status,
             o.reference,
-            o.fk_customer_id,
             o.fk_guest_id,
             o.fk_ship_address_id,
             o.fk_bill_address_id,
-            -- Customer info
-            c.customer_id,
-            c.first_name as customer_first_name,
-            c.last_name as customer_last_name,
-            c.email as customer_email,
-            c.phone_num as customer_phone,
             -- Guest info
             g.guest_id,
-            g.email as guest_email,
-            g.phone_num as guest_phone,
+            g.email as email,
+            g.first_name as first_name,
+            g.last_name as last_name,
+            -- Address info
             -- Shipping address
             sa.street_line1 as ship_street1,
             sa.street_line2 as ship_street2,
@@ -52,7 +45,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             ba.postal_code as bill_postal,
             ba.country as bill_country
         FROM orders o
-        LEFT JOIN customer c ON o.fk_customer_id = c.customer_id
         LEFT JOIN guest g ON o.fk_guest_id = g.guest_id
         LEFT JOIN address sa ON o.fk_ship_address_id = sa.address_id
         LEFT JOIN address ba ON o.fk_bill_address_id = ba.address_id
@@ -137,19 +129,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         order_status: orderRow.order_status,
         reference: orderRow.reference,
         
-        customer: orderRow.fk_customer_id ? {
-            customer_id: orderRow.customer_id,
-            first_name: orderRow.customer_first_name,
-            last_name: orderRow.customer_last_name,
-            email: orderRow.customer_email,
-            phone_num: orderRow.customer_phone
+        guest: orderRow.guest_id ? {
+            guest_id: orderRow.guest_id,
+            first_name: orderRow.first_name,
+            last_name: orderRow.last_name,
+            email: orderRow.email,      
         } : null,
         
-        guest: orderRow.fk_guest_id ? {
-            guest_id: orderRow.guest_id,
-            email: orderRow.guest_email,
-            phone_num: orderRow.guest_phone
-        } : null,
+      
         
         shipping_address: orderRow.fk_ship_address_id ? {
             street_line1: orderRow.ship_street1,
@@ -203,6 +190,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             amount: parseFloat(paymentResult.rows[0].amount)
         } : null
         };
+        console.log('Order Details:', orderDetails.guest);
         
         return NextResponse.json(orderDetails);
     
@@ -224,12 +212,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // PATCH endpoint to update order status
-    export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    export async function PATCH(request: Request,  { params }: { params: Promise<{ id: string }> } ) {
     let client;
     
     try {
-        const { id } = await params;
-        const orderId = id;
+        const orderId = (await params).id;
         const body = await request.json();
         const { order_status } = body;
         
@@ -281,12 +268,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // DELETE endpoint to cancel/delete order
-    export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> } ) {
         let client;
     
     try {
-        const { id } = await params;
-        const orderId = id;
+        const orderId = (await params).id;
         client = await pool.connect();
         
         // Start transaction

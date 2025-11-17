@@ -9,12 +9,10 @@ interface Order {
   total_price: number;
   order_status: string;
   reference: string; // Added reference field
-  customer: {
-    first_name: string;
-    last_name: string;
-  } | null;
   guest: {
     email: string;
+    first_name: string;
+    last_name: string;
   } | null;
   address: {
     street_line1: string;
@@ -91,8 +89,8 @@ const AdminOrders: React.FC = () => {
       let bValue: any;
 
       if (key === 'customerName') {
-        aValue = a.customer ? `${a.customer.first_name} ${a.customer.last_name}` : 'Guest';
-        bValue = b.customer ? `${b.customer.first_name} ${b.customer.last_name}` : 'Guest';
+        aValue = a.guest ? `${a.guest.first_name} ${a.guest.last_name}` : 'Guest';
+        bValue = b.guest ? `${b.guest.first_name} ${b.guest.last_name}` : 'Guest';
       } else if (key === 'itemCount') {
         aValue = a.order_item.reduce((sum, item) => sum + item.quantity, 0);
         bValue = b.order_item.reduce((sum, item) => sum + item.quantity, 0);
@@ -143,8 +141,8 @@ const AdminOrders: React.FC = () => {
   };
 
   const getCustomerName = (order: Order) => {
-    if (order.customer) {
-      return `${order.customer.first_name} ${order.customer.last_name}`;
+    if (order.guest?.first_name && order.guest?.last_name) {
+      return `${order.guest.first_name} ${order.guest.last_name} ${order.guest.email}`;
     }
     return order.guest ? `Guest (${order.guest.email})` : 'Unknown';
   };

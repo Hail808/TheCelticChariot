@@ -10,6 +10,7 @@ const UserDashboardPage = async () => {
     if(!session)
     {
        redirect("/login")
+       
     }
     return <UserDashboard />;
 };

@@ -5,15 +5,14 @@ import { requireAuth } from '../../../../../lib/auth';
 // GET /api/shipping/order/:orderId - Get shipping by order ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ orderId: string }> }
+  { params }: { params: Promise<{ orderid: string }> }
 ) {
   try {
     await requireAuth();
-    
-    const { orderId } = await params;
-    const orderIdNum = parseInt(orderId);
-    
-    if (isNaN(orderIdNum)) {
+
+    const { orderid } = await params;
+
+    if (!(orderid)) {
       return NextResponse.json(
         { success: false, error: 'Invalid order ID' },
         { status: 400 }
@@ -21,11 +20,10 @@ export async function GET(
     }
 
     const shipping = await prisma.shipping.findUnique({
-      where: { fk_order_id: orderIdNum },
+      where: { fk_order_id: orderid },
       include: {
         orders: {
           include: {
-            customer: true,
             guest: true,
           },
         },

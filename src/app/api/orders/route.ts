@@ -15,39 +15,37 @@ export async function GET() {
   try {
     client = await pool.connect();
     
-    // Step 1: Get all orders with customer, guest, and address info
-    const ordersQuery = `
-      SELECT 
-        o.order_id,
-        o.order_date,
-        o.total_price,
-        o.order_status,
-        o.reference,
-        o.fk_customer_id,
-        o.fk_guest_id,
-        -- Customer info
-        c.first_name as customer_first_name,
-        c.last_name as customer_last_name,
-        c.email as customer_email,
-        -- Guest info
-        g.email as guest_email,
-        g.phone_num as guest_phone,
-        -- Address info
-        a.street_line1,
-        a.street_line2,
-        a.city,
-        a.state,
-        a.postal_code,
-        a.country
-      FROM orders o
-      LEFT JOIN customer c ON o.fk_customer_id = c.customer_id
-      LEFT JOIN guest g ON o.fk_guest_id = g.guest_id
-      LEFT JOIN address a ON o.fk_ship_address_id = a.address_id
-      ORDER BY o.order_date DESC;
-    `;
-    
-    const ordersResult = await client.query(ordersQuery);
-    
+  // Step 1: Get all orders with customer, guest, and address info
+  const ordersQuery = `
+    SELECT 
+      o.order_id,
+      o.order_date,
+      o.total_price,
+      o.order_status,
+      o.reference,
+      o.fk_guest_id,
+      o.shipping_cost,
+      o.shipping_method,
+      o.tax,
+      -- Guest info
+      g.first_name,
+      g.last_name,
+      g.email as guest_email,
+      g.phone_num as guest_phone,
+      -- Address info
+      a.street_line1,
+      a.street_line2,
+      a.city,
+      a.state,
+      a.postal_code,
+      a.country
+    FROM orders o
+    LEFT JOIN guest g ON o.fk_guest_id = g.guest_id
+    LEFT JOIN address a ON o.fk_ship_address_id = a.address_id
+    ORDER BY o.order_date DESC;
+  `;
+
+  const ordersResult = await client.query(ordersQuery);    
     // Step 2: Get all order items
     const itemsQuery = `
       SELECT 
@@ -83,14 +81,10 @@ export async function GET() {
       total_price: parseFloat(row.total_price),
       order_status: row.order_status,
       reference: row.reference,
-      customer: row.fk_customer_id ? {
-        first_name: row.customer_first_name,
-        last_name: row.customer_last_name,
-        email: row.customer_email
-      } : null,
       guest: row.fk_guest_id ? {
-        email: row.guest_email,
-        phone_num: row.guest_phone
+        first_name: row.first_name,
+        last_name: row.last_name,
+        email: row.guest_email
       } : null,
       address: row.street_line1 ? {
         street_line1: row.street_line1,
