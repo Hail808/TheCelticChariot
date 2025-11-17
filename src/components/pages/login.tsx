@@ -17,26 +17,9 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await signIn(formData.email, formData.password)
-      if (!result.user) {
-        setError("Please try again");
-      } else {
-      const guestSessionId = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('guest_session_id='))
-      ?.split('=')[1];
-      
-      // Merge guest cart if there was one
-      if (guestSessionId) {
-        try {
-          await CartService.mergeGuestCart(guestSessionId, result.user.id);
-        } catch (err) {
-          console.error('Failed to merge guest cart:', err);
-          // Don't block login if cart merge fails
-        }
-      }
-        router.push('/user_dashboard')
-      }
+      await signIn(formData.email, formData.password)
+      router.push('/user_dashboard')
+      router.refresh()
     } catch (err) {
       console.error("Sign-in error:", err);
       setError(err instanceof Error ? err.message : "Unknown error");

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signUp } from '../../lib/actions/auth-actions';
 
 const CreateAccount = () => {
   const [formData, setFormData] = useState({ 
@@ -42,7 +41,7 @@ const CreateAccount = () => {
         return;
       }
       router.push('/user_dashboard');
-      
+      router.refresh()
     } catch (err) {
       console.error('Form submit error:', err);
       setError(err instanceof Error ? err.message : "Unknown error");

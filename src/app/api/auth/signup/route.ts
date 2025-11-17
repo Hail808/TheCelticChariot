@@ -4,6 +4,7 @@ import { prisma } from '../../../../lib/prisma';
 import { CartService } from '@/lib/cart-service';
 
 
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password, name } = await request.json();
@@ -67,23 +68,17 @@ export async function POST(request: NextRequest) {
     const guestSessionId = request.cookies.get("guest_session_id")?.value;
     if (guestSessionId) {
       try {
-        console.log('Merging guest cart:', guestSessionId, 'to user:', userId);
         await CartService.mergeGuestCart(guestSessionId, userId); 
-        console.log('Cart merged successfully');
       } catch (err) {
         console.error('Failed to merge guest cart:', err);
       }
     }
-
-    console.log('SignUp completed successfully for user:', userId);
-
+    
     return NextResponse.json({
       success: true,
       user: result.user,
     });
   } catch (error: any) {
-    console.error('SignUp API error:', error);
-    
     if (error.message?.includes('already exists')) {
       return NextResponse.json(
         { success: false, error: 'User already exists' },

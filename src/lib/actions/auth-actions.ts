@@ -5,6 +5,8 @@ import { auth } from "../auth";
 import {headers} from "next/headers";
 import { PrismaClient } from "@prisma/client";
 import { getOrganizations } from "../auth/organizations";
+import { Router } from "lucide-react";
+
 
 const prisma = new PrismaClient();
 
@@ -98,8 +100,8 @@ export const signIn = async (email: string, password: string) => {
 }
 
 export const signOut = async () => {
-    const result = await auth.api.signOut({headers: await headers()});
-    return result;
+    await auth.api.signOut({headers: await headers()});
+    redirect('/login');
 }
 
 export const signInSocial = async () => {
