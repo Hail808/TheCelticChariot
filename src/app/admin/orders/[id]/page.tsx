@@ -1,6 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import {checkForAdmin} from "@/lib/actions/auth-actions"
 
 interface OrderDetails {
   order_id: string;
@@ -75,6 +77,7 @@ interface OrderDetails {
 }
 
 const OrderDetailsPage: React.FC = () => {
+
   const router = useRouter();
   const params = useParams();
   const orderId = params.id as string;
@@ -90,10 +93,31 @@ const OrderDetailsPage: React.FC = () => {
     order?.tracking_number || ''
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    fetchOrderDetails();
-  }, [orderId]);
+    const verifyAdmin = async () => {
+      try {
+        const isAdmin = await checkForAdmin();
+        if (!isAdmin) {
+          router.push('/login');
+        } else {
+          setIsCheckingAuth(false);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login');
+      }
+    };
+
+    verifyAdmin();
+  }, [router]);
+
+  useEffect(() => {
+    if (!isCheckingAuth) {
+      fetchOrderDetails();
+    }
+  }, [orderId, isCheckingAuth]);
 
   const fetchOrderDetails = async () => {
     try {
