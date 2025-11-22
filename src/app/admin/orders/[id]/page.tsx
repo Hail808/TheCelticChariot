@@ -9,6 +9,9 @@ interface OrderDetails {
   order_status: string;
   reference: string;
   tracking_number: string | null;
+  tax: number | null;
+  shipping_cost: number | null;
+  shipping_method: string | null;
 
   guest: {
     guest_id: number;
@@ -67,6 +70,7 @@ interface OrderDetails {
     payment_method: string;
     payment_date: string;
     amount: number;
+    tax: number
   } | null;
 }
 
@@ -301,10 +305,9 @@ const OrderDetailsPage: React.FC = () => {
     }
   };
 
-  const subtotal = order.order_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.0825; // 8.25% tax
-  const shipping = 9.99; // Flat shipping
-
+  const subtotal = order.order_items.reduce((sum, item) => sum + (item.price), 0);
+  const shipping = order.shipping_cost || 0; 
+  const tax = order.tax || 0; 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="flex justify-between items-center mb-8">
@@ -318,7 +321,7 @@ const OrderDetailsPage: React.FC = () => {
 
         <div></div>
           <h1 className="text-4xl font-bold">Order Details</h1>
-          <p className="text-gray-600 mt-1">Order {order.reference}</p>
+          <a href={`/user_dashboard/order/${order.reference}`} className="text-blue-600 mt-1">Order {order.reference}</a>
         </div>
         
         <div className="flex gap-3">
@@ -436,29 +439,32 @@ const OrderDetailsPage: React.FC = () => {
                       <h3 className="font-semibold">{item.product.name}</h3>
                       <p className="text-sm text-gray-600">{item.product.description}</p>
                       <p className="text-sm text-gray-500 mt-1">
-                        Quantity: {item.quantity} × ${item.price.toFixed(2)}
+                        Quantity: {item.quantity} × ${(item.price/item.quantity).toFixed(2)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-bold">${(item.price).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-
-            {/* Order Summary */}
+           {/* Order Summary */}
             <div className="border-t mt-4 pt-4 space-y-2">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal:</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Shipping:</span>
+                <span>
+                  Shipping {order.shipping_method && (
+                    <span className="text-xs text-gray-500">({order.shipping_method})</span>
+                  )}:
+                </span>
                 <span>${shipping.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Tax (8.25%):</span>
+                <span>Tax:</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-xl font-bold pt-2 border-t">
@@ -480,7 +486,7 @@ const OrderDetailsPage: React.FC = () => {
                 {order.shipping.tracking_number && (
                   <div>
                     <p className="text-sm text-gray-600">Tracking Number:</p>
-                    <p className="font-semibold font-mono">{order.shipping.tracking_number}</p>
+                    <a href={`https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels=${order.shipping.tracking_number}`} className="font-semibold font-mono">{order.shipping.tracking_number}</a>
                   </div>
                 )}
                 {order.shipping.carrier && (

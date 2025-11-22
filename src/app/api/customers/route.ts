@@ -15,8 +15,8 @@ export async function GET() {
         last_name: true,
         email: true,
         phone_num: true,
-        last_login: true, // ← Add this if you want last_login
-        user: {          // ← Add this to check if guest has user account
+        last_login: true, 
+        user: {        
           select: {
             id: true,
             name: true,

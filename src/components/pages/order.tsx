@@ -41,7 +41,7 @@ const OrderPage = async ({ id }: Props) => {
 
   // Calculate totals
   const subtotal = order.order_item.reduce(
-    (sum, item) => sum + Number(item.price) * item.quantity,
+    (sum, item) => sum + Number(item.price) ,
     0
   );
 
