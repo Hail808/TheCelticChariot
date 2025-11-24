@@ -68,10 +68,9 @@ export async function GET(
         category: true,
         reviews: {
           include: {
-            customer: {
+            user: {
               select: {
-                first_name: true,
-                last_name: true,
+                name: true
               },
             },
           },

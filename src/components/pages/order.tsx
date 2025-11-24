@@ -57,7 +57,7 @@ const OrderPage = async ({ id }: Props) => {
   return (
     <>
       <div className="header">
-        <h1>Orders</h1>
+        
         <a href="/user_dashboard">Return to Account Page</a>
         <hr className="header-line" />
       </div>
@@ -97,7 +97,7 @@ const OrderPage = async ({ id }: Props) => {
                 </td>
                 <td>${Number(item.product.price).toFixed(2)}</td>
                 <td>{item.quantity}</td>
-                <td>${(Number(item.price)).toFixed(2)} USD</td>
+                <td>${(Number(item.price)).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

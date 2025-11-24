@@ -21,6 +21,7 @@ export async function GET() {
             id: true,
             name: true,
             email: true,
+            last_login: true,
           },
         },
         orders: {
@@ -48,7 +49,7 @@ export async function GET() {
       last_name: customer.last_name || '',
       email: customer.email,
       phone_num: customer.phone_num,
-      last_login: customer.last_login,
+      last_login: customer.user?.last_login || customer.last_login || null,
       is_registered_user: !!customer.user,
       user_account_id: customer.user?.id || null,
       total_orders: customer.orders.length,
