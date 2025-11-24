@@ -177,11 +177,11 @@ def test_user_dashboard_and_settings():
             )
             print("✓ Account Details section heading found")
             
-            # Verify username row
-            username_label = driver.find_element(By.XPATH, 
-                "//dt[contains(text(), 'Username')]"
+            # Verify email row
+            email_label = driver.find_element(By.XPATH, 
+                "//dt[contains(text(), 'Email')]"
             )
-            print("  ✓ Username field found")
+            print("  ✓ Email field found")
             
             # Verify name row
             name_label = driver.find_element(By.XPATH, 

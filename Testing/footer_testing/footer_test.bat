@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 echo ============================================================
-echo CART FUNCTIONALITY TEST
+echo FOOTER NAVIGATION TEST
 echo ============================================================
 echo.
 echo Starting dev server...
@@ -11,7 +11,7 @@ echo Waiting for server to start...
 timeout /t 5 /nobreak
 echo.
 echo Running Selenium test...
-python ".\test_cartpage.py"
+python ".\footer_test.py"
 echo.
 echo Test completed. Closing dev server...
 taskkill /FI "WindowTitle eq Dev Server*" /T /F
