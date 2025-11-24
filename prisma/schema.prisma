@@ -322,7 +322,7 @@ model commissions {
   last_name          String
   email_address      String
   commission_message String
-  created_at         DateTime @db.Date
+  created_at         DateTime @default(now())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
