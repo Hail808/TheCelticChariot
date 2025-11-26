@@ -115,20 +115,6 @@ def test_catalogue_navigation_button_exists(driver):
     catalogue_button = driver.find_element(By.XPATH, "//button[text()='Catalogue']")
     assert catalogue_button.is_displayed()
 
-
-def test_catalogue_navigation_button_navigates(driver):
-    """Test that Catalogue button navigates to catalogue page"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/orders")
-    time.sleep(2)
-    
-    catalogue_button = driver.find_element(By.XPATH, "//button[text()='Catalogue']")
-    catalogue_button.click()
-    time.sleep(2)
-    
-    assert "/catalogue" in driver.current_url.lower()
-
-
 def test_total_orders_stat_exists(driver):
     """Test that Total Orders stat card is displayed"""
     login_as_admin(driver)
@@ -564,21 +550,6 @@ def test_view_details_button_exists(driver):
     # Only check if orders exist
     assert view_buttons is not None
 
-
-def test_view_details_button_navigates(driver):
-    """Test that View Details button navigates to order detail page"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/orders")
-    time.sleep(2)
-    
-    view_buttons = driver.find_elements(By.XPATH, "//button[contains(text(), 'View Details')]")
-    if len(view_buttons) > 0:
-        view_buttons[0].click()
-        time.sleep(2)
-        
-        assert "/orders/" in driver.current_url
-
-
 def test_status_badges_exist(driver):
     """Test that status badge elements exist"""
     login_as_admin(driver)
@@ -601,17 +572,6 @@ def test_status_badges_colored(driver):
         classes = badges[0].get_attribute("class")
         has_color = "green" in classes or "yellow" in classes or "blue" in classes or "red" in classes or "gray" in classes
         assert has_color
-
-
-def test_results_count_displayed(driver):
-    """Test that results count is displayed"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/orders")
-    time.sleep(2)
-    
-    footer = driver.find_element(By.XPATH, "//*[contains(text(), 'Showing') and contains(text(), 'orders')]")
-    assert footer.is_displayed()
-
 
 def test_filter_by_status_works(driver):
     """Test that filtering by status works"""

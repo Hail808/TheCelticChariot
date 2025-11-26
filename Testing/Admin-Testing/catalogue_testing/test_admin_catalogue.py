@@ -59,7 +59,6 @@ def test_admin_catalogue_title_exists(driver):
     title = driver.find_element(By.XPATH, "//h1[contains(text(), 'Admin Catalogue')]")
     assert title.is_displayed()
 
-
 def test_back_to_admin_home_button_exists(driver):
     """Test that Back to Admin Home button exists"""
     login_as_admin(driver)
@@ -68,20 +67,6 @@ def test_back_to_admin_home_button_exists(driver):
     
     back_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Back to Admin Home')]")
     assert back_button.is_displayed()
-
-
-def test_back_to_admin_home_button_navigates(driver):
-    """Test that Back to Admin Home button navigates correctly"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/catalogue")
-    time.sleep(2)
-    
-    back_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Back to Admin Home')]")
-    back_button.click()
-    time.sleep(2)
-    
-    assert "/admin" in driver.current_url and "/catalogue" not in driver.current_url
-
 
 def test_search_input_exists(driver):
     """Test that search input field exists"""

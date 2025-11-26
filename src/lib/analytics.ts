@@ -21,6 +21,9 @@ export function getUserId(): string {
   return userId;
 }
 
+// 🔧 FIX: Track recent page views to prevent duplicates
+const recentPageViews = new Set<string>();
+
 // Track page views
 export async function trackPageView(
   userId: string,
@@ -29,6 +32,16 @@ export async function trackPageView(
   pageUrl: string = typeof window !== 'undefined' ? window.location.href : ''
 ) {
   console.log('🔵 trackPageView called with:', { userId, sessionId, productId, pageUrl });
+  
+  const viewKey = `${userId}_${sessionId}_${productId || 'null'}_${pageUrl}`;
+  
+  if (recentPageViews.has(viewKey)) {
+    console.log('⚠️ Duplicate page view prevented:', viewKey);
+    return;
+  }
+  
+  recentPageViews.add(viewKey);
+  setTimeout(() => recentPageViews.delete(viewKey), 5000); // Clear after 5 seconds
   
   try {
     const response = await fetch('/api/analytics/pageview', {
@@ -80,8 +93,7 @@ export function initializeTracking() {
   
   console.log('🔵 User/Session IDs:', { userId, sessionId });
   
-  // Track initial page view
-  trackPageView(userId, sessionId);
+  // Individual pages will call trackPageView manually with proper product IDs
   
   // Track session end on page unload
   window.addEventListener('beforeunload', () => {

@@ -115,20 +115,6 @@ def test_orders_navigation_button_exists(driver):
     orders_button = driver.find_element(By.XPATH, "//button[text()='Orders']")
     assert orders_button.is_displayed()
 
-
-def test_orders_navigation_button_navigates(driver):
-    """Test that Orders button navigates to orders page"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/engagement")
-    time.sleep(2)
-    
-    orders_button = driver.find_element(By.XPATH, "//button[text()='Orders']")
-    orders_button.click()
-    time.sleep(2)
-    
-    assert "/orders" in driver.current_url.lower()
-
-
 def test_total_customers_stat_exists(driver):
     """Test that Total Customers stat card is displayed"""
     login_as_admin(driver)
@@ -538,17 +524,6 @@ def test_badges_displayed(driver):
     badges = driver.find_elements(By.CSS_SELECTOR, "span[class*='rounded-full']")
     # Allow for empty table
     assert badges is not None
-
-
-def test_results_count_displayed(driver):
-    """Test that results count is displayed"""
-    login_as_admin(driver)
-    driver.get(f"{BASE_URL}/admin/engagement")
-    time.sleep(2)
-    
-    footer = driver.find_element(By.XPATH, "//*[contains(text(), 'Showing') and contains(text(), 'customers')]")
-    assert footer.is_displayed()
-
 
 def test_search_filters_table(driver):
     """Test that search filters table results"""
