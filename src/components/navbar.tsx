@@ -4,6 +4,7 @@ import '../styles/navbar.css';
 import { auth } from '../lib/auth';
 import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
 import { useCartCount } from '@/lib/use-cart-count';
+import CartPopover from '@/components/CartPopover';
 
 type Session = typeof auth.$Infer.Session
 
@@ -14,7 +15,8 @@ type NavbarProps = {
 
 const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { count } = useCartCount(); //cart icon item counter
+  const [cartPopoverOpen, setCartPopoverOpen] = useState(false);
+  const { count } = useCartCount();
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -23,7 +25,6 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
   return (
     <nav className="bg-[#5B6D50] shadow-lg shadow-black/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* search on the left, logo in the middle, and account/cart on the right */}
         <div className="flex justify-between items-center min-h-[80px] sm:min-h-[100px] lg:min-h-[112px] py-4">
           
           {/* search icon */}
@@ -49,36 +50,54 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
 
           {/* account and cart icon */}
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 mr-2 sm:mr-3 lg:mr-4">
-            {/* user account */}
-            <div className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200">
+            
+            {/* user account - FIXED! No more double padding */}
             {!session ? (
-              <a href="/login" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"> Login</a>
+              <a 
+                href="/login" 
+                className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200 font-lalezar text-lg font-medium hover:underline underline-offset-4 decoration-2"
+              >
+                Login
+              </a>
             ) : (
               <a 
                 href="/user_dashboard"
-                className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
+                className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200 inline-block"
               >
                 <User size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
               </a>
             )}
-            </div>
             
-            {/* cart number counter badge */}
-            <a 
-              href="/cart"
-              className="relative p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200"
+            {/* cart with popover */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setCartPopoverOpen(true)}
+              onMouseLeave={() => {
+                setTimeout(() => {
+                  setCartPopoverOpen(false);
+                }, 150);
+              }}
             >
-              <ShoppingCart size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
-              
-              {/* cart item counter */}
-              {count > 0 && (
-                <span className="absolute -top-1 -right-1 bg-white text-black text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center shadow-lg">
-                  {count}
-                </span>
-              )}
-            </a>
+              <a 
+                href="/cart"
+                className="relative p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200 inline-block"
+              >
+                <ShoppingCart size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
+                
+                {count > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-white text-black text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center shadow-lg">
+                    {count}
+                  </span>
+                )}
+              </a>
 
-            {/* mobile menu button (only works when display is shrinked down) */}
+              <CartPopover 
+                isOpen={cartPopoverOpen} 
+                onClose={() => setCartPopoverOpen(false)} 
+              />
+            </div>
+
+            {/* mobile menu button */}
             <button 
               onClick={toggleMenu}
               className="md:hidden p-2 sm:p-3 lg:p-4 text-white hover:bg-white/10 rounded-full transition-colors duration-200"
@@ -88,40 +107,21 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
           </div>
         </div>
 
-        {/* navbar botton navigation (for desktop and bigger screens) */}
+        {/* navbar bottom navigation */}
         <div className="hidden md:flex justify-center items-center pb-6 border-t border-white/20 pt-6">
           <div className="flex items-center space-x-12">
-            <a 
-              href="/" 
-              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
-            >
+            <a href="/" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
               HOME
             </a>
-            <a 
-              href="/catalogue" 
-              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
-            >
+            <a href="/catalogue" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
               CATALOGUE
             </a>
-            <a 
-              href="/reviews" 
-              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
-            >
+            <a href="/reviews" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
               REVIEWS
             </a>
-            <a 
-              href="/commissions" 
-              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
-            >
-              COMMISSIONS
-            </a>
-            <a 
-              href="/about_me" 
-              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
-            >
+            <a href="/about_me" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
               ABOUT ME
             </a>
-            
             {isAdmin && (
               <a href="/admin" className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2">
                 ADMIN
@@ -130,66 +130,31 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
           </div>
         </div>
 
-        {/* mobile menu drop down */}
+        {/* mobile menu */}
         {menuOpen && (
           <div className="md:hidden border-t border-white/20 pt-4 pb-4 space-y-3">
-            <a 
-              href="/" 
-              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-              onClick={() => setMenuOpen(false)}
-            >
+            <a href="/" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
               HOME
             </a>
-            <a 
-              href="/catalogue" 
-              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-              onClick={() => setMenuOpen(false)}
-            >
+            <a href="/catalogue" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
               CATALOGUE
             </a>
-            <a 
-              href="/reviews" 
-              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-              onClick={() => setMenuOpen(false)}
-            >
+            <a href="/reviews" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
               REVIEWS
             </a>
-            <a 
-              href="/commissions" 
-              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-              onClick={() => setMenuOpen(false)}
-            >
-              COMMISSIONS
-            </a>
-            <a 
-              href="/about_me" 
-              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-              onClick={() => setMenuOpen(false)}
-            >
+            <a href="/about_me" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
               ABOUT ME
             </a>
             {isAdmin && (
-              <a 
-                href="/admin"
-                className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-                onClick={() => setMenuOpen(false)}
-              >
+              <a href="/admin" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
                 ADMIN
               </a>
             )}
             <div className="border-t border-white/20 pt-3 mt-3">
-              <a 
-                href="/user_dashboard"
-                className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-                onClick={() => setMenuOpen(false)}
-              >
+              <a href="/user_dashboard" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
                 USER DASHBOARD
               </a>
-              <a 
-                href="/login"
-                className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
-                onClick={() => setMenuOpen(false)}
-              >
+              <a href="/login" className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center" onClick={() => setMenuOpen(false)}>
                 SIGN IN
               </a>
             </div>
