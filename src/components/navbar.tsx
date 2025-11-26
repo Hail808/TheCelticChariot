@@ -4,7 +4,8 @@ import '../styles/navbar.css';
 import { auth } from '../lib/auth';
 import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
 import { useCartCount } from '@/lib/use-cart-count';
-import CartPopover from '@/components/CartPopover';
+import CartPopover from '@/components/cartpopover';
+import NavbarSearch from '@/components/navbarsearch';
 
 type Session = typeof auth.$Infer.Session
 
@@ -17,6 +18,7 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartPopoverOpen, setCartPopoverOpen] = useState(false);
   const { count } = useCartCount();
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -27,12 +29,15 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center min-h-[80px] sm:min-h-[100px] lg:min-h-[112px] py-4">
           
-          {/* search icon */}
-          <div className="flex items-center">
-            <button className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200 ml-2 sm:ml-3 lg:ml-4">
-              <Search size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
-            </button>
-          </div>
+        {/* search icon */}
+        <div className="flex items-center">
+          <button 
+            onClick={() => setSearchModalOpen(true)}
+            className="p-2 sm:p-3 lg:p-4 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors duration-200 ml-2 sm:ml-3 lg:ml-4"
+          >
+            <Search size={24} className="sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
+          </button>
+        </div>
 
           {/* center logo and "The Celtic Chariot" */}
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
@@ -161,6 +166,12 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
           </div>
         )}
       </div>
+
+      {/* Search Modal */}
+      <NavbarSearch
+        isOpen={searchModalOpen} 
+        onClose={() => setSearchModalOpen(false)} 
+      />
     </nav>
   );
 };

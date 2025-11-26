@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
-// Define the Item type to match your database structure
+// Define the Item type to match database structure
 interface Item {
   product_id: number;
   product_name: string;
@@ -39,11 +39,25 @@ const Catalogue: React.FC = () => {
         
         const data = await response.json();
         setItems(data);
-        setFilteredItems(data);
-        setError(null);
         
-        // Apply default sort after fetching
-        handleSort("desc", data);
+        // Check for search query in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        
+        if (searchQuery) {
+          // Apply search filter
+          setQuery(searchQuery);
+          const filtered = data.filter((item: Item) =>
+            item.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          setFilteredItems(filtered);
+          handleSort("desc", filtered);
+        } else {
+          setFilteredItems(data);
+          handleSort("desc", data);
+        }
+        
+        setError(null);
       } catch (err) {
         console.error('Error fetching items:', err);
         setError('Failed to load catalogue items');
@@ -61,6 +75,7 @@ const Catalogue: React.FC = () => {
       item.product_name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredItems(filteredResults);
+    handleSort(sortOrder, filteredResults);
   };
 
   const handleSort = (order: "asc" | "desc", data = filteredItems) => {
@@ -160,6 +175,7 @@ const Catalogue: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="font-medium">Sort By:</span>
           <select
+            value={sortOrder}
             onChange={(e) =>
               handleSort(e.target.value as "asc" | "desc")
             }
