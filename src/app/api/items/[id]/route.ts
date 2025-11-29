@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 
-// GET single product (already have this)
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    const productId = parseInt(id);
+    const productId = parseInt(params.id);
 
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -38,13 +36,12 @@ export async function GET(
   }
 }
 
-// UPDATE product
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const {id} = await params;
     const productId = parseInt(id);
 
     if (isNaN(productId)) {
@@ -55,7 +52,9 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { product_name, description, price, inventory, prod_image_url, fk_category_id } = body;
+
+    const { product_name, description, price, inventory, prod_image_url, fk_category_id, private: isPrivate } = body;
+
 
     const updatedProduct = await prisma.product.update({
       where: { product_id: productId },
@@ -66,6 +65,7 @@ export async function PUT(
         inventory: parseInt(inventory),
         prod_image_url,
         fk_category_id: fk_category_id ? parseInt(fk_category_id) : null,
+        private: Boolean(isPrivate),
       },
     });
 
@@ -79,7 +79,7 @@ export async function PUT(
   }
 }
 
-// DELETE product
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -90,20 +90,24 @@ export async function DELETE(
 
     if (isNaN(productId)) {
       return NextResponse.json(
-        { error: 'Invalid product ID' },
+        { error: "Invalid product ID" },
         { status: 400 }
       );
     }
 
-    await prisma.product.delete({
+    const updated = await prisma.product.update({
       where: { product_id: productId },
+      data: { private: true },
     });
 
-    return NextResponse.json({ message: 'Product deleted successfully' });
+    return NextResponse.json({
+      message: "Product hidden successfully",
+      updated,
+    });
   } catch (error) {
-    console.error('Error deleting product:', error);
+    console.error("Error hiding product:", error);
     return NextResponse.json(
-      { error: 'Failed to delete product' },
+      { error: "Failed to hide product" },
       { status: 500 }
     );
   }

@@ -31,7 +31,7 @@ const Catalogue: React.FC = () => {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/items');
+        const response = await fetch('/api/items/public');
         
         if (!response.ok) {
           throw new Error('Failed to fetch items');

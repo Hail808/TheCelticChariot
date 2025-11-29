@@ -1,27 +1,21 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    console.log('Testing database connection...');
-    
-    const result = await prisma.$queryRaw`SELECT current_database()`;
-    console.log('Connected to database:', result);
-    
-    const tables = await prisma.$queryRaw`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-    `;
-    console.log('Available tables:', tables);
-
+    const { searchParams } = new URL(request.url);
+    const showPrivate = searchParams.get("showPrivate") === "true";
     const items = await prisma.product.findMany({
       orderBy: {
         product_id: 'asc',
       },
+      where: showPrivate ? {} : { private: false },
+      include: {
+        images: true,
+        category: true, 
+      },
     });
 
-    console.log('Found products:', items.length);
     return NextResponse.json(items);
   } catch (error) {
     console.error('Error fetching items:', error);
@@ -32,11 +26,20 @@ export async function GET() {
   }
 }
 
-// CREATE new product
 export async function POST(request: Request) {
   try {
-   const body = await request.json();
-   const { product_name, price, description, inventory, prod_image_url, fk_category_id, additionalImages } = body;
+    const body = await request.json();
+
+    const {
+      product_name,
+      price,
+      description,
+      inventory,
+      prod_image_url,
+      fk_category_id,
+      additionalImages = [], 
+      private: isPrivate,
+    } = body;
 
     const newProduct = await prisma.product.create({
       data: {
@@ -44,15 +47,20 @@ export async function POST(request: Request) {
         price: Number(price),
         description,
         inventory: Number(inventory),
-        prod_image_url, // primary image
-        fk_category_id: fk_category_id ? Number(fk_category_id) : null,
+        prod_image_url,
+        fk_category_id: fk_category_id ? parseInt(fk_category_id) : null, 
+        private: Boolean(isPrivate), 
         images: {
-          create: additionalImages.map((url: string) => ({ image_url: url })),
+          create: additionalImages.map((url: string) => ({
+            image_url: url,
+          })),
         },
       },
-      include: { images: true },
+      include: {
+        images: true,
+        category: true,
+      },
     });
-
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {

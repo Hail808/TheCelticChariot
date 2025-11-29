@@ -12,6 +12,7 @@ interface Item {
   inventory: number;
   prod_image_url: string | null;
   fk_category_id: number | null;
+  private: boolean;
 }
 
 interface ProductFormData {
@@ -21,10 +22,12 @@ interface ProductFormData {
   inventory: string;
   prod_image_url: string;
   fk_category_id: string;
+  private: boolean;
 }
 
+
 interface Category {
-  id: number;
+  category_id: number;
   name: string;
 }
 
@@ -51,23 +54,24 @@ const AdminCatalogue: React.FC = () => {
     inventory: '',
     prod_image_url: '',
     fk_category_id: '',
+    private: false, 
   });
-
   // Image upload states
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [showPrivate, setShowPrivate] = useState(false);
 
   // Fetch items and categories on component mount
   useEffect(() => {
     fetchItems();
     fetchCategories();
-  }, []);
+  }, [showPrivate]);
 
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/items');
+      const response = await fetch(`/api/items?showPrivate=${showPrivate}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch items');
@@ -227,6 +231,7 @@ const AdminCatalogue: React.FC = () => {
       inventory: '',
       prod_image_url: '',
       fk_category_id: '',
+      private: false,
     });
     setSelectedImages([]);
     setImagePreviews([]);
@@ -250,6 +255,8 @@ const AdminCatalogue: React.FC = () => {
         },
         body: JSON.stringify({
           ...formData,
+          fk_category_id: formData.fk_category_id ? parseInt(formData.fk_category_id) : null,
+          private: formData.private,
           prod_image_url: primaryImageUrl,
           additionalImages: uploadedImageUrls.slice(1), // Rest of the images
         }),
@@ -280,6 +287,7 @@ const AdminCatalogue: React.FC = () => {
       inventory: item.inventory.toString(),
       prod_image_url: item.prod_image_url || '',
       fk_category_id: item.fk_category_id?.toString() || '',
+      private: item.private,
     });
     setSelectedImages([]);
     setImagePreviews([]);
@@ -305,6 +313,8 @@ const AdminCatalogue: React.FC = () => {
         },
         body: JSON.stringify({
           ...formData,
+          fk_category_id: formData.fk_category_id ? parseInt(formData.fk_category_id) : null,
+          private: formData.private,
           prod_image_url: primaryImageUrl,
           additionalImages: uploadedImageUrls.slice(1),
         }),
@@ -328,24 +338,20 @@ const AdminCatalogue: React.FC = () => {
 
   // Delete Product
   const handleDeleteProduct = async (itemId: number) => {
-    if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-      return;
-    }
+    if (!confirm('This will hide the product from customers. Continue?')) return;
 
     try {
       const response = await fetch(`/api/items/${itemId}`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete product');
-      }
+      if (!response.ok) throw new Error('Failed to hide product');
 
-      fetchItems(); // Refresh the list
-      alert('Product deleted successfully!');
+      fetchItems();
+      alert('Product is now private!');
     } catch (err) {
-      console.error('Error deleting product:', err);
-      alert('Failed to delete product');
+      console.error(err);
+      alert('Failed to hide product');
     }
   };
 
@@ -390,7 +396,17 @@ const AdminCatalogue: React.FC = () => {
           Back to Admin Home
         </button>
       </div>
-
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={showPrivate}
+          onChange={(e) => setShowPrivate(e.target.checked)}
+          id="showPrivateToggle"
+        />
+        <label htmlFor="showPrivateToggle" className="text-sm text-gray-700">
+          Show Private Products
+        </label>
+      </div>
       {/* Search, Sort & Add Product */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         {/* Search */}
@@ -467,24 +483,29 @@ const AdminCatalogue: React.FC = () => {
                 key={item.product_id}
                 className="flex flex-col items-center text-center"
               >
-                <button
-                  onClick={() => navigateToProduct(item.product_id)}
-                  className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
-                >
-                  {item.prod_image_url ? (
-                    <img
-                      src={item.prod_image_url}
-                      alt={item.product_name}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                      <span>No Image</span>
-                    </div>
-                  )}
-                </button>
-                <p className="mt-2 font-medium w-full text-left line-clamp-2">{item.product_name}</p>
+              <button
+                onClick={() => navigateToProduct(item.product_id)}
+                className="relative w-full max-w-[260px] aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+              >
+                {item.prod_image_url ? (
+                  <img
+                    src={item.prod_image_url}
+                    alt={item.product_name}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+                    <span>No Image</span>
+                  </div>
+                )}
 
+                {item.private && (
+                  <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                    PRIVATE
+                  </span>
+                )}
+              </button>
+                <p className="mt-2 font-medium w-full text-left line-clamp-2">{item.product_name}</p>
                 <p className="text-indigo-600 font-bold w-full text-left">
                   {formatPrice(item.price)}
                 </p>
@@ -508,6 +529,7 @@ const AdminCatalogue: React.FC = () => {
                   >
                     Delete
                   </button>
+                  
                 </div>
               </div>
             ))
@@ -646,20 +668,30 @@ const AdminCatalogue: React.FC = () => {
                 </div>
 
                 <div>
+                  <div className="flex items-center gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.private}
+                    onChange={(e) =>
+                      setFormData({ ...formData, private: e.target.checked })
+                    }
+                  />
+                  <span className="text-sm text-gray-700">Make Listing Private</span>
+                </div>
                   <label className="block text-sm font-semibold mb-1">Category</label>
-                  <select
-                    name="fk_category_id"
-                    value={formData.fk_category_id}
-                    onChange={handleFormChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">-- Select Category --</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
+                 <select
+                  name="fk_category_id"
+                  value={formData.fk_category_id}
+                  onChange={handleFormChange}
+                  className="w-full px-3 py-2 border rounded"
+                >
+                  <option value="">-- Select Category --</option>
+                  {categories.map((cat) => (
+                    <option key={cat.category_id} value={cat.category_id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
                 </div>
               </div>
               <div className="flex gap-4 mt-6">
@@ -820,16 +852,31 @@ const AdminCatalogue: React.FC = () => {
                 </div>
               </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1">Category ID</label>
-                  <input
-                    type="number"
-                    name="fk_category_id"
-                    value={formData.fk_category_id}
-                    onChange={handleFormChange}
-                    min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-semibold mb-1">Category</label>
+                 <select
+                  name="fk_category_id"
+                  value={formData.fk_category_id}
+                  onChange={handleFormChange}
+                  className="w-full px-3 py-2 border rounded"
+                >
+                  <option value="">-- Select Category --</option>
+                  {categories.map((cat) => (
+                    <option key={cat.category_id} value={cat.category_id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
                 </div>
+              </div>
+              <div className="flex items-center gap-3 mt-2">
+                <input
+                  type="checkbox"
+                  checked={formData.private}
+                  onChange={(e) =>
+                    setFormData({ ...formData, private: e.target.checked })
+                  }
+                />
+                <span className="text-sm text-gray-700">Make Listing Private</span>
               </div>
               <div className="flex gap-4 mt-6">
                 <button
@@ -838,6 +885,7 @@ const AdminCatalogue: React.FC = () => {
                 >
                   Edit
                 </button>
+               
                 <button
                   type="button"
                   onClick={() => {

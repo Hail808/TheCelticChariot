@@ -143,6 +143,7 @@ model product {
   inventory      Int
   prod_image_url String?        @db.VarChar(500)
   fk_category_id Int?
+  private        Boolean?       @default(false)
   cartItems      CartItem[]
   order_item     order_item[]
   page_views     page_views[]

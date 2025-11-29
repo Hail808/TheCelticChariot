@@ -104,8 +104,12 @@ export default function Home() {
     fetchReviews();
   }, []);
 
-  const navigateToCatalogue = () => {
-    router.push("/catalogue");
+  const navigateToCatalogue = (categoryId?: number) => {
+    if (categoryId) {
+      router.push(`/catalogue?category=${categoryId}`);
+    } else {
+      router.push("/catalogue");
+    }
   };
 
   const navigateToProduct = (itemId: number) => {
@@ -177,15 +181,14 @@ export default function Home() {
       <h1 className="text-3xl font-bold text-center mt-12 mb-6">Categories</h1>
       <div className="categories-section grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 justify-items-center">
       {[
-        { name: "Necklaces", className: "category-necklaces" },
-        { name: "Earrings", className: "category-earrings" },
-        { name: "Beads", className: "category-beads" },
-        { name: "Keychain", className: "category-keychain" },
-        { name: "Beaded Belt", className: "category-belt" },
+        { name: "Necklaces", className: "category-necklaces", categoryId: 1 },
+        { name: "Earrings", className: "category-earrings", categoryId: 2 },
+        { name: "Beads", className: "category-beads", categoryId: 3 },
+        { name: "Keychain", className: "category-keychain", categoryId: 4 },
+        { name: "Beaded Belt", className: "category-belt", categoryId: 5 },
       ].map((cat) => (
         <div key={cat.name} className="flex flex-col items-center">
-          <button onClick={navigateToCatalogue} className={`card category-card ${cat.className}`}>
-            {/* Image goes here via background-image in CSS or <Image /> */}
+          <button onClick={() => navigateToCatalogue(cat.categoryId)} className={`card category-card ${cat.className}`}>
           </button>
           <span className="mt-2 text-lg font-medium">{cat.name}</span>
         </div>
@@ -226,7 +229,7 @@ export default function Home() {
                   }`}
                 >
                   <img
-                    src={review.product?.prod_image_url}
+                    src={review.product?.prod_image_url || "/productimages/placeholder.png"}
                     alt={review.product?.product_name || "Product"}
                     className="review-product-image"
                   />
