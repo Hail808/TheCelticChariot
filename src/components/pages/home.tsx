@@ -21,11 +21,10 @@ interface Review {
   review_text: string | null;
   review_date: string;
   rating: number;
-  fk_customer_id: number | null;
+  fk_user_id: string | null;
   fk_product_id: number | null;
-  customer: {
-    first_name: string;
-    last_name: string;
+  user: {
+    name: string;
   } | null;
   product: {
     product_name: string;
@@ -83,14 +82,16 @@ export default function Home() {
     const fetchReviews = async () => {
       try {
         setReviewsLoading(true);
-        const response = await fetch('/api/reviews');
+        const response = await fetch('/api/reviews?limit=10');
         
         if (!response.ok) {
           throw new Error('Failed to fetch reviews');
         }
         
         const data = await response.json();
-        setReviews(data);
+        // Handle both paginated and non-paginated responses
+        const reviewsData = data.reviews || data;
+        setReviews(reviewsData);
         setReviewsError(null);
       } catch (err) {
         console.error('Error fetching reviews:', err);
@@ -219,13 +220,13 @@ export default function Home() {
 
               return (
                 <div
-                  key={`${review.review_id}-${review.indexOffset}`}  // Changed: combine ID with offset
+                  key={`${review.review_id}-${review.indexOffset}`}
                   className={`review-card ${
                     isCenter ? "center" : isAdjacent ? "adjacent" : "hidden"
                   }`}
                 >
                   <img
-                    src={review.product?.prod_image_url || "/productimages/placeholder.png"}
+                    src={review.product?.prod_image_url}
                     alt={review.product?.product_name || "Product"}
                     className="review-product-image"
                   />
@@ -237,8 +238,8 @@ export default function Home() {
                     />
                     <div className="review-text">
                       <p className="font-semibold">
-                        {review.customer 
-                          ? `${review.customer.first_name} ${review.customer.last_name}`
+                        {review.user 
+                          ? review.user.name
                           : "Anonymous"}
                       </p>
                       <p>{review.review_text || "No review text"}</p>
