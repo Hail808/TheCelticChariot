@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { signOut } from '../../lib/actions/auth-actions';
+import { signOut, getCurrentUser } from '../../lib/actions/auth-actions';
+import { updateUsername, updatePassword, deleteAccount } from '../../lib/settings-actions';
 
 const SettingsContent = () => {
   const [usernameData, setUsernameData] = useState({
@@ -15,72 +16,116 @@ const SettingsContent = () => {
     confirmPassword: '',
   });
 
-  const [passwordError, setPasswordError] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const [cookiesEnabled, setCookiesEnabled] = useState<boolean>(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
-
-  const toggleCookies = () => {
-    const newValue = !cookiesEnabled;
-    setCookiesEnabled(newValue);
-    if(newValue){
-        //need to code to enable notifications
-    }
-  };
-  
-  const toggleNotifications = () => {
-    const newValue = !notificationsEnabled
-    setNotificationsEnabled(newValue)
-    if(newValue){
-        //need to code to enable notifications (if client wants)
-    }
-  }
+  useEffect(() => {
+    // Load current user data
+    const loadUser = async () => {
+      const user = await getCurrentUser();
+      if (user) {
+        setUsernameData({ username: user.name });
+      }
+    };
+    loadUser();
+  }, []);
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsernameData({ ...usernameData, [e.target.name]: e.target.value });
+    setUsernameError('');
+    setSuccessMessage('');
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+    setPasswordError('');
+    setSuccessMessage('');
   };
 
-  const handleUsernameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log("Username ", usernameData);
-    router.push('/user_dashboard')
+  const handleUsernameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setUsernameError('');
+    setSuccessMessage('');
+
+    const result = await updateUsername(usernameData.username);
+    
+    setLoading(false);
+
+    if (result.success) {
+      setSuccessMessage('Username updated successfully!');
+      setTimeout(() => {
+        router.push('/user_dashboard');
+      }, 1500);
+    } else {
+      setUsernameError(result.error || 'Failed to update username');
+    }
   };
 
   const logout = async () => {
     await signOut();
-    router.push('/login')
+    router.push('/login');
   }
 
-  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if(passwordData.newPassword==passwordData.confirmPassword)
-    {
-        console.log("Password Success:", passwordData);
-        router.push('/user_dashboard')
-        setPasswordError(false);
-        //need to code to change password
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPasswordError('');
+    setSuccessMessage('');
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('New password and confirm password must match');
+      return;
     }
-    else
-    {
-        console.log("New password and confirm password must match")
-        setPasswordError(true);
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters');
+      return;
+    }
+
+    setLoading(true);
+
+    const result = await updatePassword(
+      passwordData.currentPassword,
+      passwordData.newPassword
+    );
+
+    setLoading(false);
+
+    if (result.success) {
+      setSuccessMessage('Password updated successfully!');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+      setTimeout(() => {
+        router.push('/user_dashboard');
+      }, 1500);
+    } else {
+      setPasswordError(result.error || 'Failed to update password');
     }
   };
 
-  const handleDelete = () => {
-    const isConfirmed = window.confirm("Are you sure you wish to delete your account? This cannot be undone.");
+  const handleDelete = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you wish to delete your account? This cannot be undone."
+    );
+    
     if (isConfirmed) {
-        console.log("User confirmed deletion.");
-        router.push('/user_dashboard')
+      setLoading(true);
+      const result = await deleteAccount();
+      setLoading(false);
+
+      if (result.success) {
+        router.push('/login');
       } else {
-        console.log("User canceled deletion.");
+        alert(result.error || 'Failed to delete account');
       }
+    }
   }
 
   return (
@@ -95,6 +140,13 @@ const SettingsContent = () => {
           ← Return to Dashboard
         </a>
       </div>
+
+      {/* Success message */}
+      {successMessage && (
+        <div className="max-w-4xl mx-auto mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          {successMessage}
+        </div>
+      )}
 
       <div className="max-w-4xl mx-auto space-y-6">
         {/* account information Card */}
@@ -115,14 +167,20 @@ const SettingsContent = () => {
                 onChange={handleUsernameChange}
                 placeholder="Enter new username"
                 required
-                className="px-4 py-3 border-2 border-gray-300 rounded bg-white focus:outline-none focus:border-[#5B6D50] transition-colors"
+                className={`px-4 py-3 border-2 rounded bg-white focus:outline-none transition-colors ${
+                  usernameError ? 'border-red-500' : 'border-gray-300 focus:border-[#5B6D50]'
+                }`}
               />
+              {usernameError && (
+                <p className="text-red-600 text-sm">{usernameError}</p>
+              )}
             </div>
             <button 
               type="submit" 
-              className="bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors"
+              disabled={loading}
+              className="bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors disabled:opacity-50"
             >
-              Update Username
+              {loading ? 'Updating...' : 'Update Username'}
             </button>
           </form>
         </div>
@@ -188,60 +246,17 @@ const SettingsContent = () => {
             </div>
 
             {passwordError && (
-              <p className="text-red-600 text-sm">
-                Passwords do not match. Please try again.
-              </p>
+              <p className="text-red-600 text-sm">{passwordError}</p>
             )}
 
             <button 
               type="submit" 
-              className="bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors"
+              disabled={loading}
+              className="bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors disabled:opacity-50"
             >
-              Update Password
+              {loading ? 'Updating...' : 'Update Password'}
             </button>
           </form>
-        </div>
-
-        {/* user preferences card */}
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-normal text-black mb-6 pb-3 border-b-2 border-[#5B6D50]">
-            Preferences
-          </h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-[#e5ede1] rounded border border-gray-200">
-              <div>
-                <h3 className="text-lg font-normal text-[#5B6D50] mb-1">Cookies</h3>
-                <p className="text-gray-600 text-sm">Enable or disable cookies for enhanced experience</p>
-              </div>
-              <button 
-                onClick={toggleCookies}
-                className={`px-6 py-2 rounded font-normal transition-colors ${
-                  cookiesEnabled 
-                    ? 'bg-[#5B6D50] text-white hover:bg-[#4a5a40]' 
-                    : 'bg-transparent text-[#5B6D50] border-2 border-[#5B6D50] hover:bg-[#5B6D50] hover:text-white'
-                }`}
-              >
-                {cookiesEnabled ? "Enabled" : "Disabled"}
-              </button>
-            </div>
-
-            <div className="flex justify-between items-center p-4 bg-[#e5ede1] rounded border border-gray-200">
-              <div>
-                <h3 className="text-lg font-normal text-[#5B6D50] mb-1">Notifications</h3>
-                <p className="text-gray-600 text-sm">Receive updates about orders and promotions</p>
-              </div>
-              <button 
-                onClick={toggleNotifications}
-                className={`px-6 py-2 rounded font-normal transition-colors ${
-                  notificationsEnabled 
-                    ? 'bg-[#5B6D50] text-white hover:bg-[#4a5a40]' 
-                    : 'bg-transparent text-[#5B6D50] border-2 border-[#5B6D50] hover:bg-[#5B6D50] hover:text-white'
-                }`}
-              >
-                {notificationsEnabled ? "Enabled" : "Disabled"}
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* actions card */}
@@ -249,13 +264,15 @@ const SettingsContent = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button 
               onClick={logout}
-              className="w-full bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors"
+              disabled={loading}
+              className="w-full bg-[#5B6D50] text-white px-8 py-3 rounded font-normal hover:bg-[#4a5a40] transition-colors disabled:opacity-50"
             >
               Sign Out
             </button>
             <button 
               onClick={handleDelete}
-              className="w-full bg-[#c44536] text-white px-8 py-3 rounded font-normal hover:bg-[#a02f20] transition-colors"
+              disabled={loading}
+              className="w-full bg-[#c44536] text-white px-8 py-3 rounded font-normal hover:bg-[#a02f20] transition-colors disabled:opacity-50"
             >
               Delete Account
             </button>
