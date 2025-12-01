@@ -54,7 +54,7 @@ By providing a self-hosted solution with complete ownership and control, The Cel
 *The main storefront displays featured products with filtering options, search functionality, and category navigation. Customers can browse the complete inventory with dynamic sorting capabilities.*
 
 **Product Details Page**
-![Product](product.png)
+![Product](./public/product.png)
 *Detailed product view showing multiple images, price, inventory status, product description, customer reviews, and add-to-cart functionality.*
 
 ### Admin Dashboard
