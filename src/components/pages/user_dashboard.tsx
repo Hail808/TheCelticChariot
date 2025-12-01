@@ -55,7 +55,12 @@ const UserDashboard = async () => {
 
     const orders = user.guest?.orders.map((order) => ({
         reference: order.reference,
-        date: new Date(order.order_date).toLocaleDateString(),
+        date: new Date(order.order_date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                timeZone: "UTC",
+            }),
         paymentStatus: order.invoice?.payment_status ?? 'Pending',
         shipmentStatus: order.shipping?.shipping_status ?? 'Not Shipped',
         total: `$${(order.total_price ?? 0).toFixed(2)}`,

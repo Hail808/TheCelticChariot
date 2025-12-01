@@ -15,12 +15,13 @@ export async function GET() {
         last_name: true,
         email: true,
         phone_num: true,
-        last_login: true, // ← Add this if you want last_login
-        user: {          // ← Add this to check if guest has user account
+        last_login: true, 
+        user: {        
           select: {
             id: true,
             name: true,
             email: true,
+            last_login: true,
           },
         },
         orders: {
@@ -48,7 +49,7 @@ export async function GET() {
       last_name: customer.last_name || '',
       email: customer.email,
       phone_num: customer.phone_num,
-      last_login: customer.last_login,
+      last_login: customer.user?.last_login || customer.last_login || null,
       is_registered_user: !!customer.user,
       user_account_id: customer.user?.id || null,
       total_orders: customer.orders.length,

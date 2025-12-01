@@ -24,6 +24,9 @@ export async function GET( request: Request,  { params }: { params: Promise<{ id
             o.fk_guest_id,
             o.fk_ship_address_id,
             o.fk_bill_address_id,
+            o.shipping_cost,
+            o.shipping_method,
+            o.tax,
             -- Guest info
             g.guest_id,
             g.email as email,
@@ -128,6 +131,9 @@ export async function GET( request: Request,  { params }: { params: Promise<{ id
         total_price: parseFloat(orderRow.total_price),
         order_status: orderRow.order_status,
         reference: orderRow.reference,
+        shipping_cost: orderRow.shipping_cost ? parseFloat(orderRow.shipping_cost) : 0,
+        shipping_method: orderRow.shipping_method,
+        tax: orderRow.tax ? parseFloat(orderRow.tax) : 0,
         
         guest: orderRow.guest_id ? {
             guest_id: orderRow.guest_id,
@@ -177,7 +183,7 @@ export async function GET( request: Request,  { params }: { params: Promise<{ id
         
         shipping: shippingResult.rows.length > 0 ? {
             shipping_id: shippingResult.rows[0].shipping_id,
-            tracking_number: shippingResult.rows[0].tracking_number,
+            tracking_number: shippingResult.rows[0].tracking_num,
             shipping_status: shippingResult.rows[0].shipping_status,
             carrier: shippingResult.rows[0].carrier,
             estimated_delivery: shippingResult.rows[0].estimated_delivery

@@ -22,12 +22,12 @@ Instructions:
         - Selenium 4.38.0
 
     Before running test:
-        - Make sure dev server is running (npm run dev)
+        - Make sure dev server is not running
         - Ensure at least one product exists in the catalogue
 
     To run test, in command line:
-        ./test-start.bat
-    Or double click on test-start.bat
+        ./test_cartpage.bat
+    Or double click on test_cartpage.bat
 
     The test will run automatically and complete all cart operations.
     The browser will remain open until you press ENTER in the console.

@@ -21,11 +21,10 @@ interface Review {
   review_text: string | null;
   review_date: string;
   rating: number;
-  fk_customer_id: number | null;
+  fk_user_id: string | null;
   fk_product_id: number | null;
-  customer: {
-    first_name: string;
-    last_name: string;
+  user: {
+    name: string;
   } | null;
   product: {
     product_name: string;
@@ -83,14 +82,16 @@ export default function Home() {
     const fetchReviews = async () => {
       try {
         setReviewsLoading(true);
-        const response = await fetch('/api/reviews');
+        const response = await fetch('/api/reviews?limit=10');
         
         if (!response.ok) {
           throw new Error('Failed to fetch reviews');
         }
         
         const data = await response.json();
-        setReviews(data);
+        // Handle both paginated and non-paginated responses
+        const reviewsData = data.reviews || data;
+        setReviews(reviewsData);
         setReviewsError(null);
       } catch (err) {
         console.error('Error fetching reviews:', err);
@@ -103,8 +104,12 @@ export default function Home() {
     fetchReviews();
   }, []);
 
-  const navigateToCatalogue = () => {
-    router.push("/catalogue");
+  const navigateToCatalogue = (categoryId?: number) => {
+    if (categoryId) {
+      router.push(`/catalogue?category=${categoryId}`);
+    } else {
+      router.push("/catalogue");
+    }
   };
 
   const navigateToProduct = (itemId: number) => {
@@ -176,15 +181,14 @@ export default function Home() {
       <h1 className="text-3xl font-bold text-center mt-12 mb-6">Categories</h1>
       <div className="categories-section grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 justify-items-center">
       {[
-        { name: "Necklaces", className: "category-necklaces" },
-        { name: "Earrings", className: "category-earrings" },
-        { name: "Beads", className: "category-beads" },
-        { name: "Keychain", className: "category-keychain" },
-        { name: "Beaded Belt", className: "category-belt" },
+        { name: "Necklaces", className: "category-necklaces", categoryId: 1 },
+        { name: "Earrings", className: "category-earrings", categoryId: 2 },
+        { name: "Beads", className: "category-beads", categoryId: 3 },
+        { name: "Keychain", className: "category-keychain", categoryId: 4 },
+        { name: "Beaded Belt", className: "category-belt", categoryId: 5 },
       ].map((cat) => (
         <div key={cat.name} className="flex flex-col items-center">
-          <button onClick={navigateToCatalogue} className={`card category-card ${cat.className}`}>
-            {/* Image goes here via background-image in CSS or <Image /> */}
+          <button onClick={() => navigateToCatalogue(cat.categoryId)} className={`card category-card ${cat.className}`}>
           </button>
           <span className="mt-2 text-lg font-medium">{cat.name}</span>
         </div>
@@ -219,7 +223,7 @@ export default function Home() {
 
               return (
                 <div
-                  key={`${review.review_id}-${review.indexOffset}`}  // Changed: combine ID with offset
+                  key={`${review.review_id}-${review.indexOffset}`}
                   className={`review-card ${
                     isCenter ? "center" : isAdjacent ? "adjacent" : "hidden"
                   }`}
@@ -237,8 +241,8 @@ export default function Home() {
                     />
                     <div className="review-text">
                       <p className="font-semibold">
-                        {review.customer 
-                          ? `${review.customer.first_name} ${review.customer.last_name}`
+                        {review.user 
+                          ? review.user.name
                           : "Anonymous"}
                       </p>
                       <p>{review.review_text || "No review text"}</p>

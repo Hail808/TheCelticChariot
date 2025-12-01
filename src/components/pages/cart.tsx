@@ -6,9 +6,12 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState(null);
   const [cartLoading, setCartLoading] = useState(true);
+  const [recommendedItems, setRecommendedItems] = useState([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(true);
 
   useEffect(() => {
     fetchCart();
+    fetchRecommendedItems();
   }, []);
 
   const fetchCart = async () => {
@@ -22,6 +25,20 @@ const Cart = () => {
       console.error('Error fetching cart:', error);
     } finally {
       setCartLoading(false);
+    }
+  };
+
+  const fetchRecommendedItems = async () => {
+    try {
+      const response = await fetch('/api/items?limit=6');
+      const data = await response.json();
+      // Get random 3 items from the response
+      const shuffled = data.sort(() => 0.5 - Math.random());
+      setRecommendedItems(shuffled.slice(0, 3));
+    } catch (error) {
+      console.error('Error fetching recommended items:', error);
+    } finally {
+      setRecommendedLoading(false);
     }
   };
 
@@ -127,12 +144,6 @@ const Cart = () => {
     }
   };
 
-  const recommendedItems = [
-    { id: 2, name: "Whimsical Dragonfly Auburn Necklace in Bronze", price: 19.99, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
-    { id: 3, name: "Whimsical Moon Burgundy Beaded Necklace in Brass", price: 16.50, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
-    { id: 4, name: "Whimsical Fall Maple Leaves Mountain Beaded Necklace in", price: 19.99, image: "/productimages/ItemThumbnails/NecklaceThumbnail.png" },
-  ];
-
   if (cartLoading) {
     return (
       <div className="min-h-screen p-6 flex items-center justify-center">
@@ -154,34 +165,43 @@ const Cart = () => {
           </a>
         </div>
 
-        {/* recommended items section, show even when cart is empty */}
+        {/* recommended items section */}
         <div>
           <h2 className="text-3xl font-semibold mb-6 text-[#333]">Recommended Items</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {recommendedItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-48 w-full object-cover rounded mb-3"
-                />
-                <p className="font-medium text-[#333] mb-2">{item.name}</p>
-                <p className="text-[#5B6D50] font-semibold mb-3">${item.price.toFixed(2)}</p>
-                <button 
-                  onClick={() => addToCart(item.id)}
-                  className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors"
+          {recommendedLoading ? (
+            <p className="text-center text-gray-500">Loading recommendations...</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {recommendedItems.map((item) => (
+                <div
+                  key={item.product_id}
+                  className="bg-white rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow"
                 >
-                  Add to Cart
-                </button>
-              </div>
-            ))}
-          </div>
+                  <img
+                    src={item.prod_image_url || "/productimages/placeholder.png"}
+                    alt={item.product_name}
+                    className="h-48 w-full object-cover rounded mb-3"
+                  />
+                  <p className="font-medium text-[#333] mb-2 line-clamp-2">{item.product_name}</p>
+                  <p className="text-[#5B6D50] font-semibold mb-3">${parseFloat(item.price).toFixed(2)}</p>
+                  <button 
+                    onClick={() => addToCart(item.product_id)}
+                    disabled={item.inventory < 1}
+                    className={`px-4 py-2 mt-auto rounded transition-colors ${
+                      item.inventory < 1 
+                        ? 'bg-gray-400 text-gray-700 cursor-not-allowed' 
+                        : 'bg-[#5B6D50] text-white hover:bg-[#4a5a40]'
+                    }`}
+                  >
+                    {item.inventory < 1 ? 'Out of Stock' : 'Add to Cart'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* payment options, show even when cart is empty */}
+        {/* payment options */}
         <div className="bg-[#5B6D50] text-white text-center py-6 rounded shadow-md">
           <h4 className="text-sm font-semibold mb-4">We Accept</h4>
           <div className="flex items-center justify-center space-x-3 flex-wrap">
@@ -226,12 +246,14 @@ const Cart = () => {
             className="flex items-center bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
           >
             <img
-              src={item.product.prod_image_url || "/productimages/necklace1.png"}
+              src={item.product.prod_image_url || "/productimages/placeholder.png"}
               alt={item.product.product_name}
               className="w-24 h-24 object-cover rounded mr-4"
             />
             <div className="flex-1">
-              <a className="text-lg font-semibold text-[#333]"  href={`/product_page?id=${item.product.product_id}`}>{item.product.product_name}</a>
+              <a className="text-lg font-semibold text-[#333] hover:text-[#5B6D50] transition-colors" href={`/product_page?id=${item.product.product_id}`}>
+                {item.product.product_name}
+              </a>
               <p className="text-[#666] mt-1">${parseFloat(item.priceAtAddition).toFixed(2)}</p>
               <div className="mt-3 flex gap-3">
                 <div className="bg-[#5B6D50] text-white px-4 py-2 rounded hover:bg-[#4a5a40] transition-colors flex items-center gap-2">
@@ -244,9 +266,10 @@ const Cart = () => {
                   <span className="px-2">{item.quantity}</span>
                   <button 
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                       className={`font-bold hover:opacity-80 ${
-                        item.quantity >= item.product.inventory ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                    disabled={item.quantity >= item.product.inventory}
+                    className={`font-bold hover:opacity-80 ${
+                      item.quantity >= item.product.inventory ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   >
                     +
                   </button>
@@ -278,62 +301,42 @@ const Cart = () => {
         </button>
       </div>
 
-      {/* recommended items section (need to fill with appropriate products) */}
+      {/* recommended items section */}
       <div>
         <h2 className="text-3xl font-semibold mb-6 text-[#333]">Recommended Items</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {recommendedItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-48 w-full object-cover rounded mb-3"
-              />
-              <p className="font-medium text-[#333] mb-2">{item.name}</p>
-              <p className="text-[#5B6D50] font-semibold mb-3">${item.price.toFixed(2)}</p>
-              <button 
-                onClick={() => addToCart(item.id)}
-                className="bg-[#5B6D50] text-white px-4 py-2 mt-auto rounded hover:bg-[#4a5a40] transition-colors"
+        {recommendedLoading ? (
+          <p className="text-center text-gray-500">Loading recommendations...</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {recommendedItems.map((item) => (
+              <div
+                key={item.product_id}
+                className="bg-white rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow"
               >
-                Add to Cart
-              </button>
-            </div>
-          ))}
-        </div>
+                <img
+                  src={item.prod_image_url || "/productimages/placeholder.png"}
+                  alt={item.product_name}
+                  className="h-48 w-full object-cover rounded mb-3"
+                />
+                <p className="font-medium text-[#333] mb-2 line-clamp-2">{item.product_name}</p>
+                <p className="text-[#5B6D50] font-semibold mb-3">${parseFloat(item.price).toFixed(2)}</p>
+                <button 
+                  onClick={() => addToCart(item.product_id)}
+                  disabled={item.inventory < 1}
+                  className={`px-4 py-2 mt-auto rounded transition-colors ${
+                    item.inventory < 1 
+                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed' 
+                      : 'bg-[#5B6D50] text-white hover:bg-[#4a5a40]'
+                  }`}
+                >
+                  {item.inventory < 1 ? 'Out of Stock' : 'Add to Cart'}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* same payment method section from footer */}
-      <div className="bg-[#5B6D50] text-white text-center py-6 rounded shadow-md">
-        <h4 className="text-sm font-semibold mb-4">We Accept</h4>
-        <div className="flex items-center justify-center space-x-3 flex-wrap">
-          {/* paypal */}
-          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
-            <span className="text-[#0070ba] text-xs font-bold">PayPal</span>
-          </div>
-          {/* visa */}
-          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
-            <span className="text-[#1a1f71] text-xs font-bold">VISA</span>
-          </div>
-          {/* mastercard */}
-          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
-            <div className="flex items-center space-x-1">
-              <div className="w-3 h-3 bg-red-500 rounded-full opacity-80"></div>
-              <div className="w-3 h-3 bg-yellow-400 rounded-full opacity-80"></div>
-            </div>
-          </div>
-          {/* discover */}
-          <div className="bg-white rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
-            <span className="text-[#ff6000] text-xs font-bold">DISC</span>
-          </div>
-          {/* klarna */}
-          <div className="bg-[#ffb3c7] rounded-md p-2 h-8 flex items-center justify-center min-w-[50px]">
-            <span className="text-[#0a0a0a] text-xs font-bold">Klarna</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

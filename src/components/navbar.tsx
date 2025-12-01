@@ -113,6 +113,12 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
               REVIEWS
             </a>
             <a 
+              href="/commissions" 
+              className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
+            >
+              COMMISSIONS
+            </a>
+            <a 
               href="/about_me" 
               className="font-lalezar text-white/90 hover:text-white text-lg font-medium transition-colors duration-200 hover:underline underline-offset-4 decoration-2"
             >
@@ -151,6 +157,18 @@ const Navbar = ({ session, isAdmin = false }: NavbarProps) => {
             >
               REVIEWS
             </a>
+            <a 
+              href="/commissions" 
+              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
+              onClick={() => setMenuOpen(false)}
+            >
+              COMMISSIONS
+            </a>
+            <a 
+              href="/about_me" 
+              className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"
+              onClick={() => setMenuOpen(false)}
+            ></a>
             <a 
               href="/about_me" 
               className="block font-sans text-white/90 hover:text-white text-lg font-medium py-3 px-4 hover:bg-white/10 rounded-lg transition-colors duration-200 text-center"

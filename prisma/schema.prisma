@@ -56,19 +56,20 @@ model customer {
   fk_ship_address_id Int?
   fk_bill_address_id Int?
   address            address?  @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
-  reviews            reviews[]
 }
 
 model guest {
-  guest_id           Int      @id @default(autoincrement())
-  email              String   @db.VarChar(30)
-  phone_num          String   @db.VarChar(15)
+  guest_id           Int       @id @default(autoincrement())
+  email              String    @db.VarChar(30)
+  phone_num          String    @db.VarChar(15)
   fk_ship_address_id Int?
   fk_bill_address_id Int?
-  first_name         String?  @db.VarChar(20)
-  last_name          String?  @db.VarChar(20)
-  address            address? @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
+  first_name         String?   @db.VarChar(20)
+  last_name          String?   @db.VarChar(20)
+  last_login         DateTime? @db.Timestamp(6)
+  address            address?  @relation(fields: [fk_ship_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bill_address_id")
   orders             orders[]
+  reviews            reviews[]
   user               user?
 }
 
@@ -142,6 +143,7 @@ model product {
   inventory      Int
   prod_image_url String?        @db.VarChar(500)
   fk_category_id Int?
+  private        Boolean?       @default(false)
   cartItems      CartItem[]
   order_item     order_item[]
   page_views     page_views[]
@@ -151,14 +153,16 @@ model product {
 }
 
 model reviews {
-  review_id      Int       @id @default(autoincrement())
-  review_text    String?
-  review_date    DateTime  @db.Date
-  rating         Int
-  fk_customer_id Int?
-  fk_product_id  Int?
-  customer       customer? @relation(fields: [fk_customer_id], references: [customer_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_customer_id")
-  product        product?  @relation(fields: [fk_product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
+  review_id     Int      @id @default(autoincrement())
+  review_text   String?
+  review_date   DateTime @db.Date
+  rating        Int
+  fk_user_id    String?
+  fk_product_id Int?
+  fk_guest_id   Int?
+  product       product? @relation(fields: [fk_product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
+  guest         guest?   @relation(fields: [fk_guest_id], references: [guest_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_reviews_guest")
+  user          user?    @relation(fields: [fk_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_customer_id")
 }
 
 model session {
@@ -197,9 +201,11 @@ model user {
   createdAt     DateTime             @default(now()) @db.Timestamp(6)
   updatedAt     DateTime             @default(now()) @updatedAt @db.Timestamp(6)
   guest_id      Int?                 @unique
+  last_login    DateTime?            @db.Timestamp(6)
   cart          Cart?
   organizations OrganizationMember[]
   account       account[]
+  reviews       reviews[]
   session       session[]
   guest         guest?               @relation(fields: [guest_id], references: [guest_id], map: "fk_user_guest")
 

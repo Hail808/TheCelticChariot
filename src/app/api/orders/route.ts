@@ -2,6 +2,7 @@
 // Use this if the complex JSON aggregation doesn't work with your PostgreSQL version
 
 import { NextResponse } from 'next/server';
+import { parse } from 'path';
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -26,6 +27,7 @@ export async function GET() {
       o.fk_guest_id,
       o.shipping_cost,
       o.shipping_method,
+      o.tax,
       o.tax,
       -- Guest info
       g.first_name,
@@ -80,6 +82,9 @@ export async function GET() {
       order_date: row.order_date,
       total_price: parseFloat(row.total_price),
       order_status: row.order_status,
+      shipping_cost: row.shipping_cost ? parseFloat(row.shipping_cost) : 0,
+      shipping_method: row.shipping_method,
+      tax: row.tax ? parseFloat(row.tax) : 0,
       reference: row.reference,
       guest: row.fk_guest_id ? {
         first_name: row.first_name,

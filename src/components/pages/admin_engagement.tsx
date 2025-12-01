@@ -148,10 +148,16 @@ const AdminEngagement: React.FC = () => {
 
   const getDaysSinceLastLogin = (lastLogin: string | null): number => {
     if (!lastLogin) return Infinity;
+
     const loginDate = new Date(lastLogin);
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - loginDate.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+
+    const loginDay = new Date(loginDate.getFullYear(), loginDate.getMonth(), loginDate.getDate());
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const diffTime = today.getTime() - loginDay.getTime();
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
   };
 
   const getCustomerStatus = (customer: Customer): FilterStatus => {

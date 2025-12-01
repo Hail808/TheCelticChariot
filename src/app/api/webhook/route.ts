@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import {CartService} from "../../../lib/cart-service"
 import Stripe from 'stripe';
-import { getSessionId, getUserId } from '@/lib/analytics';
+import { sendOrderEmail } from "@/utils/sendEmail"; 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-09-30.clover',
@@ -269,15 +269,32 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
       }
     }
 
+    //send email notification to customer and owner
+    const emailLineItems = fullSession.line_items?.data.map((item) => ({
+    name: item.description || "Product",
+    quantity: item.quantity || 1,
+    price: (item.amount_total || 0) / 100,
+    imageUrl: item.price?.product && typeof item.price.product !== 'string'
+      ? (item.price.product as Stripe.Product).images[0] || null
+      : null,
+  })) || [];
+
+  try {
+    await sendOrderEmail({
+      customerEmail,
+      customerName: `${firstName} ${lastName}`,
+      orderReference: order.reference,
+      orderTotal: (fullSession.amount_total || 0) / 100,
+    });
+    console.log("Order confirmation emails sent successfully");
+  } catch (emailError) {
+    console.error("Failed to send order emails:", emailError);
+  }
+
     await prisma.$disconnect();
     console.log(`Order ${order.order_id} saved successfully for guest ${guestId}`);
   } catch (error) {
     console.error('Failed to save order to database:', error);
   }
 
-  // 2. Send confirmation email to customer
-  // TODO: Implement email sending (see below for examples)
-
-  // 5. Create shipping label
-  // TODO: Integrate with shipping provider
 }
