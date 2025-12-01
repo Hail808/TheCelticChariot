@@ -81,8 +81,8 @@ By providing a self-hosted solution with complete ownership and control, The Cel
 
 **Team Name:** [Code_Breakers]
 
-| Name | Role | Contact |
-|------|------|---------|
+| Name | Contact |
+|------|---------|
 | [Dominic Dariano] | [ddariano@csus.edu] |
 | [Paul DeCosta] | [pdecosta@csus.edu] |
 | [Tyson Huynh] | [tysonhuynh@csus.edu] |
