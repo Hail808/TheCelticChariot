@@ -120,7 +120,7 @@ By providing a self-hosted solution with complete ownership and control, The Cel
 ## 🗄️ Database Schema
 
 ### Entity Relationship Diagram (ERD)
-![ERD](./public/TheCelticChariot_ERD_Chart_1.png)
+![ERD](./public/ERD.png)
 
 ### Key Tables
 - **product** - Product catalog with pricing, inventory, and category relationships
